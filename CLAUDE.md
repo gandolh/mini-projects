@@ -14,12 +14,27 @@ This repo maintains a living wiki under `docs/wiki/`. At the start of every sess
 
 When the user says "update the wiki":
 
+### Step 1 — Ingest new sources from `docs/ingest/`
+
+1. Run `ls docs/ingest/` to list files
+2. For each file present:
+   a. Read the file
+   b. Extract key information relevant to the project (architecture decisions, API changes, rules, design guidelines, etc.)
+   c. Integrate the information into the appropriate wiki page(s) in `docs/wiki/` — update existing content, add new sections, or create a new page if the topic has no home yet
+   d. Update `docs/wiki/index.md` if a new page was created
+3. After all files are processed, delete them from `docs/ingest/` (they have been absorbed into the wiki)
+
+### Step 2 — Sync with codebase changes
+
 1. Run `git log --oneline` and compare the latest commit hash against the last entry in `docs/wiki/log.md` to identify new commits
 2. Run `git diff <last-logged-commit>..HEAD --name-only` to see which files changed
 3. Read the relevant diffs: `git diff <last-logged-commit>..HEAD -- <file>`
 4. Update affected wiki pages in `docs/wiki/`
 5. Update `docs/wiki/index.md` if any pages were added, removed, or renamed
-6. Append a new entry to `docs/wiki/log.md` using this format:
+
+### Step 3 — Append log entry
+
+Append a new entry to `docs/wiki/log.md` using this format:
 
 ```
 ## [YYYY-MM-DD] <type> | <short description>
@@ -29,7 +44,7 @@ Summary: <1-2 sentences on what changed>
 Pages touched: <comma-separated list of filenames>
 ```
 
-Where `<type>` is one of: `feat`, `fix`, `refactor`, `docs`, `init`.
+Where `<type>` is one of: `feat`, `fix`, `refactor`, `docs`, `init`, `ingest`.
 
 ## What the wiki is NOT
 
