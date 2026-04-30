@@ -147,3 +147,5 @@ docs/superpowers/
 
 # SQLite database
 backend/todos.db
+
+todos.db
