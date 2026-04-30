@@ -19,3 +19,11 @@ Pages touched: index.md, architecture.md, api.md, backend-rules.md, frontend-rul
 Summary: Full frontend design spec written covering stack, components, data layer, and visual design based on the Utilitarian Monospace design system and todoapp.html mockup. frontend-rules.md and design-rules.md populated from stubs.
 
 Pages touched: frontend-rules.md, design-rules.md
+
+---
+
+## [2026-05-01] feat | Frontend fully implemented
+
+Summary: All frontend components built and wired to API. Optimistic updates on all mutations, drag-to-reorder via @use-gesture/react, inline editing in TodoItem, filter tabs (all/active/completed). Corrected wiki: mutations use optimistic updates (not just invalidate); toasts are error-only.
+
+Pages touched: frontend-rules.md

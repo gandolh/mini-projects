@@ -29,12 +29,13 @@ frontend/src/
 ## Conventions
 
 - All API calls go through `api/todos.ts` — no inline fetch/axios in components
-- TanStack Query: invalidate `['todos']` on every mutation success — no optimistic updates
+- TanStack Query: all mutations use **optimistic updates** (cancel → snapshot → mutate → rollback on error → invalidate on settled)
 - Use `@base-ui/react` primitives wherever a component exists; fall back to plain HTML only when no equivalent exists
 - Inline edit state is local to `TodoItem` — controlled `<input>` replacing a `<span>`
 - Drag reorder: local `items` state mirrors server data for smooth UX; resets on query refetch
+- Drag via `@use-gesture/react` `useDrag` — row height 36px used to compute step count from `movement[1]`
 
 ## Toast Triggers
 
-- Checkbox toggle → `"Marked as done"` or `"Marked as active"` (sonner)
-- Delete todo → `"Todo deleted"` (sonner)
+- Error only: `toast.error('Failed to update todo')` on toggle or delete failure
+- No success toasts
