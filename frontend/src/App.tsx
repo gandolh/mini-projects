@@ -23,12 +23,15 @@ export function App() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 8px',
+          // needed for absolute-centered FilterTabs
         }}
       >
         <span style={{ fontWeight: 700, fontSize: 13, textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
-          TODO_SYS_v1.0
+          Literally a todo app
         </span>
-        <FilterTabs filter={filter} onFilterChange={setFilter} />
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <FilterTabs filter={filter} onFilterChange={setFilter} />
+        </div>
       </header>
 
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 16px 64px' }}>
@@ -63,15 +66,10 @@ export function App() {
           marginTop: 'auto',
         }}
       >
-        <span>SYSTEM_STABLE _v1.0.4</span>
-        <div style={{ display: 'flex', gap: 16 }}>
-          <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Docs</a>
-          <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub</a>
-          <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>License</a>
-        </div>
+        <span>Literally a todo app</span>
       </footer>
 
-      <Toaster position="bottom-right" />
+      <Toaster position="top-center" />
     </div>
   );
 }

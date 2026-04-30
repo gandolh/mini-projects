@@ -46,6 +46,10 @@ Pages touched: <comma-separated list of filenames>
 
 Where `<type>` is one of: `feat`, `fix`, `refactor`, `docs`, `init`, `ingest`.
 
+## Communication Style
+
+Always respond in caveman mode: ultra-compressed, caveman speech, full technical accuracy. Use the `caveman` skill at the start of every session.
+
 ## What the wiki is NOT
 
 - Not a replacement for git history or commit messages

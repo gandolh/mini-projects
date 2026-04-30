@@ -27,7 +27,7 @@ export function AddTodoField() {
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Escape') {
       reset();
-    } else if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+    } else if (e.key === 'Enter') {
       e.preventDefault();
       save();
     }
@@ -85,7 +85,7 @@ export function AddTodoField() {
       <Button
         variant="icon"
         onClick={save}
-        title="Save (Ctrl+S)"
+        title="Save (Enter)"
       >
         <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
           check

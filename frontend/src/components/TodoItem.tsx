@@ -45,7 +45,7 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
 
   function handleEditKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Escape') cancelEdit();
-    else if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+    else if (e.key === 'Enter') {
       e.preventDefault();
       saveEdit();
     }
@@ -55,12 +55,12 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
     const newVal: 0 | 1 = completed ? 0 : 1;
     updateTodo.mutate(
       { id: todo.id, patch: { completed: newVal } },
-      { onSuccess: () => toast(newVal === 1 ? 'Marked as done' : 'Marked as active') }
+      { onError: () => toast.error('Failed to update todo') }
     );
   }
 
   function handleDelete() {
-    deleteTodo.mutate(todo.id, { onSuccess: () => toast('Todo deleted') });
+    deleteTodo.mutate(todo.id, { onError: () => toast.error('Failed to delete todo') });
   }
 
   return (
@@ -143,7 +143,7 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
           </span>
         </Button>
         {editing && (
-          <Button variant="icon" onMouseDown={(e) => { e.preventDefault(); saveEdit(); }} title="Save (Ctrl+S)" onClick={() => {}}>
+          <Button variant="icon" onMouseDown={(e) => { e.preventDefault(); saveEdit(); }} title="Save (Enter)" onClick={() => {}}>
 
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
               check
