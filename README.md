@@ -11,15 +11,18 @@ All versions in `package.json` are pinned (no `^` / `~`).
 
 ## Run it
 
-```bash
-# terminal 1
-cd server && npm install && npm run dev
+This is an npm-workspaces monorepo. Install once at the root, then run both apps with a single command:
 
-# terminal 2
-cd client && npm install && npm run dev
+```bash
+npm install
+npm run dev
 ```
 
-Open http://localhost:5173, paste an absolute path to any git repo, click **Load branches**, pick base + compare, click **Compare**.
+That runs server (`:5174`) and client (`:5173`) in parallel. Open http://localhost:5173, paste an absolute path to any git repo, click **Load branches**, pick base + compare, click **Compare**.
+
+To run just one side: `npm run dev:client` or `npm run dev:server`.
+
+For a containerized single-port build (UI + API on `:3020`), see [infra/](infra/).
 
 ## API
 
