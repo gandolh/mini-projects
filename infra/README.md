@@ -5,9 +5,17 @@ Docker setup that builds the client and server into one image and serves both on
 ## Build & run
 
 ```bash
-cd infra
-REPOS_HOST_DIR=/home/youruser/projects docker compose up --build
+# build only
+./infra/build.sh
+
+# build and start
+./infra/build.sh --up
+
+# pass-through flags
+./infra/build.sh --no-cache
 ```
+
+Or from the repo root: `npm run docker:build` / `npm run docker:up`.
 
 Open http://localhost:3020.
 
