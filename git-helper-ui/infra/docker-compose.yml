@@ -1,0 +1,17 @@
+services:
+  git-helper:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    image: git-helper-ui:latest
+    container_name: git-helper-ui
+    ports:
+      - "3020:3020"
+    environment:
+      PORT: 3020
+      CLIENT_DIST: /app/public
+    volumes:
+      # Mount host repo roots read-only so the server can run `git` against them.
+      - "${REPOS_HOST_DIR:?REPOS_HOST_DIR must be set (see infra/.env.example)}:/repos:ro"
+      - "${REPOS_HOST_DIR_2:?REPOS_HOST_DIR_2 must be set (see infra/.env.example)}:/repos2:ro"
+    restart: unless-stopped
