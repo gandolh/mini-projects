@@ -5,8 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm install        # Installs deps and rebuilds better-sqlite3 against Electron's Node ABI
-npm run rebuild    # Re-run the native rebuild if Electron version changes
+npm install        # Installs deps; better-sqlite3 is built for system Node here
+npm run rebuild    # Rebuild better-sqlite3 against Electron's Node ABI (after install, and when Electron changes)
 npm start          # Build and launch the Electron app
 npm run build      # Compile main + renderer + copy HTML/CSS to dist/
 npx tsc --noEmit   # Type-check main process
@@ -27,7 +27,7 @@ src/
 
 **Main (`src/main/`)** — `main.ts` boots the app and wires modules; `session.ts` owns the in-memory key + 10-minute idle timeout (emits `vault:locked` on expiry); `ipc.ts` registers every `ipcMain.handle` and gates them on `session.requireKey()` (throws `LOCKED`); `db.ts` owns SQLite queries; `crypto.ts` owns PBKDF2 + AES-256-GCM; `commands.ts` composes db + crypto for each handler.
 
-**Preload (`src/preload/preload.ts`)** — exposes `window.api` via `contextBridge` with `contextIsolation: true` and `nodeIntegration: false`. Uses the `IPC` channel-name map from `shared/api.ts` so main and preload can't drift.
+**Preload (`src/preload/preload.ts`)** — exposes `window.api` via `contextBridge` with `contextIsolation: true` and `nodeIntegration: false`. Electron sandboxes the preload, so it can `require` only `electron` and a few Node built-ins, never `../shared/api.js`. It repeats the `IPC` channel-name map from `shared/api.ts` and checks it with `satisfies typeof IPC`, so a drift fails the type-check.
 
 **Renderer (`src/renderer/`)** — vanilla TS SPA. `renderer.ts` swaps `innerHTML` to render unlock/setup/list/modal screens. No framework, no bundler. Imports only `import type` from `shared/` — no runtime Node access.
 

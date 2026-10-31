@@ -1,6 +1,25 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { IPC, type Api } from '../shared/api.js';
+import type { Api, IPC as SharedIPC } from '../shared/api.js';
 import type { CredentialInput, CopyField } from '../shared/types.js';
+
+// Electron sandboxes preload scripts, and a sandboxed preload can require only
+// 'electron' and a few Node built-ins, so ../shared/api.js cannot load here at
+// runtime. The channel names are repeated instead, and `satisfies` makes the
+// type-check fail if they drift from shared/api.ts.
+const IPC = {
+  exists: 'vault:exists',
+  isLocked: 'vault:is-locked',
+  setup: 'vault:setup',
+  unlock: 'vault:unlock',
+  lock: 'vault:lock',
+  list: 'vault:list',
+  add: 'vault:add',
+  see: 'vault:see',
+  edit: 'vault:edit',
+  remove: 'vault:remove',
+  copy: 'vault:copy',
+  lockedEvent: 'vault:locked',
+} as const satisfies typeof SharedIPC;
 
 const api: Api = {
   vaultExists: () => ipcRenderer.invoke(IPC.exists),
