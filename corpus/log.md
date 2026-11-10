@@ -18,3 +18,12 @@ repo. The writing stopped on a usage limit before the remaining briefs for
 
 The next session writes them, taking the owner's skills library's briefs
 02, 03 and 14 as the specs and Almanac's briefs as the reference shape.
+
+## [2026-11-10] todo | Briefs 03-05 for the todo app: Base UI conventions, Tailwind with a theme switch, the server in the code structure
+
+Completes the set begun with briefs 01-02. Brief 03 audits the frontend against
+Base UI rules 1-13 and fixes the drag handle, brief 04 moves it to Tailwind v4
+(Postern's legacy-layer method, a dry run for the estate) with a Light / Dark /
+System switch, and brief 05 gives the Fastify server `buildApp`, `config.ts`, zod
+route schemas and a first test. They build the owner's answers of 2026-11-10 on
+visual parity (close enough) and dark mode (a switch, light by default).
