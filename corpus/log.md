@@ -41,3 +41,7 @@ jsdom tests are only for wrappers with logic (Q60). Brief 04: the 14 px moves on
 (Q17, Q61), the switch shares the filter's `RadioGroup`, and its decisions are
 marked decided. Brief 05: its decisions are marked decided (Q23-Q27, Q43, Q55,
 Q56). Added brief 06, a redesign with Hallmark on the estate board (Q39).
+
+## [2026-11-10] done | Brief 01 — Base UI 1.9.0 in the todo frontend
+
+`@base-ui/react` 1.4.1 to 1.9.0, pinned exactly (95f1e3a); `@base-ui/utils` 0.5.0, and `@babel/runtime` moved to 8.1.0 in the lockfile. Build passes; lint shows the same two `TodoList.tsx` errors as before. Browser behaviour check not run (no dev servers), so no behaviour differences are recorded and the drag question stays open for brief 03.

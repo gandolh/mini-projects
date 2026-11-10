@@ -88,3 +88,9 @@ One commit: `chore(deps): @base-ui/react 1.9.0`.
 
 - Brief 03 moves these three wrappers to `components/ui/` and is the first to depend on 1.9.0's API (the `RadioGroup` and `Toast` parts). It assumes this brief is done.
 - The library's brief 04 lists this repo as "bump, pin". Mark that row done there when this brief lands.
+
+## Outcome (2026-11-10)
+
+Pinned `@base-ui/react` at exactly 1.9.0 in `literally-a-todo-app/frontend/package.json` (commit 95f1e3a), 1.4.1 before. The lockfile resolves 1.9.0 and `@base-ui/utils` 0.5.0; besides Base UI's own tree, npm moved the hoisted `@babel/runtime` 7.29.2 to 8.1.0. `npm run build` passes; `npm run lint` shows only the two known `TodoList.tsx` errors (lines 18 and 105). The renamed OTPField and `sanitizeValue` are not used.
+
+Step 4 (browser check of Button, Checkbox, Separator and the drag handle) was not run, so whether drag works before or after the bump is still unrecorded. Brief 03 owns that.
