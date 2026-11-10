@@ -4,9 +4,9 @@
 
 - In this repo: brief 01, so the lockfile diff of the reformat is not mixed with the Base UI bump.
 - In the owner's skills library:
-  - brief 27, *A house style, and a quality harness that enforces it*: the `house-style` package at `v1.0.0`, the `house-style` skill, and the plugin's `Stop` and `PostToolUse` hooks;
+  - brief 27, *A house style, and a quality harness that enforces it*: the `house-style` package at `v1.0.0` (this repo holds a vendored copy of it, decision 1), the `house-style` skill, and the plugin's `Stop` and `PostToolUse` hooks;
   - brief 15, *Enforce the base-ui and code-structure skills in every repo*: how the convention checkers are wired and when they run `--warn-only`.
-- The owner's grilling of 2026-11-10, questions Q5-Q14 of the skills library's open questions, plus Q45 (Markdown) and Q46 (a root `CLAUDE.md`).
+- The owner's grilling of 2026-11-10 and its technical calls: Q5-Q14, Q45 (Markdown), Q46 (a root `CLAUDE.md`), Q47-Q50 and Q60. Every question is answered; the decisions below record each.
 
 **Runs before:** 03, 04 and 05. The reformat touches all 18 TypeScript and JavaScript files of the app, and those briefs rewrite most of them. Formatting first gives one clean reformat commit.
 
@@ -30,7 +30,7 @@ On 2026-11-09 the owner made three calls for every web app: Base UI 1.9.0 everyw
 - **Style.**
   - Frontend files use single quotes and semicolons, except `frontend/vite.config.ts` and `frontend/eslint.config.js` (no semicolons).
   - Backend files use single quotes and **no semicolons** (`grep -c ";$" backend/src/*.ts` prints 0 for all three).
-  - The house style is double quotes and semicolons, so every file with a string changes. `mini-projects` isn't among Q9's named outliers (Newspapper, ro-housing, sports-app, imbatranim-apps), though both packages are.
+  - The house style is double quotes and semicolons, so every file with a string changes. `mini-projects` isn't among Q9's named outliers (Newspapper, ro-housing, sports-app, imbatranim-apps), though both packages are. Q9 (technical call): the outliers move to double quotes and semicolons in their one reformat commit, so both packages do.
 - **Claude Code files.** `literally-a-todo-app/CLAUDE.md` (57 lines) holds the wiki-bootstrap and "update the wiki" rules, and ends with "Always respond in caveman mode" and the `caveman` skill. `literally-a-todo-app/.claude/skills/caveman` and `.windsurf/skills/caveman` exist, pinned by `skills-lock.json`. There is no `.claude/rules/`, no `.claude/settings.json`, and the repo-wide [corpus/CLAUDE.md](../../CLAUDE.md) says a project folder's own `CLAUDE.md` wins inside that folder.
 - **No `.npmrc`**, so no `save-exact`. Dependencies are `^` ranges.
 - **No Docker, no CI, no deploy.** The app runs locally (API on 127.0.0.1:3000, Vite on 5173 proxying `/api`, `frontend/vite.config.ts:7-9`).
@@ -44,10 +44,10 @@ Taken on scratch copies of `frontend/` and `backend/` in the session scratchpad,
 | `printWidth` | Frontend (15 of 15 files) | Backend (3 of 3 files) |
 |---|---|---|
 | 100 | +249 / -189 | +70 / -61 |
-| 120 | +198 / -194 | +63 / -61 |
-| **130** | **+187 / -203** | **+60 / -63** |
+| **120** | **+198 / -194** | **+63 / -61** |
+| 130 | +187 / -203 | +60 / -63 |
 
-The frontend is 760 lines of TypeScript plus 55 of CSS; the backend is 97. 130 is the least churn in both, and it is Almanac's width. Markdown and JSON weren't measured: they are out of scope (decision 3).
+The frontend is 760 lines of TypeScript plus 55 of CSS; the backend is 97. 130 is the least churn in both, but the estate's one width is **120** (Q8 and Q51), which costs 11 more changed lines in the frontend and 3 in the backend than 130 does. At 120 the one-off reformat is +198 / -194 in the frontend and +63 / -61 in the backend; the commit is ignored in blame (step 2). Markdown and JSON weren't measured: they are out of scope (decision 3).
 
 **TypeScript flags.**
 
@@ -82,28 +82,32 @@ The four frontend errors are real. `useTodos.ts:80` is the reorder update: `ids.
 
 **Not measured:** `@vitest/eslint-plugin` (there are no tests), lint time with `project` against `projectService`, and `better-tailwindcss` (brief 04's).
 
-## Owner decisions (defaults this brief builds)
+## Decisions
 
-1. **Where the configs come from** (Q6, brief 27 decision 1). Default: the `house-style` package, as a tagged tarball URL. There is no Docker image here, so the `github:`-needs-`git` trap that Almanac's Dockerfile has doesn't apply. If Q6 goes the other way, the same rules land as local files with a version header.
-2. **Width** (Q8). Default: the estate's one width. If it isn't settled when this runs, use 130 and record it.
-3. **Markdown stays out of Prettier** (Q45). Default: `.prettierignore` lists `*.md`.
-4. **tsconfig** (Q11). Default:
+Items marked "decided" are final. The rest are defaults this brief builds.
+
+1. **Where the configs come from** (decided 2026-11-10, technical call, Q6). `house-style` is **vendored**: a copy under `literally-a-todo-app/vendor/house-style/` with a version header (`v1.0.0`), refreshed by a `house-style:sync` script in the app's scripts-only `package.json`, which finds the `house-style` checkout by name. No git, `github:` or tarball dependency, so the rule is the same in every repo, Docker or not.
+2. **Width** (decided 2026-11-10, technical call, Q8 and Q51). `printWidth` is **120**. The measured table above is kept, and the reformat at 120 (+198 / -194 frontend, +63 / -61 backend) is the one-off cost, taken in one commit that blame ignores.
+3. **Markdown stays out of Prettier** (decided 2026-11-10, technical call, Q45). `.prettierignore` lists `*.md`.
+4. **tsconfig** (decided 2026-11-10, technical call, Q11 and Q50).
+   - frontend: add `noUncheckedIndexedAccess` and fix its four errors; the rest is already there. Q50 defers that flag to a later brief where it needs one. Here it is four errors in the frontend and none in the backend, so it is taken in this brief with those counts, not deferred;
+   - backend: add `verbatimModuleSyntax`, `erasableSyntaxOnly`, `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch` and `noEmit` (0 errors each, measured), and raise TypeScript to 6.0.3 pinned (clean, measured). The backend's 5.9.3 is already past 5.8, so `erasableSyntaxOnly` needs no bump first, and there are no parameter properties to turn into fields. `exactOptionalPropertyTypes` stays out until after a count (Q11).
    - frontend: add `noUncheckedIndexedAccess` and fix its four errors; the rest is already there;
    - backend: add `verbatimModuleSyntax`, `erasableSyntaxOnly`, `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch` and `noEmit` (0 errors each, measured), and raise TypeScript to 6.0.3 pinned (clean, measured). `exactOptionalPropertyTypes` stays out (Q11).
-5. **Typed lint** (Q12). Default: the six rules plus `no-non-null-assertion` through `projectService`, with `switch-exhaustiveness-check` at `considerDefaultExhaustiveForUnions: true`. `no-non-null-assertion` is an error in source and a **warning in tests**.
-6. **The house shapes as errors** (Q13). Default: all errors. The one `!` is fixed, not excepted.
-7. **`check:fast`** (Q10). Default: a typecheck plus ESLint on changed files, in each project.
-8. **The Claude Code layer** (Q7). Default: the plugin's hooks.
+5. **Typed lint** (decided 2026-11-10, technical call, Q12, Q47 and Q48). The six rules plus `no-non-null-assertion` through `projectService`, with `switch-exhaustiveness-check` at `considerDefaultExhaustiveForUnions: true`. `no-non-null-assertion` (`!`) is an **error in source and a warning in tests**. `no-floating-promises` names `node:test`'s `describe`, `it` and `test` in `allowForKnownSafeCalls` in the preset; this app uses vitest, so it never matters here.
+6. **The house shapes as errors** (decided 2026-11-10, technical call, Q13 and Q49). All errors. The one `!` is fixed, not excepted. `console` is allowed in scripts and CLIs (none here). A default export is allowed only where a framework needs one: the two config files. Components use named exports, so `App` keeps its named export and `main.tsx` imports it.
+7. **`check:fast`** (decided 2026-11-10, technical call, Q10). A typecheck plus ESLint on changed files, in each project, built incrementally (`tsc -b` where the project allows). Target 15 s, accepted up to about 30 s where `tsc` alone is slower.
+8. **The Claude Code layer** (decided 2026-11-10, technical call, Q7). The plugin's hooks: `Stop` runs `check:fast`, `PostToolUse` formats the saved file.
 9. **Where the harness lives.** Default: each project gets its own `check` and `check:fast`, and the app folder gets a **scripts-only `package.json`** at `literally-a-todo-app/package.json` whose `check` and `check:fast` call into the two projects with `npm --prefix`. comercial-website already does this (its root `package.json` has no dependencies). The `Stop` hook runs `check:fast` in the session's working directory, so it only finds it when Claude Code is opened in `literally-a-todo-app/`. *New question for the grilling:* the repo root, `mini-projects/`, holds five unrelated projects. Does the owner open sessions there, and should the hook skip it?
 10. **`.claude/rules/` location.** Default: `literally-a-todo-app/.claude/rules/`, beside the app's `CLAUDE.md` and its `skills/` folder. Whether Claude Code loads a nested `.claude/rules/` when a session starts at the repo root is **not verified**. Step 6 ends with a check the owner runs. *New question for the grilling.*
 11. **The app's `CLAUDE.md`.** Default: extend the existing `literally-a-todo-app/CLAUDE.md` with the commands and the hard rules, keep its wiki-bootstrap, and do not create a second file. Its closing line, "Always respond in caveman mode", is the owner's choice and is left alone. *New question for the grilling:* does the house `unslop` style apply to this app's prose, or does caveman mode win?
-12. **Two lint errors and the drag bug are in scope for fixing, not for rewriting.** Default: step 4 fixes `TodoList.tsx:105` by moving the ref into `DraggableTodoItem` (the parent never reads it: `TodoList.tsx:15` declares it, line 39 passes it, and only `DraggableTodoItem` reads or writes it, so behaviour is equal), and step 4 fixes `TodoList.tsx:17` by deleting the `items` mirror state. The second is a behaviour-touching change: `useReorderTodos.onMutate` (`useTodos.ts:76-85`) already updates the query cache optimistically, which is what `items` re-creates by hand. Step 4 therefore adds a test before it deletes anything. *New question for the grilling:* a frontend test runner (default: vitest, jsdom and Testing Library, per Q27) is a new dependency set for a 760-line app. Is that wanted, or should the reorder fix wait for a Playwright check?
+12. **Two lint errors and the drag bug are in scope for fixing, not for rewriting; the test is a Playwright spec** (decided 2026-11-10, technical call, Q60). jsdom tests are only for wrappers that hold logic (brief 03 adds vitest for those); a flow stays in Playwright. The reorder check is a flow, so it is a Playwright spec in `frontend/e2e/` that mocks `/api/todos` with `page.route`, with `@playwright/test` pinned as a dev dependency and a `test:e2e` script. Step 4 fixes `TodoList.tsx:105` by moving the ref into `DraggableTodoItem` (the parent never reads it: `TodoList.tsx:15` declares it, line 39 passes it, and only `DraggableTodoItem` reads or writes it, so behaviour is equal), and step 4 fixes `TodoList.tsx:17` by deleting the `items` mirror state. The second is a behaviour-touching change: `useReorderTodos.onMutate` (`useTodos.ts:76-85`) already updates the query cache optimistically, which is what `items` re-creates by hand. Step 4 therefore adds the spec before it deletes anything.
 
 ## Files you OWN
 
-- `literally-a-todo-app/frontend/tsconfig.app.json`, `tsconfig.node.json`, `eslint.config.js`, `package.json`, `package-lock.json`.
+- `literally-a-todo-app/frontend/tsconfig.app.json`, `tsconfig.node.json`, `eslint.config.js`, `package.json`, `package-lock.json`, and the new `frontend/e2e/` spec with its Playwright config.
 - `literally-a-todo-app/backend/tsconfig.json`, `package.json`, `package-lock.json`, and a new `eslint.config.js`.
-- New: `literally-a-todo-app/package.json` (scripts only), `.prettierrc`, `.prettierignore`, `.git-blame-ignore-revs`, and `scripts/changed-files.mjs` if the package ships none.
+- New: `literally-a-todo-app/package.json` (scripts only, with `house-style:sync`), `literally-a-todo-app/vendor/house-style/` (the vendored copy), `.prettierrc`, `.prettierignore`, `.git-blame-ignore-revs`, and `scripts/changed-files.mjs` if the package ships none.
 - The reformat: whitespace and quote changes to every `*.ts`, `*.tsx`, `*.js` and `*.css` file of the app.
 - The fixes the new rules ask for: `frontend/src/main.tsx:9`, `frontend/src/components/TodoList.tsx` (lines 15, 17, 30, 78, 79, 105), `frontend/src/hooks/useTodos.ts:80`, `frontend/src/App.tsx` (the double export), `backend/src/routes.ts:14, 58` if confirmed.
 - New: `literally-a-todo-app/.claude/rules/web.md` and `server.md`; edits to `literally-a-todo-app/CLAUDE.md`.
@@ -124,7 +128,7 @@ One commit per step. After each, the gate is `npm run build` in `frontend/`, `np
 
 1. **Measure again** with the real configs, and record in the `log.md` entry: step 1's counts above, lint time with `projectService` against `project`, `npx knip` from the `house-style` preset, and whether `routes.ts:14, 58` really are unneeded casts (remove one on a scratch copy and run `tsc`). Any rule that finds more than about 20 real problems goes back to the owner.
 2. **Prettier and the reformat.**
-   1. Add `prettier` (pinned) to each project, the config (`printWidth` per decision 2, `trailingComma: "all"`), and `.prettierignore` with `*.md`, `dist/`, `node_modules/`, `package-lock.json`, `todos.db` and `public/`.
+   1. Add `prettier` (pinned) to each project, the config (`printWidth: 120` per decision 2, `trailingComma: "all"`), and `.prettierignore` with `*.md`, `dist/`, `node_modules/`, `package-lock.json`, `todos.db` and `public/`.
    2. Add `format` and `format:check` scripts. Commit alone.
    3. Delete `frontend/src/App.css`. Commit alone, as `chore: remove the unused Vite template stylesheet`. `git grep -n "App.css" literally-a-todo-app` must show only docs.
    4. Run `npm run format`. Commit only that, as `style: format with Prettier`.
@@ -136,7 +140,7 @@ One commit per step. After each, the gate is `npm run build` in `frontend/`, `np
 4. **ESLint.**
    - Frontend: extend the house config. Roots: web is `frontend/src`; the config files are `vite.config.ts` and `eslint.config.js` (`*.config.*`, the only default exports allowed).
    - Backend: a new `eslint.config.js` from the same preset, server root `backend/src`.
-   - Fix the findings: `main.tsx:9` (look the root up and throw a named error if it is missing, or use the house helper if the preset ships one), `App.tsx` (keep the default export `main.tsx:5` imports, drop the named one, or the reverse, and update the import), `routes.ts:14, 58`, and the two react-hooks errors by decision 12. Before deleting `items`, write the reorder test (up and down buttons, with `api/todos.ts` mocked) and see it pass on the old code and on the new.
+   - Fix the findings: `main.tsx:9` (look the root up and throw a named error if it is missing, or use the house helper if the preset ships one), `App.tsx` (keep the named export and drop the default one, per decision 6, and update the import in `main.tsx:5`), `routes.ts:14, 58`, and the two react-hooks errors by decision 12. Before deleting `items`, write the reorder spec (up and down buttons, with `/api/todos` mocked through `page.route`, run against the Vite dev server) and see it pass on the old code and on the new.
    - Diff in effect: the six typed rules, `no-non-null-assertion`, `no-restricted-syntax` on `TSEnumDeclaration`, `no-warning-comments` (`todo`, `fixme`, pointing at `corpus/todos/`), `no-console` and `no-default-export` outside `*.config.*` go from off to error. `no-process-env` (from `eslint-plugin-n`) goes on in the backend as a warning, because brief 05 adds the only reader, `config.ts`, and turns it into an error.
 5. **The gate.**
    - Each project: `check` (`typecheck`, `lint`, `format:check`, `test` where it exists) and `check:fast` (`typecheck`, then ESLint on the files changed against `HEAD` plus untracked ones; no shell-only syntax, the owner works under WSL).
@@ -155,7 +159,7 @@ One commit per step. After each, the gate is `npm run build` in `frontend/`, `np
 - [ ] `npm run check` passes in `literally-a-todo-app/frontend` and `literally-a-todo-app/backend`, and from `literally-a-todo-app/` for both. The fresh-clone proof of step 5 passes in each. The times for `check` and for `check:fast` (warm, one changed file) are in the log entry, with `check:fast` under about 15 s.
 - [ ] `npx prettier --check .` passes in both projects. `git diff -w <hash>^ <hash>` for the reformat commit shows only quote and semicolon changes, and the hash is in `.git-blame-ignore-revs`.
 - [ ] `grep -rn "noUncheckedIndexedAccess" literally-a-todo-app/*/tsconfig*.json` shows both projects. `npx tsc --noEmit` passes in the backend and `npx tsc -b` in the frontend.
-- [ ] `npm run lint` exits 0 in both projects: the two react-hooks errors are gone, with the reorder test passing before and after the change.
+- [ ] `npm run lint` exits 0 in both projects: the two react-hooks errors are gone, with the reorder Playwright spec passing before and after the change.
 - [ ] A deliberate `enum`, `!`, `console.log`, `// TODO` and a new `export default` each fail `npm run lint`. Revert them after.
 - [ ] `literally-a-todo-app/.claude/rules/web.md` and `server.md` exist with `paths:` frontmatter, and the app's `CLAUDE.md` lists `npm run check`.
 - [ ] `git grep -n "App.css" -- literally-a-todo-app/frontend/src` prints nothing.

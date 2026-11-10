@@ -9,7 +9,7 @@
   - brief 02, *A base-ui skill, styled with Tailwind*: rules 4-8, the `tailwind.md` reference and the method in `migrating-from-plain-css.md`;
   - brief 27, *A house style, and a quality harness that enforces it*: the `better-tailwindcss` lint;
   - brief 14, *The mini todo app to Tailwind*, the estate draft this brief replaces.
-- The owner's grilling of 2026-11-10: Q17 (token names), Q18 and Q19 (answered, below), Q20 (this app is the dry run), Q44 (a root font size other than 16 px), Q57 (an always-one-chosen control), Q61 and Q62.
+- The owner's grilling of 2026-11-10 and its technical calls: Q17 and Q61 (token names), Q18 and Q19 (the owner's answers, below), Q20 (this app is the dry run), Q41 and Q57 (the filter and the switch are one `RadioGroup`), Q44 (a root font size other than 16 px, now on `body`), Q60 and Q62.
 
 **Before you start:** run `brief-board guide` ([CLAUDE.md](../../CLAUDE.md)).
 
@@ -27,11 +27,11 @@ The owner's call of 2026-11-09: Base UI is styled with Tailwind v4, and whole ap
 Paths are under `literally-a-todo-app/frontend/src/`. Brief 14 of the library says "2 CSS files, 239 lines, one `@font-face`, no custom properties". That is right but misleading, because the styling is not in the CSS:
 
 - **31 inline `style={` props in 8 files.** Command: `grep -rn "style={" . --include=*.tsx | wc -l`. Per file: `App.tsx` 7, `components/TodoItem.tsx` 11, `AddTodoField.tsx` 4, `TodoList.tsx` 3, `FilterTabs.tsx` 2, `shared/Checkbox.tsx` 2, `shared/Button.tsx` 1, `shared/Separator.tsx` 1. After brief 03 they sit in `components/ui/` and the sonner CSS is gone.
-- **`index.css`, 55 lines**, the only stylesheet that is imported (`main.tsx:3`): a Google Fonts `@import url(...)` for Material Symbols at line 1 (not an `@font-face`), a reset, `:root` type (14 px, `line-height: 36px`), the `.material-symbols-outlined` class, the hover rule for a row's actions (lines 28-34), the placeholder colour and `a`.
+- **`index.css`, 55 lines**, the only stylesheet that is imported (`main.tsx:3`): a Google Fonts `@import url(...)` for Material Symbols at line 1 (not an `@font-face`), a reset, `:root` type (14 px, `line-height: 36px`; Q44 moves both onto `body`), the `.material-symbols-outlined` class, the hover rule for a row's actions (lines 28-34), the placeholder colour and `a`.
 - **`App.css`, 184 lines, is dead** (nothing imports it) and brief 02 deletes it. This brief never migrates it.
 - **No custom properties.** Six colours repeat as raw hex, 31 uses in all: `#000` 12, `#999` 9, `#fff` 6, `#f9f9f9` 2, `#1a1c1c` 1, `#f3f3f4` 1. Command: `grep -rnoE "#[0-9a-fA-F]{3,6}\b" . --include=*.tsx --include=*.css`. `docs/wiki/design.md` lists 50 named colours in its front matter. The code uses six, and [literally-a-todo-app/docs/wiki/design-rules.md](../../../literally-a-todo-app/docs/wiki/design-rules.md) names them (primary, on-surface, muted-gray, surface, surface-container-lowest). `#f3f3f4` is the design file's `surface-container-low` (used for the dead drag highlight that brief 03 removes). The documented `#ba1a1a` error colour is not used.
 - **Media queries: none** in `index.css`. The 6 in `App.css` go with it. Nothing in the app is responsive, which is why the header overlaps on a phone.
-- **No `rem`.** Every size is px. The root is **14 px** (`index.css`, `:root`), so Tailwind's rem-based spacing would be 3.5 px per step. That is Q44 (decision 5).
+- **No `rem`.** Every size is px. The root is **14 px** (`index.css`, `:root`), so Tailwind's rem-based spacing would be 3.5 px per step. Q44 (decision 5) puts the 14 px on `body` and gives `:root` the browser's default 16 px back, so Tailwind's rem spacing is the pixel value again.
 - **Fonts.** One stack, `ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, monospace`, on `:root`. The icon font loads from Google Fonts at run time. That stays (see decision 8).
 - **Dynamic styles.** Four props depend on state: a row's `opacity` (completed), the dragged row's `opacity`, the filter tab's border, weight and colour, and the add field's open or closed look. These become conditional classes. No inline style should be left.
 
@@ -51,36 +51,38 @@ The method (Postern's brief 03) imports every old stylesheet into one `layer(leg
 
 ### Gotchas Tailwind brings to this app
 
-- **The 14 px root and the 36 px row.** Set `--spacing: 4px` so `h-9` is the 36 px row, `px-2` the 8 px padding and `gap-1` the 4 px gap, with the default text, radius, shadow and colour scales cleared (decision 5). Type sizes become tokens in px (`text-body` 14, `text-title` 13, `text-footer` 10), because `text-sm` would be 0.875 rem.
-- **`line-height: 36px` on the root.** The row height depends on it: every text node inherits 36 px. Port it to `@layer base` as `html { line-height: 36px }` (a token, `--leading-row`), or Tailwind's 1.5 will shrink the rows' text boxes. A screenshot pair catches it.
+- **The 14 px body and the 36 px row.** With the root back at 16 px, Tailwind's own `--spacing: 0.25rem` makes `h-9` the 36 px row, `px-2` the 8 px padding and `gap-1` the 4 px gap, so no `--spacing` override is needed. The default text, radius, shadow and colour scales are cleared (decision 5). Type sizes become named tokens in rem that equal today's pixels at the default root (`text-body` 0.875rem = 14 px, `text-title` 0.8125rem = 13, `text-footer` 0.625rem = 10), because the app's 13 and 10 px have no default name.
+- **`line-height: 36px`.** The row height depends on it: every text node inherits 36 px. Port it to `@layer base` as `body { font-size: var(--text-body); line-height: var(--leading-row) }` with `--leading-row: 2.25rem` (36 px at the default root; Q44 keeps both off `html`), or Tailwind's 1.5 will shrink the rows' text boxes. A screenshot pair catches it.
 - **`hover:` is hover-capable only.** In Tailwind v4, `hover:` applies under `@media (hover: hover)`. The row's actions (`.todo-actions`, `opacity: 0` until the row is hovered, `index.css:28-34`) would never show on a touch screen, because a phone has no hover. Today a tap leaves `:hover` stuck on, so the buttons appear. Default: `group-hover/row:opacity-100`, plus `[@media(hover:none)]:opacity-100` so they are always visible on touch, plus `group-focus-within/row:opacity-100` so a keyboard user sees the button they tabbed to (today those buttons are focusable but invisible). The owner's main phone is Android, so step 6 checks this on Android Chrome.
 - **Placeholder.** `input::placeholder { color: #999 }` becomes `placeholder:text-muted`. Tailwind v4's own placeholder colour is `currentColor` at 50%.
 - **The icon class.** `.material-symbols-outlined` (a font family, `liga`, `FILL`) becomes utilities in `Icon.tsx` from brief 03, with `font-variation-settings` through an arbitrary property.
 - **`cn()` and custom names.** `src/lib/cn.ts` uses `extendTailwindMerge` with this app's `text-*` size names and its colours, or `cn("text-ink", "text-body")` drops one. A test proves it.
 - **The one z-index.** The header's `z-index: 50` (`App.tsx:18`) is Tailwind's own `z-50`. The toast sits above it through its portal. No scale is needed for two layers.
 
-## Owner decisions (defaults this brief builds)
+## Decisions
 
-1. **Token names** (Q17, and Q61 for the small-tools family). Default: the names `design-rules.md` already uses, in Tailwind's namespaces: `--color-primary` (`#000`, text, borders, icons), `--color-on-surface` (`#1a1c1c`), `--color-muted` (`#999`), `--color-surface` (`#f9f9f9`, the page), `--color-surface-lowest` (`#fff`, the card), `--color-surface-low` (`#f3f3f4`). Utilities read `bg-surface-lowest`, `border-primary`, `text-muted`. The unused design-file colours are not carried over. *Q61 asks whether a family of small tools shares names; this app takes its own.*
-2. **Dark mode** (Q18, the owner's answer). Default: a Light / Dark / System switch, light on a first visit, kept in `localStorage` under one key, with a failed read treated as light. `data-theme` on `<html>` is `light` or `dark`. **System** is resolved in JavaScript, by `matchMedia("(prefers-color-scheme: dark)")` with a listener, to one of the two, so the attribute is never `system`. `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *))` is declared as Postern's method has it. The palette itself flips by redefining the six colour tokens under `[data-theme=dark]` in `@layer base`, so no component needs a `dark:` class. A small inline script in `index.html` sets the attribute before first paint, so a dark choice doesn't flash light. `color-scheme` follows the attribute, so scrollbars and native inputs match.
+Items marked "decided" are final. The rest are defaults this brief builds.
+
+1. **Token names** (decided 2026-11-10, technical call, Q17 and Q61). Token names name a role, never a value. Q61's `surface`, `ink`, `accent`, `line`, `danger` convergence is for the small-tools family (wicket, the-board, lantern). This app is not in it, so it keeps the names `design-rules.md` already uses until its redesign (brief 06), in Tailwind's namespaces: `--color-primary` (`#000`, text, borders, icons), `--color-on-surface` (`#1a1c1c`), `--color-muted` (`#999`), `--color-surface` (`#f9f9f9`, the page), `--color-surface-lowest` (`#fff`, the card), `--color-surface-low` (`#f3f3f4`). Utilities read `bg-surface-lowest`, `border-primary`, `text-muted`. The unused design-file colours are not carried over.
+2. **Dark mode** (decided 2026-11-10, owner, Q18). A Light / Dark / System switch, light on a first visit, kept in `localStorage` under one key (on the device, where the app keeps its settings), with a failed read treated as light. `data-theme` on `<html>` is `light` or `dark`. **System** is resolved in JavaScript, by `matchMedia("(prefers-color-scheme: dark)")` with a listener, to one of the two, so the attribute is never `system`. `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *))` is declared as Postern's method has it. The palette itself flips by redefining the six colour tokens under `[data-theme=dark]` in `@layer base`, so no component needs a `dark:` class. A small inline script in `index.html` sets the attribute before first paint, so a dark choice doesn't flash light. `color-scheme` follows the attribute, so scrollbars and native inputs match.
 3. **The dark palette.** Default, derived from the inverse tokens in `docs/wiki/design.md`: page `#1a1c1c`, card `#2f3131`, `primary` and `on-surface` `#f0f1f1`, `muted` `#999` (about 6.5:1 on the page), `surface-low` `#3a3c3c`. Only the first four come from the design file. Borders are `primary`, so they flip to light grey and the "sharp black borders" rule becomes sharp light ones. The checked checkbox is `bg-primary` with a `text-surface-lowest` tick. *New question for the grilling (taste):* are these dark values right, and is it a hard rule that a dark app keeps the 1 px outline?
-4. **The switch's place and control.** Default: in the footer, on the right (the footer is `justify-between` with one child, `App.tsx:52-70`, so there is room), as a `ui/RadioGroup.tsx` wrapper over Base UI `RadioGroup` and `Radio` with three text labels, "Light", "Dark", "System", at the footer's 10 px. An always-one-chosen control (Q57) is a radio group here, where brief 03's filter is `Tabs`. *If Q57 is answered one way for both, the other is swapped.*
-5. **The 14 px root** (Q44). Default: `--spacing: 4px`, the default text, radius, shadow and colour scales cleared (`--color-*: initial`, and so on), and the type sizes as px tokens. The alternative, 14 px moved from `:root` to `body` with rem defaults kept, also changes nothing visible here, but leaves Tailwind's defaults usable and 3.5 px steps. *The answer applies to any estate app with a non-16 px root.*
-6. **Visual parity** (Q19, the owner's answer: close enough). Default: screenshots at 1280 and 390 px, light theme. Layout and colour must not visibly change. Drift of a few pixels isn't listed. **Deliberate differences** are listed, because they are not drift:
+4. **The switch's place and control** (decided 2026-11-10, technical call, Q41 and Q57). In the footer, on the right (the footer is `justify-between` with one child, `App.tsx:52-70`, so there is room), on the `ui/RadioGroup.tsx` wrapper brief 03 creates for the filter, with three text labels, "Light", "Dark", "System", at the footer's 10 px. An always-one-chosen control is a radio group, the same as the filter, so the two match. This switch only sets a preference, with no save step per choice, so it is not a `ToggleGroup`.
+5. **The 14 px root** (decided 2026-11-10, technical call, Q44). The root font size goes back to the browser's default and the app's 14 px moves onto `body`, because a pixel size on `html` overrides the reader's own font setting and skews every `rem` utility. Tailwind's `--spacing` stays 0.25rem. The default text, radius, shadow and colour scales are cleared (`--color-*: initial`, and so on), the type sizes are the rem tokens above and `--leading-row` is 2.25rem. Rejected: `--spacing: 4px` on a 14 px root.
+6. **Visual parity** (decided 2026-11-10, owner, Q19: close enough). Screenshots at 1280 and 390 px, light theme. Layout and colour must not visibly change. Drift of a few pixels isn't fixed or listed. **Deliberate differences** are listed, because they are not drift:
    - the row actions on touch and on keyboard focus (above);
    - the header at 390 px (step 6);
    - the dark theme and the switch, which are new.
 7. **Preflight.** Default: Tailwind's, with `index.css`'s reset dropped (preflight already sets `box-sizing`, margins and padding) and the rest ported to `@layer base`. The fallback, if the native `input` or `button` shifts: import Tailwind's theme and utilities without preflight.
 8. **The icon font.** Default: unchanged, loaded from Google Fonts at run time, as it is today. The `@import url(...)` stays the first line of `styles/index.css`, ahead of everything but the `@layer` order statement. Self-hosting it would remove the network request, but it is a new dependency (`material-symbols`) and not a migration step. *New question for the grilling.*
 9. **Motion** (rule 7). Default: parity. The two transitions become `transition-opacity duration-75` (the row actions, 0.075 s) and `duration-100` (the drag highlight if it survives brief 03), under `motion-safe:`. No new animations.
-10. **Where the app falls in the estate's order** (Q20). Default: first. This brief depends on no other app's migration, and the others copy its method.
-11. **Tests that select by class.** There are none (`grep -rn "\.todo-row\|\.todo-actions" frontend/src --include=*.test.*` prints nothing once brief 02 and 03's tests exist, and they use roles). Say so in the log.
+10. **Where the app falls in the estate's order** (decided 2026-11-10, technical call, Q20). First: the todo app, then wicket, the-board, lantern, Satchel, ward-auth, Almanac, Shelfmark, Postern, Newspapper. This brief depends on no other app's migration, and the others copy its method.
+11. **Tests that select by class** (decided 2026-11-10, technical call, Q62). Tests select by role, and `data-testid` only where no role fits. There are none by class (`grep -rn "\.todo-row\|\.todo-actions" frontend/src --include=*.test.*` prints nothing once brief 02 and 03's tests exist). Say so in the log. jsdom tests cover only logic: `cn()` and the theme provider (Q60).
 
 ## Files you OWN
 
 - `frontend/src/index.css` (moved to `frontend/src/styles/index.css`, then rewritten), and `frontend/src/styles/legacy.css` while the method needs it.
 - The `className` and `style` of every `frontend/src/**/*.tsx`, after brief 03's moves.
-- `frontend/src/lib/cn.ts` and its test (new); `frontend/src/components/ui/RadioGroup.tsx` (new); `frontend/src/theme/` (new: the provider, the hook and their tests).
+- `frontend/src/lib/cn.ts` and its test (new); `frontend/src/components/ui/RadioGroup.tsx` (from brief 03, restyled); `frontend/src/theme/` (new: the provider, the hook and their tests).
 - `frontend/index.html`: the pre-paint theme script, and a real `<title>` (today it is `frontend`; the tab's title is out of scope otherwise).
 - `frontend/src/main.tsx`: the stylesheet import and the provider.
 - `frontend/package.json`, `frontend/package-lock.json`, `frontend/vite.config.ts` (the plugin only), all pinned: `tailwindcss` 4.3.5, `@tailwindcss/vite` 4.3.5, `clsx` 2.1.1, `tailwind-merge` 3.7.0, and `eslint-plugin-better-tailwindcss` 4.10.0 as a devDependency.
@@ -95,7 +97,7 @@ The method (Postern's brief 03) imports every old stylesheet into one `layer(leg
 
 - `literally-a-todo-app/backend/`, and every other project.
 - Behaviour. Event handlers, the query hooks and the API calls stay as they are. The theme provider and the touch and keyboard visibility of the row actions are the only new behaviours, and both are named above.
-- The wrappers' logic in `components/ui/` (the props, the `Tabs` and `Toast` wiring) beyond `className`. Brief 03 settled them.
+- The wrappers' logic in `components/ui/` (the props, the `RadioGroup` and `Toast` wiring) beyond `className`. Brief 03 settled them.
 - `designs/todoapp.html`, the mock-up.
 
 ## What to do
@@ -105,14 +107,14 @@ Follow the skill's `migrating-from-plain-css.md`. One commit per numbered step, 
 1. **Screenshots before.** Bring the app up the way [docs/images/shots.md](../../../docs/images/shots.md) does for the README image: both dev servers, six made-up tasks, two ticked through the API, port 3000 and 5173. Take, at 1280 × 800 and 390 × 844, with the mouse away unless a state says otherwise: the list, a row under the pointer, the editing row, the add field open and closed, the Active and Completed filters, an empty filter, the toast (stop the backend, tick one). Keep the images out of git. Record the built CSS size, raw and gzip, and the build time.
 2. **Set up.**
    - Add the dependencies and the Vite plugin.
-   - Move `index.css` to `styles/legacy.css` and write `styles/index.css`: `@layer theme, base, legacy, components, utilities;`, then `@import "tailwindcss"`, then `@import "./legacy.css" layer(legacy);`, with the Google Fonts `@import url(...)` first. Add `@theme` (the six tokens, `--spacing: 4px`, the type sizes, the mono font, the defaults cleared) and the `@custom-variant dark`.
-   - Check the built CSS: the font import survived, the cleared scales produce no `bg-red-500` or `text-sm`, `h-9` is 36 px, and the one-liner form builds as the dry run's split form did.
+   - Move `index.css` to `styles/legacy.css` and write `styles/index.css`: `@layer theme, base, legacy, components, utilities;`, then `@import "tailwindcss"`, then `@import "./legacy.css" layer(legacy);`, with the Google Fonts `@import url(...)` first. Add `@theme` (the six tokens, the rem type sizes and `--leading-row`, the mono font, the defaults cleared, no `--spacing` override) and the `@custom-variant dark`.
+   - Check the built CSS: the font import survived, the cleared scales produce no `bg-red-500` or `text-sm`, `h-9` is 36 px at the default root, and the one-liner form builds as the dry run's split form did.
    - Write `lib/cn.ts` and its test.
    - Screenshots again: nothing should differ yet.
 3. **Migrate one component at a time**, each in one commit with every inline `style` and its old CSS rule removed:
    1. `components/ui/Button.tsx`, `Checkbox.tsx`, `Separator.tsx` (one `buttonClass` for the two variants, the checkbox's `data-checked:` state, the tick).
    2. `components/Icon.tsx`: the glyph class's rules become utilities. Delete `.material-symbols-outlined` from `legacy.css`.
-   3. `components/ui/Tabs.tsx` and `FilterTabs.tsx`: the active tab is `data-active:` (Base UI's attribute for the selected tab; check its name in the 1.9.0 types), not a prop-driven style.
+   3. `components/ui/RadioGroup.tsx` and `FilterTabs.tsx`: the chosen filter is `data-checked:` (Base UI's attribute for the chosen radio; check its name in the 1.9.0 types), not a prop-driven style.
    4. `components/ui/Toast.tsx`.
    5. `components/AddTodoField.tsx`.
    6. `components/TodoItem.tsx`, with the row actions' `group/row` variants, and the `.todo-row`, `.todo-actions` rules removed from `legacy.css`.
@@ -122,7 +124,7 @@ Follow the skill's `migrating-from-plain-css.md`. One commit per numbered step, 
 4. **Lint.** Turn on `better-tailwindcss`'s correctness rules and its class order as errors, and fix what they find. `check-base-ui` strict must pass rules 4-7: no `style=` prop, no raw colour, one stylesheet.
 5. **The theme switch** (decisions 2-4):
    - `theme/` holds the preference (`"light" | "dark" | "system"`, default `"light"`), the resolver, the `localStorage` read and write in `try/catch`, and the listener for System;
-   - `ui/RadioGroup.tsx`, and the switch in the footer;
+   - the switch in the footer, on the `ui/RadioGroup.tsx` wrapper from brief 03;
    - the pre-paint script in `index.html`;
    - the dark values under `[data-theme=dark]`.
 
@@ -139,6 +141,7 @@ Follow the skill's `migrating-from-plain-css.md`. One commit per numbered step, 
 - [ ] `grep -rnE "(bg|text|border|fill|stroke|ring|outline|shadow)-\[(#|rgb|hsl)" literally-a-todo-app/frontend/src` prints nothing, and `grep -rnoE "#[0-9a-fA-F]{3,8}\b" literally-a-todo-app/frontend/src --include=*.tsx` prints nothing.
 - [ ] `check-base-ui` strict passes with no exception, and `npm run check` (with `better-tailwindcss`) and `npm run build` pass in `literally-a-todo-app/frontend`.
 - [ ] `@theme` defines the six colours and the type sizes, and the default scales are cleared: `bg-red-500` or `text-sm` in a component produces no CSS (a test builds a fixture).
+- [ ] No `html` or `:root` rule sets a font size; `body` carries the 14 px (`--text-body`) and `--leading-row`, and `h-9` is 36 px at the default root.
 - [ ] A `cn` test proves `cn("text-primary", "text-body")` keeps both classes.
 - [ ] Theme tests pass: first visit light, Dark and System as in step 5, a throwing storage still light.
 - [ ] The before and after screenshots at 1280 and 390 px match in layout and colour, with only decision 6's differences listed, and the CSS size before and after is in the log.

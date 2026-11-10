@@ -27,3 +27,17 @@ Base UI rules 1-13 and fixes the drag handle, brief 04 moves it to Tailwind v4
 System switch, and brief 05 gives the Fastify server `buildApp`, `config.ts`, zod
 route schemas and a first test. They build the owner's answers of 2026-11-10 on
 visual parity (close enough) and dark mode (a switch, light by default).
+
+## [2026-11-10] todo | Briefs 02-05 revised to the grilling's answers; redesign brief 06 added
+
+Revised briefs 02-05 for the owner's answers and technical calls of 2026-11-10.
+Brief 02: `house-style` is vendored with a `house-style:sync` script (Q6), Prettier
+width 120 with its measured cost (+198 / -194 frontend, +63 / -61 backend, Q8 and
+Q51), `!` an error in source and a warning in tests (Q47), named component exports
+(Q49), and the reorder check as a Playwright spec (Q60). Brief 03: the filter is a
+`RadioGroup`, not `Tabs`, since it switches what one list shows (Q41, Q57), and
+jsdom tests are only for wrappers with logic (Q60). Brief 04: the 14 px moves onto
+`body` with Tailwind's default spacing (Q44), token names kept for this app
+(Q17, Q61), the switch shares the filter's `RadioGroup`, and its decisions are
+marked decided. Brief 05: its decisions are marked decided (Q23-Q27, Q43, Q55,
+Q56). Added brief 06, a redesign with Hallmark on the estate board (Q39).

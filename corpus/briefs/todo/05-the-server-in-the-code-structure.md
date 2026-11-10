@@ -7,7 +7,7 @@
   - brief 03, *A code-structure skill for the Fastify + React apps*: rules 1-11, the `server-skeleton.md` reference, `zod-type-provider.md`, `migrating-a-server.md`, `check-structure.mjs`, and the dependency-cruiser and knip presets;
   - brief 16, *The Fastify servers adopt the code structure*: this repo's row ("`server.ts`, no `app.ts`; flat; add `buildApp` and a first test") and the method;
   - brief 15, *Enforce the base-ui and code-structure skills in every repo*: `check-structure` runs `--warn-only` until this brief is done.
-- The owner's grilling of 2026-11-10: Q1 (how a service starts, answered), Q23 (`features/`), Q24 (plugin options, explicit registration), Q25 (response schemas), Q27 (test runner), Q43 (error bodies), Q55 (where schemas live without a `shared/`).
+- The owner's grilling of 2026-11-10 and its technical calls: Q1 (how a service starts, a fact), Q23 (`features/`), Q24 (plugin options, explicit registration), Q25 (response schemas), Q27 (test runner), Q43 (error bodies), Q53, Q55 (where schemas live without a `shared/`) and Q56 (no decorators as a test seam).
 
 **Runs after:** brief 02. It touches nothing in `frontend/`, so it may run beside briefs 03 and 04. The two projects have separate lockfiles.
 
@@ -103,15 +103,17 @@ A `setNotFoundHandler` returns 404 `{ "error": "not found" }`. It isn't rate-lim
 
 `zod` 4.6.7 (latest on 2026-11-10; any 4.x from 4.2 works), `@fastify/type-provider-zod` 1.0.3, `fastify-plugin` 6.0.1, `close-with-grace` 2.5.0, and the provider's two required peers, `@fastify/swagger` 9.9.3 and `openapi-types` 12.1.3 (type-only weight; the lockfile diff shows them). Dev: `vitest` (Q27's default; the version is the latest at build time, pinned). `dependency-cruiser` and `knip` come from brief 02's preset.
 
-## Owner decisions (defaults this brief builds)
+## Decisions
 
-1. **`features/<name>/`** (Q23). Default: yes, one folder, `features/todos/`.
-2. **Typed plugin options, explicit registration** (Q24). Default: the plugin takes `{ db }` as its options (a `TodoContext`), and `app.ts` registers it by name. No decorators, no autoload.
-3. **Where the schemas live** (Q55). Default: `features/todos/schemas.ts`, in the backend. There is no `shared/`, and the frontend keeps its hand-written `types.ts`. If the owner later wants one source, that is a `shared/` workspace and a new brief; this repo has no workspaces.
-4. **A response schema on every route** (Q25). Default: yes. None of the five routes sends pass-through JSON. The row's columns are exactly the four the schema lists, so the schema strips nothing today.
-5. **The error body** (Q43). Default: `{ "error": "<message>" }`, the repo's own.
+Items marked "decided" are final. The rest are defaults this brief builds.
+
+1. **`features/<name>/`** (decided 2026-11-10, technical call, Q23). One folder, `features/todos/`.
+2. **Typed plugin options, explicit registration** (decided 2026-11-10, technical call, Q24 and Q56). The plugin takes `{ db }` as its options (a `TodoContext`), and `app.ts` registers it by name. No decorators as a test seam (tests pass dependencies as plugin options), no autoload.
+3. **Where the schemas live** (decided 2026-11-10, technical call, Q55). A zod schema lives in `shared/` when the client imports it, otherwise in its feature folder. There is no `shared/` here and the frontend keeps its hand-written `types.ts`, so the schemas are `features/todos/schemas.ts`, in the backend. If the owner later wants one source, that is a `shared/` workspace and a new brief; this repo has no workspaces.
+4. **A response schema on every route** (decided 2026-11-10, technical call, Q25). None of the five routes sends pass-through JSON, so no loose object is needed, and none is a stream or a binary route (Q53 exempts those). The row's columns are exactly the four the schema lists, so the schema strips nothing today.
+5. **The error body** (decided 2026-11-10, technical call, Q43). One error handler, keeping the repo's body, `{ "error": "<message>" }`. It passes Fastify's own 4xx through with their status and message, and never echoes a thrown message to the client (step 3 of the plugin list below, and the 500 rows of the table).
 6. **Behaviour changes, accepted.** Default: the five rows in the table that change (a non-string title, a missing body, a non-integer id in `ids`, the unknown-URL body, and the 500 message). Each was a 500 or a silent no-op, and nothing in the frontend depends on them. *New question: is turning `ids: ["x"]` into a 400 wanted?*
-7. **The test runner** (Q27). Default: vitest, with `inject()`. The skills library's "nothing boots the app" rule belongs to Shelfmark. Brief 02 adds vitest to the frontend only if its decision 12 stands, so the backend adds it here.
+7. **The test runner** (decided 2026-11-10, technical call, Q27 and Q26). vitest, with `inject()`. atrium alone stays on `node:test`. The skills library's "nothing boots the app" decision (Q26) belongs to Shelfmark. Brief 02 adds no vitest to the backend, so it is added here. (Brief 03 adds it to the frontend, for wrappers only.)
 8. **The test helper's name.** Default: `testing/buildTestApp.ts`, as the skill names it. There are no tests to rename.
 9. **Timeouts and `trustProxy`.** Default: neither is set. The server listens on loopback only, behind no proxy, and no route runs long. Fastify's defaults stay. Record that in the decision entry.
 10. **Shutdown.** Default: `close-with-grace`, closing the app, and an `onClose` hook that closes the SQLite handle. `tsx watch` restarts through the same signals.

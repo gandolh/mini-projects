@@ -86,5 +86,5 @@ One commit: `chore(deps): @base-ui/react 1.9.0`.
 
 ## Interplay
 
-- Brief 03 moves these three wrappers to `components/ui/` and is the first to depend on 1.9.0's API (the `Tabs` and `Toast` parts). It assumes this brief is done.
+- Brief 03 moves these three wrappers to `components/ui/` and is the first to depend on 1.9.0's API (the `RadioGroup` and `Toast` parts). It assumes this brief is done.
 - The library's brief 04 lists this repo as "bump, pin". Mark that row done there when this brief lands.
