@@ -10,64 +10,24 @@ export function App() {
   const [filter, setFilter] = useState<Filter>("all");
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#f9f9f9" }}>
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-          height: 36,
-          background: "#fff",
-          borderBottom: "1px solid #000",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 8px",
-          // needed for absolute-centered FilterTabs
-        }}
-      >
-        <span style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "-0.02em" }}>
-          Literally a todo app
-        </span>
-        <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+    <div className="flex min-h-screen flex-col bg-surface">
+      <header className="sticky top-0 z-sticky flex h-9 items-center justify-between border-b border-primary bg-surface-lowest px-2">
+        <span className="text-title font-bold tracking-[-0.02em] uppercase">Literally a todo app</span>
+        {/* Centred on the page, whatever the title's width. */}
+        <div className="absolute left-1/2 -translate-x-1/2">
           <FilterTabs filter={filter} onFilterChange={setFilter} />
         </div>
       </header>
 
-      <main
-        style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "32px 16px 64px" }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 672,
-            background: "#fff",
-            border: "1px solid #000",
-          }}
-        >
+      <main className="flex flex-1 flex-col items-center px-4 pt-8 pb-16">
+        <div className="w-full max-w-2xl border border-primary bg-surface-lowest">
           <Separator />
           <TodoList filter={filter} />
           <AddTodoField />
         </div>
       </main>
 
-      <footer
-        style={{
-          position: "sticky",
-          bottom: 0,
-          height: 36,
-          background: "#fff",
-          borderTop: "1px solid #000",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 8px",
-          fontSize: 10,
-          textTransform: "uppercase",
-          opacity: 0.5,
-          marginTop: "auto",
-        }}
-      >
+      <footer className="sticky bottom-0 mt-auto flex h-9 items-center justify-between border-t border-primary bg-surface-lowest px-2 text-footer uppercase opacity-50">
         <span>Literally a todo app</span>
       </footer>
 
