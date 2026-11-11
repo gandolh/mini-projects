@@ -95,4 +95,21 @@ describe("the todo routes", () => {
     expect(res.statusCode).toBe(204);
     expect((await app.inject({ method: "GET", url: "/api/todos" })).json()).toEqual([]);
   });
+
+  it("answers an unknown URL with the app's own 404 body", async () => {
+    const res = await app.inject({ method: "GET", url: "/api/nothing" });
+    expect(res.statusCode).toBe(404);
+    expect(res.json()).toEqual({ error: "not found" });
+  });
+
+  it("keeps Fastify's own 400 status and message for a body that isn't JSON", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/todos",
+      headers: { "content-type": "application/json" },
+      payload: "{{{",
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toEqual({ error: "Body is not valid JSON but content-type is set to 'application/json'" });
+  });
 });
