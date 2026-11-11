@@ -11,7 +11,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc -b",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "knip": "knip",
+    "check": "npm run typecheck && npm run lint && npm run format:check",
+    "check:fast": "npm run typecheck && node ../scripts/check-fast.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",

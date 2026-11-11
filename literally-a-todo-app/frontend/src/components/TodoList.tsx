@@ -90,15 +90,7 @@ interface DraggableProps {
   onDrop: (from: number, to: number) => void;
 }
 
-function DraggableTodoItem({
-  todo,
-  index,
-  isFirst,
-  isLast,
-  onMoveUp,
-  onMoveDown,
-  onDrop,
-}: DraggableProps) {
+function DraggableTodoItem({ todo, index, isFirst, isLast, onMoveUp, onMoveDown, onDrop }: DraggableProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const draggingIndex = useRef<number | null>(null);
