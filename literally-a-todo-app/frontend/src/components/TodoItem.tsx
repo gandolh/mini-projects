@@ -121,7 +121,7 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
 
       <div className="todo-actions" style={{ display: "flex", alignItems: "center", gap: 2 }}>
         {dragHandleProps && (
-          <Button variant="icon" style={{ cursor: "grab" }} {...(dragHandleProps as object)}>
+          <Button variant="icon" style={{ cursor: "grab" }} {...dragHandleProps}>
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
               drag_indicator
             </span>

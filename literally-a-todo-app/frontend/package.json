@@ -12,8 +12,9 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -b",
     "test:e2e": "playwright test",
+    "test": "vitest run",
     "knip": "knip",
-    "check": "npm run typecheck && npm run lint && npm run format:check",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
     "check:fast": "npm run typecheck && node ../scripts/check-fast.mjs"
   },
   "dependencies": {
@@ -27,11 +28,15 @@
   },
   "devDependencies": {
     "@playwright/test": "1.62.0",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "31.0.0",
     "typescript": "6.0.3",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "vitest": "5.1.0"
   }
 }

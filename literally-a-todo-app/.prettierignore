@@ -16,3 +16,4 @@ coverage/
 # Static assets and the design mock-up, not source.
 public/
 designs/
+test-results/

@@ -1,17 +1,13 @@
 import { Button as BaseButton } from "@base-ui/react/button";
-import type { CSSProperties, ReactNode } from "react";
+import type { ComponentProps, CSSProperties } from "react";
 
-interface Props {
+type Props = Omit<ComponentProps<typeof BaseButton>, "style"> & {
   variant?: "icon" | "default";
-  onClick?: () => void;
-  onMouseDown?: (e: React.MouseEvent) => void;
-  children: ReactNode;
   style?: CSSProperties;
-  title?: string;
-  disabled?: boolean;
-}
+};
 
-export function Button({ variant = "default", onClick, onMouseDown, children, style, title, disabled }: Props) {
+/** Base UI's Button with the app's two looks. It passes every other prop on, `ref` and handlers included. */
+export function Button({ variant = "default", style, disabled, ...rest }: Props) {
   const base: CSSProperties =
     variant === "icon"
       ? {
@@ -38,15 +34,5 @@ export function Button({ variant = "default", onClick, onMouseDown, children, st
           borderRadius: 0,
         };
 
-  return (
-    <BaseButton
-      onClick={onClick}
-      onMouseDown={onMouseDown}
-      style={{ ...base, ...style }}
-      title={title}
-      disabled={disabled}
-    >
-      {children}
-    </BaseButton>
-  );
+  return <BaseButton {...rest} disabled={disabled} style={{ ...base, ...style }} />;
 }
