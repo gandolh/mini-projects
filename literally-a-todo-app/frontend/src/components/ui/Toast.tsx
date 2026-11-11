@@ -12,21 +12,12 @@ export const toast = {
   error: (message: string): string => manager.add({ title: message, type: "error", timeout: 0, priority: "high" }),
 };
 
-/** Renders the toasts, once, near the root: `<Toaster />`. */
+/** Renders the toasts, once, near the root: `<Toaster />`. Top centre, above the sticky header. */
 export function Toaster() {
   return (
     <Toast.Provider toastManager={manager} limit={1}>
       <Toast.Portal>
-        <Toast.Viewport
-          style={{
-            position: "fixed",
-            top: 8,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 100,
-            width: "min(360px, calc(100vw - 32px))",
-          }}
-        >
+        <Toast.Viewport className="fixed top-2 left-1/2 z-toast w-[min(22.5rem,calc(100vw-2rem))] -translate-x-1/2">
           <ToastList />
         </Toast.Viewport>
       </Toast.Portal>
@@ -37,28 +28,12 @@ export function Toaster() {
 function ToastList() {
   const { toasts } = Toast.useToastManager();
   return toasts.map((item) => (
-    <Toast.Root
-      key={item.id}
-      toast={item}
-      style={{ border: "1px solid #000", background: "#fff", padding: "0 8px", fontSize: 14 }}
-    >
-      <Toast.Content style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <Toast.Title style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400 }} />
+    <Toast.Root key={item.id} toast={item} className="border border-primary bg-surface-lowest px-2 text-body">
+      <Toast.Content className="flex items-center gap-2">
+        <Toast.Title className="min-w-0 flex-1 font-normal" />
         <Toast.Close
           aria-label="Dismiss"
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 0,
-            width: 20,
-            height: 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#000",
-            flexShrink: 0,
-          }}
+          className="flex size-5 shrink-0 cursor-pointer items-center justify-center text-primary"
         >
           <Icon name="close" />
         </Toast.Close>
