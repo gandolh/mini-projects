@@ -170,3 +170,32 @@ One commit per step. After each, the gate is `npm run build` in `frontend/`, `np
 - Brief 03 drops `check-base-ui`'s `--warn-only` once the wrappers are in `components/ui/`. Brief 04 adds `better-tailwindcss`. Brief 05 turns `no-process-env` into an error and drops `check-structure`'s `--warn-only`.
 - The reformat changes `frontend/src/index.css` slightly; brief 04 deletes it.
 - The drag handle's lead from brief 01 is not fixed here. Brief 03 owns it.
+
+## Outcome (2026-11-11)
+
+Built in 11 commits, 073fc09 to 39a07a9 (the reformat is 2296c6d, listed in `literally-a-todo-app/.git-blame-ignore-revs`).
+
+- **Where things went.** `vendor/house-style/` (1.0.0) is in `literally-a-todo-app/`, and so are `package.json`, `prettier.config.js`, `eslint.config.js`, `knip` configs (per project), `.dependency-cruiser.cjs`, `scripts/` (`check-fast.mjs`, `conventions.json`, `house-style-sync.mjs`). `frontend/` and `backend/` keep their lockfiles.
+- **Tools in the app folder, not in each project.** The vendored ESLint config imports its plugins from where it sits (tested: pins installed only in `frontend/` make ESLint fail with "Cannot find package '@eslint/js'"). So the app folder's `package.json` holds the pins, and each project's `check` needs `npm install` there first. A project's `check` passes in a fresh clone after `npm ci` in the app folder, `frontend/` and `backend/`; the root `check` took 41 s there.
+- **The sync** copies into the git work tree's root, and this repo is five projects. `scripts/house-style-sync.mjs` sets `GIT_CEILING_DIRECTORIES` so it uses the app folder. `npm run house-style:sync -- --check` exits 0 with an empty pin report.
+- **Counts.** tsc: frontend 4 errors from `noUncheckedIndexedAccess`, backend 0. Untyped ESLint before: 2 errors (`react-hooks/set-state-in-effect`, `react-hooks/immutability`). House config on the first run: frontend 4 (`import-x/no-default-export` 1, react-hooks 2, `no-non-null-assertion` 1), backend 3 (`import-x/no-default-export` 1, `no-unnecessary-type-assertion` 2). All fixed; both projects now report 0. Checkers (`--warn-only`): `check-base-ui` rule-3 3, rule-5 1; `check-structure` rule-2 1, rule-6 5. dependency-cruiser and knip report nothing (27 modules). The two casts at `routes.ts` were truly unneeded (removing them typechecks).
+- **Timings, warm.** `check` 22-24 s, `check:fast` with one changed file 11-15 s (typecheck of both projects dominates). Typed lint of the frontend, `projectService` 7.9-11.9 s; `project: true` fails here because `frontend/tsconfig.json` is a solution file with no files.
+- **Bundle compare** of the reformat (each file minified before and after, CSS through esbuild's `css` loader, JSON parsed): no difference in 28 files.
+- **Deliberate violations** (`enum`, `!`, `console.log`, `// TODO`, `export default`) each fail `eslint` with exit 1 in both projects; reverted.
+
+### Deviations
+
+- `noUncheckedIndexedAccess` is not written in either tsconfig: both extend the house base, which sets it (`tsc --showConfig` shows it on for each). The acceptance grep prints nothing.
+- No Prettier or ESLint in the projects' own `package.json` (see the tools above). Prettier ignore files exist in the app folder and in each project, because Prettier reads `.prettierignore` from the working directory only.
+- `eslint-plugin-react-refresh` is dropped: its peer on ESLint would install a second ESLint in `frontend/`, and the house config has no equivalent.
+- `n/no-process-env` is a dated warning in the backend, as the brief says.
+- Playwright is 1.62.0, the version whose Chromium is already on the machine (1.65 would need a download). The e2e tsconfig is referenced by file path, which this version needs.
+- `db.ts` now exports `db` by name (the default export broke the house rule); `main.tsx` and `routes.ts` follow. Not in the brief's file list.
+- `CLAUDE.md` is 80 lines: its 57 existing lines stay. The README gained a "Check it" section and two wiki lines changed (the reorder state, the db import), beyond the brief's "a changed command".
+- A reorder drop past the end of the list now does nothing (it used to throw), from the guard on `toTodo`.
+- The Prettier reformat also covers JSON and HTML under the app (`tsconfig.json` only changed); `designs/`, `public/` and the skills folders are ignored.
+
+### Left for the owner
+
+- `git config blame.ignoreRevsFile literally-a-todo-app/.git-blame-ignore-revs` (the path is from the repo root).
+- Decisions 9-11 stay open: whether sessions open in `literally-a-todo-app/` (the Stop hook finds `check:fast` there only), whether `/memory` lists the nested `.claude/rules/web.md` from a session at the repo root, and whether caveman mode or `unslop` rules the app's prose. The hooks' live-session check waits for the plugin update.
