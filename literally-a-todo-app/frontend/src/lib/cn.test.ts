@@ -8,6 +8,10 @@ describe("cn", () => {
     expect(cn("font-icon", "font-normal")).toBe("font-icon font-normal");
   });
 
+  it("keeps a line height when a size follows it, as the sizes carry none", () => {
+    expect(cn("leading-none text-icon", "text-tick")).toBe("leading-none text-tick");
+  });
+
   it("lets the later of two sizes, colours, z values or paddings win", () => {
     expect(cn("text-icon", "text-tick")).toBe("text-tick");
     expect(cn("text-muted", "text-primary")).toBe("text-primary");

@@ -28,14 +28,18 @@ async function mockApi(page: Page) {
   return () => todos.map((t) => t.title);
 }
 
-// The icon font comes from the network. Without it each glyph shows as its ligature word, wider than its
-// 20 px button, and covers the next button, so a click at a handle's centre would hit a neighbour.
-async function hideGlyphs(page: Page) {
-  await page.addStyleTag({ content: ".material-symbols-outlined { display: none }" });
+// The icon font is blocked, as it is offline, so each glyph falls back to its ligature word. The glyph's box clips the
+// word (components/Icon.tsx), so a click at a handle's centre still hits that handle.
+async function blockIconFont(page: Page) {
+  await page.route("https://fonts.googleapis.com/**", (route) => route.abort());
 }
 
+// A row has no role of its own: it is the parent of the task's checkbox.
 function handleOf(page: Page, title: string) {
-  return page.locator(".todo-row").filter({ hasText: title }).getByRole("button", { name: "Drag to reorder" });
+  return page
+    .getByRole("checkbox", { name: title, exact: true })
+    .locator("..")
+    .getByRole("button", { name: "Drag to reorder" });
 }
 
 // Two rows down: the handle moves 72 px, which is two 36 px rows.
@@ -43,10 +47,10 @@ const DRAG_PX = 72;
 
 test("a mouse drag of the first task by two rows puts it third", async ({ page }) => {
   const serverOrder = await mockApi(page);
+  await blockIconFont(page);
   await page.goto("/");
-  await hideGlyphs(page);
-  const row = page.locator(".todo-row").filter({ hasText: "First" });
-  await row.hover();
+  // The row's actions show while the pointer is over the row.
+  await page.getByRole("checkbox", { name: "First" }).hover();
   const box = await handleOf(page, "First").boundingBox();
   if (!box) throw new Error("the drag handle has no box");
   const x = box.x + box.width / 2;
@@ -65,8 +69,8 @@ test("a touch drag of the first task by two rows puts it third", async ({ browse
   const context = await browser.newContext({ ...devices["Pixel 7"], baseURL });
   const page = await context.newPage();
   const serverOrder = await mockApi(page);
+  await blockIconFont(page);
   await page.goto("/");
-  await hideGlyphs(page);
   const box = await handleOf(page, "First").boundingBox();
   if (!box) throw new Error("the drag handle has no box");
   const x = box.x + box.width / 2;

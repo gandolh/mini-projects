@@ -4,6 +4,9 @@ import { extendTailwindMerge } from "tailwind-merge";
 /**
  * tailwind-merge, told this app's @theme names (styles/index.css). Without the `text` list it reads `text-body` as a
  * colour, so `cn("text-primary", "text-body")` would drop one of the two. Keep the lists in step with @theme.
+ *
+ * The app's sizes carry no line height (every row inherits the 36 px from body), so a size must not remove a
+ * `leading-*`, which tailwind-merge does by default: `cn("leading-none", "text-tick")` would lose the `leading-none`.
  */
 const twMerge = extendTailwindMerge({
   extend: {
@@ -15,6 +18,9 @@ const twMerge = extendTailwindMerge({
     classGroups: {
       z: [{ z: ["sticky", "toast"] }],
     },
+  },
+  override: {
+    conflictingClassGroups: { "font-size": [] },
   },
 });
 

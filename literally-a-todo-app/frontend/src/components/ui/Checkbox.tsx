@@ -28,7 +28,7 @@ export function Checkbox({ checked, onChange, label }: Props) {
       }}
     >
       <BaseCheckbox.Indicator>
-        <Icon name="check" size={14} style={{ color: "#fff", fontVariationSettings: '"FILL" 1', lineHeight: 1 }} />
+        <Icon name="check" className="text-tick text-surface-lowest [font-variation-settings:'FILL'_1]" />
       </BaseCheckbox.Indicator>
     </BaseCheckbox.Root>
   );
