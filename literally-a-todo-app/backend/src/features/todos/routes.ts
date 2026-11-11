@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "@fastify/type-provider-zod";
 import { z } from "zod";
-import { todoSchema } from "./schemas.js";
+import { createTodoBody, errorSchema, todoSchema } from "./schemas.js";
 import { createTodoStore, type TodoStore } from "./store.js";
 import type { Db } from "../../db/open.js";
 
@@ -18,13 +18,13 @@ export const todoRoutes: FastifyPluginAsyncZod<TodoContext> = async (app, { db }
   });
 
   // POST /api/todos
-  app.post<{ Body: { title?: string } }>("/api/todos", async (req, reply) => {
-    const { title } = req.body;
-    if (!title || title.trim() === "") {
-      return reply.status(400).send({ error: "title is required" });
-    }
-    return reply.status(201).send(todos.create(title.trim()));
-  });
+  app.post(
+    "/api/todos",
+    { schema: { body: createTodoBody, response: { 201: todoSchema, 400: errorSchema } } },
+    async (req, reply) => {
+      return reply.status(201).send(todos.create(req.body.title));
+    },
+  );
 
   // PATCH /api/todos/reorder — must be before /:id
   app.patch<{ Body: { ids?: number[] } }>("/api/todos/reorder", async (req, reply) => {

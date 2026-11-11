@@ -12,3 +12,14 @@ export const todoSchema = z.object({
   position: z.number().int(),
 });
 export type Todo = z.infer<typeof todoSchema>;
+
+/** The body of every 4xx reply the app sends, from the handlers and from the error plugin alike. */
+export const errorSchema = z.object({ error: z.string() });
+
+const TITLE_REQUIRED = "title is required";
+
+/** `POST /api/todos`. A missing body, a missing or non-string title and a blank one share one message. */
+export const createTodoBody = z.object(
+  { title: z.string({ error: TITLE_REQUIRED }).trim().min(1, TITLE_REQUIRED) },
+  { error: TITLE_REQUIRED },
+);

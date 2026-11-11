@@ -112,4 +112,13 @@ describe("the todo routes", () => {
     expect(res.statusCode).toBe(400);
     expect(res.json()).toEqual({ error: "Body is not valid JSON but content-type is set to 'application/json'" });
   });
+
+  it("answers 400, not 500, for a title that is not a string, and for no body at all", async () => {
+    const number = await app.inject({ method: "POST", url: "/api/todos", payload: { title: 5 } });
+    expect(number.statusCode).toBe(400);
+    expect(number.json()).toEqual({ error: "title is required" });
+    const none = await app.inject({ method: "POST", url: "/api/todos" });
+    expect(none.statusCode).toBe(400);
+    expect(none.json()).toEqual({ error: "title is required" });
+  });
 });
