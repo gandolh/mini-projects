@@ -53,3 +53,43 @@ Vendored house-style 1.0.0, Prettier at 120 (one reformat commit, ignored in bla
 ## [2026-11-11] done | Brief 03 - the todo app's Base UI by the conventions
 
 Wrappers moved to `components/ui/` (rule 3 at 0), `Button` forwards every prop, every icon-only control and the checkbox have names, the add row and the title are buttons, the filter is a `RadioGroup`, the toast is Base UI's (sonner removed), vitest added. Drag: both mouse and touch failed on the unchanged app (the mock-backed spec and the touch pass; order unchanged for the mouse, one row for touch). Causes: candidate 1 (the wrapper dropped the handlers, mouse) and candidate 2 (no `touch-action: none`, touch). Candidates 3 and 4 were harmless (the end clamp ignored a drop past the end, and `dragOver` was dead code, deleted); `dropIndex` clamps. A throwaway pass on a scratch copy against the real backend passed for mouse and touch. `check-base-ui` strict: rules 1, 2, 3, 9, 10, 11 report 0; rule 5 has 1 (the stylesheet's place), rules 4 and 6-7 are review's: 34 inline `style` props, 36 raw hex values, 2 transitions (`index.css`, `TodoList.tsx`), all brief 04's. It stays `--warn-only`.
+
+## [2026-11-11] done | Brief 04 - the todo app's frontend to Tailwind, with a theme switch
+
+The estate's first Tailwind migration, the dry run Q20 asked for. First the controller's ruling: an error toast stays
+until its Dismiss button closes it (the skill's toast). Then Tailwind 4.3.5 with the old stylesheet in a `legacy`
+layer, one component per commit, `legacy.css` emptied and deleted, `check-base-ui` strict, `better-tailwindcss` on, a
+Light / Dark / System switch (the skill's `theme.md`: `data-theme` light, dark or system, `light-dark()` tokens), and the
+phone header's tabs on their own row. Before / after screenshots at 1280 and 390 px: 0 px by pixelmatch, except the
+deliberate differences (row actions on focus and on touch, the phone header, the switch). The production build matched
+the dev server at 0 px. Android: an emulated Pixel 7 only, where `(hover: none)` matches, the header stacks and the row
+actions show; a real phone is the owner's check. The details are in the brief's outcome and
+[wiki/decisions.md](wiki/decisions.md).
+
+Sizes: built CSS 0.86 kB (0.52 kB gzip) before, 13.54 kB (3.89 kB gzip) after; JS 355.05 kB (115.51 kB gzip) before,
+383.87 kB (124.74 kB gzip) after, mostly tailwind-merge; `vite build` about 0.2 s before, 0.35 s after.
+
+Findings for the skills library (the method in `migrating-from-plain-css.md`):
+
+- **The inline-style trap.** An inline `style` beats every utility, so each component moved whole, in one commit, and
+  an app whose styling is inline has no "one stylesheet at a time": the legacy layer held 55 lines, the components 34
+  inline styles. Step 4's per-stylesheet loop reads as per-component here.
+- **Move the root size in step 2,** with the legacy import, not later: while `:root { font-size: 14px }` sits in
+  legacy, every rem utility measures from 14 px through the component commits. An app whose sizes were all px needs
+  no `--spacing` override once the root is back at 16 px.
+- **The build hoists a remote `@import`.** `vite build` moves `@import url(...) layer(vendor)` above the `@layer`
+  statement, so in the build `vendor` is declared first, below Tailwind's reset; the dev server keeps the written
+  order. Local vendor CSS is inlined by Tailwind and keeps its place.
+- **`light-dark()` doesn't survive the build as written:** lightningcss rewrites it into `--lightningcss-light` /
+  `--lightningcss-dark` variables, set wherever the same stylesheet declares `color-scheme`. It works, but only for a
+  `color-scheme` declared in that stylesheet.
+- **tailwind-merge drops a `leading-*` after a `text-*`.** With sizes that carry no line height that is wrong, and
+  it clipped an icon; `cn()` overrides the `font-size` conflict.
+- **An icon font's glyph in a one-em box with `overflow-hidden`** keeps the ligature word from spilling over its
+  neighbour while the font loads; the e2e spec then blocks the font instead of hiding glyphs by class.
+- **e2e specs select by class too:** the drag and reorder specs used `.todo-row`, an inline style and
+  `.material-symbols-outlined`, all gone with the migration; they now find a row through its checkbox.
+- **Tailwind's scanner reads every source file,** test fixtures and the template's SVG included: `filter` and
+  `transform` in code and in `assets/vite.svg` add about 1.7 kB of unused utilities and `@property` fallbacks.
+- **A stylesheet test needs no file system:** `import css from "./index.css?inline"` (with vitest's `css.include`)
+  returns what the Vite plugin builds; `?raw` of a package's CSS fails dependency-cruiser's resolver.

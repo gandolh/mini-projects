@@ -153,3 +153,80 @@ Follow the skill's `migrating-from-plain-css.md`. One commit per numbered step, 
 - Brief 02's reformat touches `index.css` and brief 03 moves the wrappers; this brief rewrites both afterwards.
 - Brief 05 doesn't touch `frontend/`. The two projects have separate lockfiles, so the briefs may run in parallel.
 - The skills library's `better-tailwindcss` setup (brief 27) needs the entry point `src/styles/index.css` and this app's custom names; give the plugin the `extendTailwindMerge` list from `cn.ts`.
+
+## Outcome (2026-11-11)
+
+Built in 16 commits, f7b8cce to ace0150, then the closeout (local, not pushed). Board: Done, with four questions for
+the owner (the dark values and the 1 px outline, self-hosting the icon font, the faint switch in the half-opacity
+footer, the persistent toast over the header).
+
+- **First, the controller's ruling** (f7b8cce): an error toast stays until its Dismiss button (`aria-label="Dismiss"`)
+  closes it, timeout 0, as the skill's `references/toast.md` says. Base UI hides the button from the accessibility
+  tree until the region holds focus, so the tests reach it with F6.
+- **Parity.** One script took 16 screenshots per set (1280 × 800 and 390 × 844: list, hover, editing, add open,
+  Active, Completed, an empty filter, the toast) with a mocked API and six made-up tasks. The "before" set came from
+  a scratch copy of the app at f7b8cce. Every component commit compared at 0 px by pixelmatch, except the
+  deliberate differences below. The production build (`vite preview`) matched the dev server at 0 px, light and dark.
+- **Sizes.** Built CSS 0.86 kB (0.52 kB gzip) before, 13.54 kB (3.89 kB gzip) after. JS 355.05 kB (115.51 kB gzip)
+  before, 383.87 kB (124.74 kB gzip) after: tailwind-merge is most of it. `vite build` 0.18-0.22 s before, 0.31-0.37 s
+  after; `npm run build` 2.5 s before, 3.5 s after.
+- **Counts.** 34 inline `style` props, 36 raw hex values and 2 transitions before; 0 `style=`, 0 hex in components,
+  the six colours only in `@theme`, both transitions `motion-safe:`. `check-base-ui` reports 0 / 0 and runs strict
+  since dff0daf; `better-tailwindcss` (unknown classes, deprecated classes, class order) is in `npm run check`.
+- **Tests.** vitest 27 (added: `cn`, the stylesheet built through the Vite plugin, the theme store and switch, the
+  toast's Dismiss). Playwright 19 (added: theme, row actions, header; drag, reorder and toast rewritten). No test
+  selects by class: the drag and reorder specs had used `.todo-row`, an inline style and `.material-symbols-outlined`.
+- **Android.** Checked on an emulated Pixel 7 (Chrome's Android profile, `(hover: none)` and `(pointer: coarse)`
+  match): the header stacks and every row's actions show. A real phone is the owner's step.
+
+### Deliberate differences (decision 6)
+
+- A row's actions also show while focus is in the row (`group-focus-within/row`), and always on a touch screen
+  (`[@media(hover:none)]`). In the editing and toast shots focus sits in a row, so its buttons show.
+- Below `sm` the header puts the tabs on a second row; the page below moves down 37 px. Desktop unchanged.
+- The Light / Dark / System switch on the footer's right, and the dark theme.
+
+### Deviations
+
+- **The theme follows the skill's `theme.md`, not decision 2** (the skill wins on a convention): `data-theme` is
+  `light`, `dark` or `system`, the colour tokens are `light-dark()` pairs and `color-scheme` follows the attribute,
+  so System follows the operating system in CSS and needs no `matchMedia` listener. The store is
+  `src/lib/theme.ts` (a `useSyncExternalStore` store, no provider), the switch `components/ThemeSwitch.tsx`, not a
+  `theme/` folder. The jsdom tests check the attribute and the key; System's live change is a Playwright test with
+  `emulateMedia`.
+- **The layer order has `vendor`** (the skill's order), and the Google Fonts `@import` is `layer(vendor)`. The empty
+  `legacy` layer left the order when `legacy.css` went.
+- **The 14 px moved onto `body` in step 2**, not 3.9: with it on `:root` in `legacy.css`, every rem utility would have
+  measured from 14 px through the component commits.
+- **Two z tokens** (`z-sticky` 50, `z-toast` 100), as the skill's rule 6 asks, instead of a literal `z-50`.
+- **Extra tokens:** `--text-icon` (20 px), `--text-tick` (14 px) and `--text-label` (12 px, the radio list look's
+  label), `--font-icon`. `--color-surface-low` is defined but unused, as decision 1 lists six colours.
+- **`cn()` overrides tailwind-merge's size / line-height conflict** (`src/lib/cn.ts:23`): the app's sizes carry no
+  line height, and `cn("leading-none", "text-tick")` dropped the `leading-none`, which clipped the checkbox's tick.
+- **The icon's box clips** (`components/Icon.tsx:20`, `size-[1em] overflow-hidden`): a third new behaviour beside the
+  two the brief names. Offline, a ligature word no longer spills over the next button; the drag spec blocks the font
+  to prove it (it fails without the clip) instead of hiding the glyphs.
+- **Icon before Button** in step 3: the checkbox's tick needs `Icon`'s `className`, so 3.2 came first.
+- **The theme switch uses the `segmented` look,** like the filter: the `list` look (radio dots, stacked) doesn't fit a
+  36 px footer. The `list` look was restyled but nothing renders it yet.
+- **`eslint-plugin-better-tailwindcss` is not in `frontend/package.json`:** brief 02 installed it once in the app
+  folder with the other ESLint plugins, which the vendored config imports from there. The block is the house
+  config's `tailwind` option (`frontend/eslint.config.js:10`), not a hand-written block.
+- **`tailwindcss` and `@tailwindcss/vite` are devDependencies,** `clsx` and `tailwind-merge` dependencies.
+- **`vite.config.ts` gained `test.css.include`** (`/\.css\?inline$/`) beside the plugin, so the stylesheet test can
+  import `index.css?inline` and get the CSS the Vite plugin builds.
+- **The screenshots used a mocked API,** not both dev servers and the backend's database: deterministic, one
+  server, and nothing written to `todos.db`.
+- **Files outside the brief's list:** `literally-a-todo-app/CLAUDE.md` (the icon-font note), `docs/images/shots.md`
+  (the phone note), the e2e specs, and brief 06's link to this brief.
+- **The persistent toast covers the header** at the top centre until dismissed (a question for the owner); not moved.
+
+### Handoff for dependents
+
+- **Brief 06 (the redesign):** the tokens are `--color-primary`, `on-surface`, `muted`, `surface`, `surface-lowest`,
+  `surface-low` (light-dark pairs), `--text-body` / `title` / `footer` / `label` / `icon` / `tick`, `--leading-row`,
+  `--font-mono`, `--font-icon`, `--z-index-sticky` / `toast`, all in `frontend/src/styles/index.css`. A new token's
+  name goes in `src/lib/cn.ts`'s lists too.
+- **Commands:** `npm run check` in `literally-a-todo-app/` (ESLint with `better-tailwindcss`, `check-base-ui`
+  strict); `npm test` and `npm run test:e2e` in `frontend/`.
+- **Versions:** `tailwindcss` and `@tailwindcss/vite` 4.3.5, `clsx` 2.1.1, `tailwind-merge` 3.7.0, pinned.
