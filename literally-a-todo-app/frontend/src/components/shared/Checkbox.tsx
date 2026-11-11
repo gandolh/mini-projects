@@ -1,4 +1,4 @@
-import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
+import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 
 interface Props {
   checked: boolean;
@@ -13,13 +13,13 @@ export function Checkbox({ checked, onChange }: Props) {
       style={{
         width: 16,
         height: 16,
-        border: '1px solid #000',
+        border: "1px solid #000",
         borderRadius: 0,
-        background: checked ? '#000' : '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
+        background: checked ? "#000" : "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
         flexShrink: 0,
       }}
     >
@@ -29,7 +29,7 @@ export function Checkbox({ checked, onChange }: Props) {
             className="material-symbols-outlined"
             style={{
               fontSize: 14,
-              color: '#fff',
+              color: "#fff",
               fontVariationSettings: '"FILL" 1',
               lineHeight: 1,
             }}

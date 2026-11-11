@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { useDeleteTodo, useUpdateTodo } from '../hooks/useTodos';
-import type { Todo } from '../types';
-import { Button } from './shared/Button';
-import { Checkbox } from './shared/Checkbox';
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { useDeleteTodo, useUpdateTodo } from "../hooks/useTodos";
+import type { Todo } from "../types";
+import { Button } from "./shared/Button";
+import { Checkbox } from "./shared/Checkbox";
 
 interface Props {
   todo: Todo;
@@ -44,8 +44,8 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
   }
 
   function handleEditKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Escape') cancelEdit();
-    else if (e.key === 'Enter') {
+    if (e.key === "Escape") cancelEdit();
+    else if (e.key === "Enter") {
       e.preventDefault();
       saveEdit();
     }
@@ -55,32 +55,32 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
     const newVal: 0 | 1 = completed ? 0 : 1;
     updateTodo.mutate(
       { id: todo.id, patch: { completed: newVal } },
-      { onError: () => toast.error('Failed to update todo') }
+      { onError: () => toast.error("Failed to update todo") },
     );
   }
 
   function handleDelete() {
-    deleteTodo.mutate(todo.id, { onError: () => toast.error('Failed to delete todo') });
+    deleteTodo.mutate(todo.id, { onError: () => toast.error("Failed to delete todo") });
   }
 
   return (
     <div
       style={{
         height: 36,
-        padding: '0 8px',
-        display: 'flex',
-        alignItems: 'center',
+        padding: "0 8px",
+        display: "flex",
+        alignItems: "center",
         gap: 8,
-        borderBottom: '1px solid #999',
+        borderBottom: "1px solid #999",
         opacity: completed ? 0.5 : 1,
-        background: '#fff',
-        position: 'relative',
+        background: "#fff",
+        position: "relative",
       }}
       className="todo-row"
     >
       <Checkbox checked={completed} onChange={toggleCompleted} />
 
-      <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center' }}>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center" }}>
         {editing ? (
           <input
             ref={inputRef}
@@ -89,15 +89,15 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
             onKeyDown={handleEditKeyDown}
             onBlur={cancelEdit}
             style={{
-              width: '100%',
-              border: '1px solid #000',
-              outline: 'none',
-              background: 'transparent',
-              fontFamily: 'inherit',
+              width: "100%",
+              border: "1px solid #000",
+              outline: "none",
+              background: "transparent",
+              fontFamily: "inherit",
               fontSize: 14,
-              color: '#000',
+              color: "#000",
               height: 24,
-              padding: '0 4px',
+              padding: "0 4px",
             }}
           />
         ) : (
@@ -105,13 +105,13 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
             onClick={startEdit}
             style={{
               fontSize: 14,
-              cursor: 'text',
-              textDecoration: completed ? 'line-through' : 'none',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              cursor: "text",
+              textDecoration: completed ? "line-through" : "none",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
               flex: 1,
-              userSelect: 'none',
+              userSelect: "none",
             }}
           >
             {todo.title}
@@ -119,9 +119,9 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
         )}
       </div>
 
-      <div className="todo-actions" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <div className="todo-actions" style={{ display: "flex", alignItems: "center", gap: 2 }}>
         {dragHandleProps && (
-          <Button variant="icon" style={{ cursor: 'grab' }} {...(dragHandleProps as object)}>
+          <Button variant="icon" style={{ cursor: "grab" }} {...(dragHandleProps as object)}>
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
               drag_indicator
             </span>
@@ -143,8 +143,15 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
           </span>
         </Button>
         {editing && (
-          <Button variant="icon" onMouseDown={(e) => { e.preventDefault(); saveEdit(); }} title="Save (Enter)" onClick={() => {}}>
-
+          <Button
+            variant="icon"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              saveEdit();
+            }}
+            title="Save (Enter)"
+            onClick={() => {}}
+          >
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
               check
             </span>

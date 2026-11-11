@@ -1,14 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  createTodo,
-  deleteTodo,
-  getTodos,
-  reorderTodos,
-  updateTodo,
-} from '../api/todos';
-import type { Todo } from '../types';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createTodo, deleteTodo, getTodos, reorderTodos, updateTodo } from "../api/todos";
+import type { Todo } from "../types";
 
-const KEY = ['todos'] as const;
+const KEY = ["todos"] as const;
 
 export function useTodos() {
   return useQuery({ queryKey: KEY, queryFn: getTodos });
@@ -40,14 +34,11 @@ export function useCreateTodo() {
 export function useUpdateTodo() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, patch }: { id: number; patch: { title?: string; completed?: 0 | 1 } }) =>
-      updateTodo(id, patch),
+    mutationFn: ({ id, patch }: { id: number; patch: { title?: string; completed?: 0 | 1 } }) => updateTodo(id, patch),
     onMutate: async ({ id, patch }) => {
       await qc.cancelQueries({ queryKey: KEY });
       const prev = qc.getQueryData<Todo[]>(KEY);
-      qc.setQueryData<Todo[]>(KEY, (old) =>
-        old?.map((t) => (t.id === id ? { ...t, ...patch } : t)) ?? []
-      );
+      qc.setQueryData<Todo[]>(KEY, (old) => old?.map((t) => (t.id === id ? { ...t, ...patch } : t)) ?? []);
       return { prev };
     },
     onError: (_err, _vars, ctx) => qc.setQueryData(KEY, ctx?.prev),

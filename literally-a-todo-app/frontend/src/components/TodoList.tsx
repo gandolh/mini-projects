@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { useDrag } from '@use-gesture/react';
-import { useReorderTodos, useTodos } from '../hooks/useTodos';
-import type { Filter, Todo } from '../types';
-import { TodoItem } from './TodoItem';
+import { useEffect, useRef, useState } from "react";
+import { useDrag } from "@use-gesture/react";
+import { useReorderTodos, useTodos } from "../hooks/useTodos";
+import type { Filter, Todo } from "../types";
+import { TodoItem } from "./TodoItem";
 
 interface Props {
   filter: Filter;
@@ -19,8 +19,8 @@ export function TodoList({ filter }: Props) {
   }, [todos]);
 
   const filtered = items.filter((t) => {
-    if (filter === 'active') return t.completed === 0;
-    if (filter === 'completed') return t.completed === 1;
+    if (filter === "active") return t.completed === 0;
+    if (filter === "completed") return t.completed === 1;
     return true;
   });
 
@@ -46,7 +46,7 @@ export function TodoList({ filter }: Props) {
 
   if (isLoading) {
     return (
-      <div style={{ height: 36, padding: '0 8px', display: 'flex', alignItems: 'center', color: '#999', fontSize: 14 }}>
+      <div style={{ height: 36, padding: "0 8px", display: "flex", alignItems: "center", color: "#999", fontSize: 14 }}>
         Loading...
       </div>
     );
@@ -54,7 +54,7 @@ export function TodoList({ filter }: Props) {
 
   if (filtered.length === 0) {
     return (
-      <div style={{ height: 36, padding: '0 8px', display: 'flex', alignItems: 'center', color: '#999', fontSize: 14 }}>
+      <div style={{ height: 36, padding: "0 8px", display: "flex", alignItems: "center", color: "#999", fontSize: 14 }}>
         No tasks.
       </div>
     );
@@ -96,7 +96,16 @@ interface DraggableProps {
   onDrop: (from: number, to: number) => void;
 }
 
-function DraggableTodoItem({ todo, index, isFirst, isLast, onMoveUp, onMoveDown, draggingIndex, onDrop }: DraggableProps) {
+function DraggableTodoItem({
+  todo,
+  index,
+  isFirst,
+  isLast,
+  onMoveUp,
+  onMoveDown,
+  draggingIndex,
+  onDrop,
+}: DraggableProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
@@ -124,8 +133,8 @@ function DraggableTodoItem({ todo, index, isFirst, isLast, onMoveUp, onMoveDown,
     <div
       style={{
         opacity: isDragging ? 0.4 : 1,
-        background: dragOver ? '#f3f3f4' : undefined,
-        transition: 'opacity 0.1s',
+        background: dragOver ? "#f3f3f4" : undefined,
+        transition: "opacity 0.1s",
       }}
       onDragEnter={() => setDragOver(true)}
       onDragLeave={() => setDragOver(false)}

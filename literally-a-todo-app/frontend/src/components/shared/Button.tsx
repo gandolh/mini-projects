@@ -1,8 +1,8 @@
-import { Button as BaseButton } from '@base-ui/react/button';
-import type { CSSProperties, ReactNode } from 'react';
+import { Button as BaseButton } from "@base-ui/react/button";
+import type { CSSProperties, ReactNode } from "react";
 
 interface Props {
-  variant?: 'icon' | 'default';
+  variant?: "icon" | "default";
   onClick?: () => void;
   onMouseDown?: (e: React.MouseEvent) => void;
   children: ReactNode;
@@ -11,30 +11,30 @@ interface Props {
   disabled?: boolean;
 }
 
-export function Button({ variant = 'default', onClick, onMouseDown, children, style, title, disabled }: Props) {
+export function Button({ variant = "default", onClick, onMouseDown, children, style, title, disabled }: Props) {
   const base: CSSProperties =
-    variant === 'icon'
+    variant === "icon"
       ? {
-          background: 'none',
-          border: 'none',
-          cursor: disabled ? 'default' : 'pointer',
+          background: "none",
+          border: "none",
+          cursor: disabled ? "default" : "pointer",
           padding: 0,
           width: 20,
           height: 20,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: disabled ? '#999' : '#000',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: disabled ? "#999" : "#000",
           flexShrink: 0,
         }
       : {
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          padding: '0 8px',
-          fontFamily: 'inherit',
-          fontSize: 'inherit',
-          color: 'inherit',
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: "0 8px",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          color: "inherit",
           borderRadius: 0,
         };
 
