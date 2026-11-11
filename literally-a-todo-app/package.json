@@ -12,7 +12,7 @@
     "lint": "eslint . && npm run lint --prefix frontend && npm run lint --prefix backend",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test --prefix frontend && npm run check:conventions",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test --prefix frontend && npm run test --prefix backend && npm run check:conventions",
     "check:fast": "npm run check:fast --prefix frontend && npm run check:fast --prefix backend && node scripts/check-fast.mjs",
     "check:conventions": "npm run knip --prefix frontend && npm run knip --prefix backend && depcruise frontend/src backend/src && node vendor/house-style/bin/check-base-ui.mjs && node vendor/house-style/bin/check-structure.mjs --warn-only",
     "house-style:sync": "node vendor/house-style/bin/sync.mjs"

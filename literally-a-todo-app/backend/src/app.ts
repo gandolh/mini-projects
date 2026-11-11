@@ -4,7 +4,7 @@ import { openDb } from "./db/open.js";
 import { todoRoutes } from "./features/todos/routes.js";
 
 /** Fastify's options that belong to the process. server.ts sets them; a test leaves them out. */
-export type ServerOptions = Pick<FastifyServerOptions, "logger">;
+type ServerOptions = Pick<FastifyServerOptions, "logger">;
 
 export interface BuildAppOptions {
   server?: ServerOptions;
