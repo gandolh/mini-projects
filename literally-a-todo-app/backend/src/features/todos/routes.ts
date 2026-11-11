@@ -1,12 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
+import { createTodoStore, type TodoStore } from "./store.js";
 import type { Db } from "../../db/open.js";
-
-interface Todo {
-  id: number;
-  title: string;
-  completed: number;
-  position: number;
-}
 
 /** What this feature takes from the app: the database handle. */
 export interface TodoContext {
@@ -14,9 +8,11 @@ export interface TodoContext {
 }
 
 export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) => {
+  const todos: TodoStore = createTodoStore(db);
+
   // GET /api/todos
   app.get("/api/todos", async () => {
-    return db.prepare("SELECT * FROM todos ORDER BY position ASC").all();
+    return todos.list();
   });
 
   // POST /api/todos
@@ -25,13 +21,7 @@ export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) =
     if (!title || title.trim() === "") {
       return reply.status(400).send({ error: "title is required" });
     }
-    const maxRow = db.prepare("SELECT MAX(position) as maxPos FROM todos").get() as { maxPos: number | null };
-    const position = (maxRow.maxPos ?? 0) + 1;
-    const result = db
-      .prepare("INSERT INTO todos (title, completed, position) VALUES (?, 0, ?)")
-      .run(title.trim(), position);
-    const todo = db.prepare("SELECT * FROM todos WHERE id = ?").get(result.lastInsertRowid) as Todo;
-    return reply.status(201).send(todo);
+    return reply.status(201).send(todos.create(title.trim()));
   });
 
   // PATCH /api/todos/reorder — must be before /:id
@@ -40,11 +30,7 @@ export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) =
     if (!Array.isArray(ids) || ids.length === 0) {
       return reply.status(400).send({ error: "ids must be a non-empty array" });
     }
-    const update = db.prepare("UPDATE todos SET position = ? WHERE id = ?");
-    const reorder = db.transaction((ids: number[]) => {
-      ids.forEach((id, index) => update.run(index + 1, id));
-    });
-    reorder(ids);
+    todos.reorder(ids);
     return { ok: true };
   });
 
@@ -53,7 +39,7 @@ export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) =
     "/api/todos/:id",
     async (req, reply) => {
       const id = Number(req.params.id);
-      const todo = db.prepare("SELECT * FROM todos WHERE id = ?").get(id) as Todo | undefined;
+      const todo = todos.get(id);
       if (!todo) return reply.status(404).send({ error: "not found" });
 
       const title = req.body.title !== undefined ? req.body.title.trim() : todo.title;
@@ -61,17 +47,13 @@ export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) =
 
       if (title === "") return reply.status(400).send({ error: "title cannot be empty" });
 
-      db.prepare("UPDATE todos SET title = ?, completed = ? WHERE id = ?").run(title, completed, id);
-      return db.prepare("SELECT * FROM todos WHERE id = ?").get(id);
+      return todos.update(id, title, completed);
     },
   );
 
   // DELETE /api/todos/:id
   app.delete<{ Params: { id: string } }>("/api/todos/:id", async (req, reply) => {
-    const id = Number(req.params.id);
-    const todo = db.prepare("SELECT * FROM todos WHERE id = ?").get(id);
-    if (!todo) return reply.status(404).send({ error: "not found" });
-    db.prepare("DELETE FROM todos WHERE id = ?").run(id);
+    if (!todos.remove(Number(req.params.id))) return reply.status(404).send({ error: "not found" });
     return reply.status(204).send();
   });
 };
