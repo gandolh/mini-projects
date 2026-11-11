@@ -1,0 +1,18 @@
+# Markdown stays out of Prettier (decided 2026-11-10).
+*.md
+
+# Generated or vendored copies.
+vendor/house-style/
+skills-lock.json
+.claude/skills/
+.windsurf/
+
+# Lockfiles, build output, local data.
+package-lock.json
+dist/
+todos.db
+coverage/
+
+# Static assets and the design mock-up, not source.
+public/
+designs/
