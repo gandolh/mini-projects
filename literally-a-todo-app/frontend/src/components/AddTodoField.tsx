@@ -36,13 +36,16 @@ export function AddTodoField() {
 
   if (!active) {
     return (
-      <div
+      <Button
         onClick={activate}
         style={{
+          width: "100%",
           height: 36,
           padding: "0 8px",
           display: "flex",
           alignItems: "center",
+          textAlign: "left",
+          lineHeight: "inherit",
           cursor: "text",
           color: "#999",
           fontSize: 14,
@@ -50,7 +53,7 @@ export function AddTodoField() {
         }}
       >
         Add a new task...
-      </div>
+      </Button>
     );
   }
 

@@ -102,7 +102,7 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
             }}
           />
         ) : (
-          <span
+          <Button
             onClick={startEdit}
             style={{
               fontSize: 14,
@@ -112,11 +112,15 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               flex: 1,
+              minWidth: 0,
+              padding: 0,
+              textAlign: "left",
+              lineHeight: "inherit",
               userSelect: "none",
             }}
           >
             {todo.title}
-          </span>
+          </Button>
         )}
       </div>
 
