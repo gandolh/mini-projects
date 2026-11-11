@@ -1,24 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
+/* The stylesheet from before Tailwind, imported into the legacy layer (styles/index.css) while the migration
+   empties it: in that layer every utility beats a leftover rule. The reset went to Tailwind's preflight, and the
+   14 px moved from :root onto body (Q44), so rem utilities measure from the browser's 16 px. */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-:root {
+body {
   font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Monaco, Consolas, monospace;
   font-size: 14px;
   line-height: 36px;
   color: #1a1c1c;
   background: #f9f9f9;
   -webkit-font-smoothing: antialiased;
-}
-
-body {
-  margin: 0;
 }
 
 #root {

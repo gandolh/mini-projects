@@ -1,0 +1,57 @@
+/* The app's one stylesheet (base-ui rule 5). The layer order comes first: the first @layer statement fixes the
+   order for the whole page, so the old stylesheet in legacy loses to every utility, and third-party CSS in vendor
+   sits above Tailwind's reset. */
+@layer theme, base, vendor, legacy, components, utilities;
+
+/* The icon font, loaded from Google Fonts at run time (brief 04, decision 8). Its stylesheet carries an unlayered
+   .material-symbols-outlined { font-size: 24px }, so it goes in vendor, where a utility can beat it. */
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap")
+layer(vendor);
+@import "tailwindcss";
+@import "./legacy.css" layer(legacy);
+
+/* dark: follows the theme switch (base-ui rule 14), never the system alone. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+
+@theme {
+  /* Tailwind's own scales are cleared, so a stray bg-red-500 or text-sm produces nothing. */
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+
+  /* The colours, by the names docs/wiki/design-rules.md uses (Q17, Q61: this app keeps its names until its
+     redesign). */
+  --color-primary: #000;
+  --color-on-surface: #1a1c1c;
+  --color-muted: #999;
+  --color-surface: #f9f9f9;
+  --color-surface-lowest: #fff;
+  --color-surface-low: #f3f3f4;
+
+  /* The type sizes, in rem that equal the old pixels at the browser's 16 px. No paired line height: every text
+     node inherits the 36 px row (--leading-row) from body. */
+  --text-body: 0.875rem;
+  --text-title: 0.8125rem;
+  --text-footer: 0.625rem;
+  --text-icon: 1.25rem;
+  --text-tick: 0.875rem;
+  --leading-row: 2.25rem;
+
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Monaco, Consolas, monospace;
+  --font-icon: "Material Symbols Outlined";
+  --default-font-family: var(--font-mono);
+
+  /* The two layers: the sticky header, and the toast above it. */
+  --z-index-sticky: 50;
+  --z-index-toast: 100;
+}
