@@ -4,6 +4,7 @@ import { useDeleteTodo, useUpdateTodo } from "../hooks/useTodos";
 import type { Todo } from "../types";
 import { Button } from "./ui/Button";
 import { Checkbox } from "./ui/Checkbox";
+import { Icon } from "./Icon";
 
 interface Props {
   todo: Todo;
@@ -78,7 +79,7 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
       }}
       className="todo-row"
     >
-      <Checkbox checked={completed} onChange={toggleCompleted} />
+      <Checkbox checked={completed} onChange={toggleCompleted} label={todo.title} />
 
       <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center" }}>
         {editing ? (
@@ -121,26 +122,18 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
 
       <div className="todo-actions" style={{ display: "flex", alignItems: "center", gap: 2 }}>
         {dragHandleProps && (
-          <Button variant="icon" style={{ cursor: "grab" }} {...dragHandleProps}>
-            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-              drag_indicator
-            </span>
+          <Button variant="icon" aria-label="Drag to reorder" style={{ cursor: "grab" }} {...dragHandleProps}>
+            <Icon name="drag_indicator" />
           </Button>
         )}
-        <Button variant="icon" onClick={onMoveUp} disabled={isFirst} title="Move up">
-          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-            keyboard_arrow_up
-          </span>
+        <Button variant="icon" onClick={onMoveUp} disabled={isFirst} title="Move up" aria-label="Move up">
+          <Icon name="keyboard_arrow_up" />
         </Button>
-        <Button variant="icon" onClick={onMoveDown} disabled={isLast} title="Move down">
-          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-            keyboard_arrow_down
-          </span>
+        <Button variant="icon" onClick={onMoveDown} disabled={isLast} title="Move down" aria-label="Move down">
+          <Icon name="keyboard_arrow_down" />
         </Button>
-        <Button variant="icon" onClick={handleDelete} title="Delete">
-          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-            delete
-          </span>
+        <Button variant="icon" onClick={handleDelete} title="Delete" aria-label="Delete">
+          <Icon name="delete" />
         </Button>
         {editing && (
           <Button
@@ -150,11 +143,10 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
               saveEdit();
             }}
             title="Save (Enter)"
+            aria-label="Save"
             onClick={() => {}}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-              check
-            </span>
+            <Icon name="check" />
           </Button>
         )}
       </div>

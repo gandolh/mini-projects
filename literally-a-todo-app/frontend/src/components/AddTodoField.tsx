@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useCreateTodo } from "../hooks/useTodos";
 import { Button } from "./ui/Button";
+import { Icon } from "./Icon";
 
 export function AddTodoField() {
   const [active, setActive] = useState(false);
@@ -82,10 +83,8 @@ export function AddTodoField() {
         }}
         placeholder="Add a new task..."
       />
-      <Button variant="icon" onClick={save} title="Save (Enter)">
-        <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-          check
-        </span>
+      <Button variant="icon" onClick={save} title="Save (Enter)" aria-label="Save">
+        <Icon name="check" />
       </Button>
     </div>
   );

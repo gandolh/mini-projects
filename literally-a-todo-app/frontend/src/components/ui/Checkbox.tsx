@@ -1,15 +1,19 @@
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
+import { Icon } from "../Icon";
 
 interface Props {
   checked: boolean;
   onChange: () => void;
+  /** The checkbox's accessible name: what ticking it does, such as the task's title. */
+  label: string;
 }
 
-export function Checkbox({ checked, onChange }: Props) {
+export function Checkbox({ checked, onChange, label }: Props) {
   return (
     <BaseCheckbox.Root
       checked={checked}
       onCheckedChange={onChange}
+      aria-label={label}
       style={{
         width: 16,
         height: 16,
@@ -24,19 +28,7 @@ export function Checkbox({ checked, onChange }: Props) {
       }}
     >
       <BaseCheckbox.Indicator>
-        {checked && (
-          <span
-            className="material-symbols-outlined"
-            style={{
-              fontSize: 14,
-              color: "#fff",
-              fontVariationSettings: '"FILL" 1',
-              lineHeight: 1,
-            }}
-          >
-            check
-          </span>
-        )}
+        <Icon name="check" size={14} style={{ color: "#fff", fontVariationSettings: '"FILL" 1', lineHeight: 1 }} />
       </BaseCheckbox.Indicator>
     </BaseCheckbox.Root>
   );
