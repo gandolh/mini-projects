@@ -1,5 +1,5 @@
-import type { FastifyInstance } from "fastify";
-import { db } from "./db.js";
+import type { FastifyPluginAsync } from "fastify";
+import type { Db } from "../../db/open.js";
 
 interface Todo {
   id: number;
@@ -8,7 +8,12 @@ interface Todo {
   position: number;
 }
 
-export async function todoRoutes(app: FastifyInstance) {
+/** What this feature takes from the app: the database handle. */
+export interface TodoContext {
+  db: Db;
+}
+
+export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) => {
   // GET /api/todos
   app.get("/api/todos", async () => {
     return db.prepare("SELECT * FROM todos ORDER BY position ASC").all();
@@ -69,4 +74,4 @@ export async function todoRoutes(app: FastifyInstance) {
     db.prepare("DELETE FROM todos WHERE id = ?").run(id);
     return reply.status(204).send();
   });
-}
+};
