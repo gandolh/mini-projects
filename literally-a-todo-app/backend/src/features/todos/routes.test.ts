@@ -130,4 +130,21 @@ describe("the todo routes", () => {
     expect(none.statusCode).toBe(400);
     expect(none.json()).toEqual({ error: "ids must be a non-empty array" });
   });
+
+  it("leaves a task as it is when a PATCH has no body", async () => {
+    await add("a");
+    const res = await app.inject({ method: "PATCH", url: "/api/todos/1" });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual({ id: 1, title: "a", completed: 0, position: 1 });
+  });
+
+  it("refuses a PATCH whose title or completed has the wrong type", async () => {
+    await add("a");
+    const title = await app.inject({ method: "PATCH", url: "/api/todos/1", payload: { title: 5 } });
+    expect(title.statusCode).toBe(400);
+    expect(title.json()).toEqual({ error: "title must be a string" });
+    const done = await app.inject({ method: "PATCH", url: "/api/todos/1", payload: { completed: "yes" } });
+    expect(done.statusCode).toBe(400);
+    expect(done.json()).toEqual({ error: "completed must be a boolean, 0 or 1" });
+  });
 });

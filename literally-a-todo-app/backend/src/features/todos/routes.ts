@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "@fastify/type-provider-zod";
 import { z } from "zod";
-import { createTodoBody, errorSchema, okSchema, reorderBody, todoSchema } from "./schemas.js";
+import { createTodoBody, errorSchema, idParams, okSchema, reorderBody, todoSchema, updateTodoBody } from "./schemas.js";
 import { createTodoStore, type TodoStore } from "./store.js";
 import type { Db } from "../../db/open.js";
 
@@ -37,19 +37,28 @@ export const todoRoutes: FastifyPluginAsyncZod<TodoContext> = async (app, { db }
   );
 
   // PATCH /api/todos/:id
-  app.patch<{ Params: { id: string }; Body: { title?: string; completed?: boolean } }>(
+  app.patch(
     "/api/todos/:id",
+    {
+      schema: {
+        params: idParams,
+        body: updateTodoBody,
+        response: { 200: todoSchema, 400: errorSchema, 404: errorSchema },
+      },
+    },
     async (req, reply) => {
       const id = Number(req.params.id);
       const todo = todos.get(id);
       if (!todo) return reply.status(404).send({ error: "not found" });
 
-      const title = req.body.title !== undefined ? req.body.title.trim() : todo.title;
-      const completed = req.body.completed !== undefined ? (req.body.completed ? 1 : 0) : todo.completed;
+      const title = req.body?.title ?? todo.title;
+      const completed = req.body?.completed !== undefined ? (req.body.completed ? 1 : 0) : todo.completed;
 
       if (title === "") return reply.status(400).send({ error: "title cannot be empty" });
 
-      return todos.update(id, title, completed);
+      const updated = todos.update(id, title, completed);
+      if (!updated) return reply.status(404).send({ error: "not found" });
+      return updated;
     },
   );
 

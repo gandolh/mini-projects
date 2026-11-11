@@ -37,3 +37,20 @@ export const reorderBody = z.object(
 
 /** `PATCH /api/todos/reorder`: 200. */
 export const okSchema = z.object({ ok: z.literal(true) });
+
+/** `:id` stays a plain string: the handler's `Number()` and its 404 for `abc` are unchanged. */
+export const idParams = z.object({ id: z.string() });
+
+/**
+ * `PATCH /api/todos/:id`. `completed` is a boolean or the stored 0 or 1: the frontend sends 0 | 1 and the
+ * handler maps either to 0 or 1. A blank title is not checked here: the handler answers 404 for a missing
+ * task before it answers 400 for a blank title, and that order stays. No body is allowed (null): nothing changes.
+ */
+export const updateTodoBody = z
+  .object({
+    title: z.string({ error: "title must be a string" }).trim().optional(),
+    completed: z
+      .union([z.boolean(), z.literal(0), z.literal(1)], { error: "completed must be a boolean, 0 or 1" })
+      .optional(),
+  })
+  .nullish();
