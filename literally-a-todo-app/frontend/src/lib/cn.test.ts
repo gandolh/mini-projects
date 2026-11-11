@@ -9,7 +9,7 @@ describe("cn", () => {
   });
 
   it("keeps a line height when a size follows it, as the sizes carry none", () => {
-    expect(cn("leading-none text-icon", "text-tick")).toBe("leading-none text-tick");
+    expect(cn("text-icon leading-none", "text-tick")).toBe("leading-none text-tick");
   });
 
   it("lets the later of two sizes, colours, z values or paddings win", () => {

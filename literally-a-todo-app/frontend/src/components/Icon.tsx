@@ -17,7 +17,7 @@ export function Icon({ name, className }: Props) {
     <span
       aria-hidden="true"
       className={cn(
-        "inline-block size-[1em] overflow-hidden font-icon text-icon leading-none font-normal tracking-normal whitespace-nowrap not-italic normal-case antialiased [direction:ltr] [font-feature-settings:'liga']",
+        "inline-block size-[1em] overflow-hidden font-icon [font-feature-settings:'liga'] text-icon leading-none font-normal tracking-normal whitespace-nowrap normal-case not-italic antialiased [direction:ltr]",
         className,
       )}
     >

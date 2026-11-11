@@ -5,5 +5,8 @@ import { houseStyle } from "../vendor/house-style/eslint.config.js";
 export default houseStyle({
   root: import.meta.dirname,
   web: "src",
+  // better-tailwindcss reads the app's one stylesheet for its classes: an unknown or deprecated class is an error,
+  // and so is a class string out of Tailwind's order.
+  tailwind: { css: "src/styles/index.css", order: true },
   // vite.config.ts and this file are configs: the only default exports allowed.
 });
