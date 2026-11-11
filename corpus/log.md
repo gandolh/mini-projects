@@ -45,3 +45,7 @@ Q56). Added brief 06, a redesign with Hallmark on the estate board (Q39).
 ## [2026-11-10] done | Brief 01 — Base UI 1.9.0 in the todo frontend
 
 `@base-ui/react` 1.4.1 to 1.9.0, pinned exactly (95f1e3a); `@base-ui/utils` 0.5.0, and `@babel/runtime` moved to 8.1.0 in the lockfile. Build passes; lint shows the same two `TodoList.tsx` errors as before. Browser behaviour check not run (no dev servers), so no behaviour differences are recorded and the drag question stays open for brief 03.
+
+## [2026-11-11] done | Brief 02 - the todo app in the house style, with a quality harness
+
+Vendored house-style 1.0.0, Prettier at 120 (one reformat commit, ignored in blame), the house tsconfig base, typed ESLint, knip, dependency-cruiser, the two convention checkers (`--warn-only`) and `npm run check` / `check:fast`, from `literally-a-todo-app/` and in each project. Fixed the four `noUncheckedIndexedAccess` errors and the two react-hooks errors behind a Playwright reorder spec. Rules and `CLAUDE.md` added. Re-measure at the start: the counts in the brief held (frontend 4 tsc errors, 1 `!`, 2 hook errors; backend 2 casts), plus `db.ts` and `App.tsx` default exports. Timings, warm: `check` about 22 s, `check:fast` with one changed file 11-15 s. Details and the decision are in [wiki/decisions.md](wiki/decisions.md).

@@ -153,3 +153,5 @@ One commit per numbered step. After each, `npm run check` in `frontend/` passes,
 - Brief 04 styles `components/ui/` with Tailwind on the parts, replaces the inline styles, and adds the theme switch on the `RadioGroup` wrapper this brief creates. It assumes this brief is done.
 - Brief 02's `check-base-ui` stays `--warn-only` until step 9 here.
 - The todo [todo-header-overlaps-on-phones](../../todos/todo-header-overlaps-on-phones.md) is about layout. Brief 04 closes it.
+
+**Update 2026-11-11 (brief 02 landed):** `check-base-ui` runs `--warn-only` with 4 findings today: rule 3 three times (`components/shared/Button.tsx`, `Checkbox.tsx`, `Separator.tsx` import Base UI outside `components/ui`) and rule 5 once (`src/index.css` is not `src/styles/index.css`). The frontend's `.claude/rules/web.md` names the wrappers' current place.

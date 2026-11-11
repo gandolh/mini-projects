@@ -10,6 +10,7 @@ The front door of the repo-wide wiki. Read [CLAUDE.md](CLAUDE.md) once for the r
 ## Wiki
 
 <!-- catalog:start -->
+- [decisions](wiki/decisions.md): The decisions behind the repo's projects, newest first: what was chosen, what was rejected and why
 - [overview](wiki/overview.md): What the five projects in this repo are, when each was built, and how they came to share one repo
 - [status](wiki/status.md): A dated snapshot of which projects run, what was checked, and the open findings
 <!-- catalog:end -->
