@@ -23,3 +23,17 @@ export const createTodoBody = z.object(
   { title: z.string({ error: TITLE_REQUIRED }).trim().min(1, TITLE_REQUIRED) },
   { error: TITLE_REQUIRED },
 );
+
+const IDS_REQUIRED = "ids must be a non-empty array";
+const IDS_INTEGERS = "ids must be a non-empty array of integers";
+
+/** `PATCH /api/todos/reorder`: the full order, as ids. */
+export const reorderBody = z.object(
+  {
+    ids: z.array(z.number({ error: IDS_INTEGERS }).int(IDS_INTEGERS), { error: IDS_REQUIRED }).min(1, IDS_REQUIRED),
+  },
+  { error: IDS_REQUIRED },
+);
+
+/** `PATCH /api/todos/reorder`: 200. */
+export const okSchema = z.object({ ok: z.literal(true) });

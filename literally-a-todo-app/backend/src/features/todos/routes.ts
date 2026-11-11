@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "@fastify/type-provider-zod";
 import { z } from "zod";
-import { createTodoBody, errorSchema, todoSchema } from "./schemas.js";
+import { createTodoBody, errorSchema, okSchema, reorderBody, todoSchema } from "./schemas.js";
 import { createTodoStore, type TodoStore } from "./store.js";
 import type { Db } from "../../db/open.js";
 
@@ -27,14 +27,14 @@ export const todoRoutes: FastifyPluginAsyncZod<TodoContext> = async (app, { db }
   );
 
   // PATCH /api/todos/reorder — must be before /:id
-  app.patch<{ Body: { ids?: number[] } }>("/api/todos/reorder", async (req, reply) => {
-    const { ids } = req.body;
-    if (!Array.isArray(ids) || ids.length === 0) {
-      return reply.status(400).send({ error: "ids must be a non-empty array" });
-    }
-    todos.reorder(ids);
-    return { ok: true };
-  });
+  app.patch(
+    "/api/todos/reorder",
+    { schema: { body: reorderBody, response: { 200: okSchema, 400: errorSchema } } },
+    async (req) => {
+      todos.reorder(req.body.ids);
+      return { ok: true as const };
+    },
+  );
 
   // PATCH /api/todos/:id
   app.patch<{ Params: { id: string }; Body: { title?: string; completed?: boolean } }>(

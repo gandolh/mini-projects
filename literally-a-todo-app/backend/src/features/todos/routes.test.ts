@@ -121,4 +121,13 @@ describe("the todo routes", () => {
     expect(none.statusCode).toBe(400);
     expect(none.json()).toEqual({ error: "title is required" });
   });
+
+  it("refuses a reorder whose ids are not integers, and one with no body", async () => {
+    const text = await app.inject({ method: "PATCH", url: "/api/todos/reorder", payload: { ids: ["x"] } });
+    expect(text.statusCode).toBe(400);
+    expect(text.json()).toEqual({ error: "ids must be a non-empty array of integers" });
+    const none = await app.inject({ method: "PATCH", url: "/api/todos/reorder" });
+    expect(none.statusCode).toBe(400);
+    expect(none.json()).toEqual({ error: "ids must be a non-empty array" });
+  });
 });
