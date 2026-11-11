@@ -38,19 +38,7 @@ export function AddTodoField() {
     return (
       <Button
         onClick={activate}
-        style={{
-          width: "100%",
-          height: 36,
-          padding: "0 8px",
-          display: "flex",
-          alignItems: "center",
-          textAlign: "left",
-          lineHeight: "inherit",
-          cursor: "text",
-          color: "#999",
-          fontSize: 14,
-          borderTop: "1px solid #999",
-        }}
+        className="flex h-9 w-full cursor-text items-center border-t border-muted px-2 text-left text-body text-muted"
       >
         Add a new task...
       </Button>
@@ -58,32 +46,14 @@ export function AddTodoField() {
   }
 
   return (
-    <div
-      style={{
-        height: 36,
-        padding: "0 8px",
-        display: "flex",
-        alignItems: "center",
-        gap: 4,
-        borderTop: "1px solid #000",
-      }}
-    >
+    <div className="flex h-9 items-center gap-1 border-t border-primary px-2">
       <input
         ref={inputRef}
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={() => setTimeout(reset, 100)}
-        style={{
-          flex: 1,
-          height: "100%",
-          border: "none",
-          outline: "none",
-          background: "transparent",
-          fontFamily: "inherit",
-          fontSize: 14,
-          color: "#000",
-        }}
+        className="h-full flex-1 bg-transparent text-body text-primary outline-none placeholder:text-muted"
         placeholder="Add a new task..."
       />
       <Button variant="icon" onClick={save} title="Save (Enter)" aria-label="Save">

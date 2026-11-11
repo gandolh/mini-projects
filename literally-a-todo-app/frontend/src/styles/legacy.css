@@ -23,10 +23,6 @@ body {
   opacity: 1;
 }
 
-input::placeholder {
-  color: #999;
-}
-
 a {
   color: inherit;
 }
