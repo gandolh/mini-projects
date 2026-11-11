@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useDrag } from "@use-gesture/react";
 import { useReorderTodos, useTodos } from "../hooks/useTodos";
 import type { Filter, Todo } from "../types";
+import { cn } from "../lib/cn";
 import { dropIndex } from "./dropIndex";
 import { TodoItem } from "./TodoItem";
 
@@ -41,19 +42,11 @@ export function TodoList({ filter }: Props) {
   }
 
   if (isLoading) {
-    return (
-      <div style={{ height: 36, padding: "0 8px", display: "flex", alignItems: "center", color: "#999", fontSize: 14 }}>
-        Loading...
-      </div>
-    );
+    return <Message>Loading...</Message>;
   }
 
   if (filtered.length === 0) {
-    return (
-      <div style={{ height: 36, padding: "0 8px", display: "flex", alignItems: "center", color: "#999", fontSize: 14 }}>
-        No tasks.
-      </div>
-    );
+    return <Message>No tasks.</Message>;
   }
 
   return (
@@ -80,6 +73,11 @@ export function TodoList({ filter }: Props) {
       ))}
     </div>
   );
+}
+
+/** The one line in place of the list: loading, or no tasks. */
+function Message({ children }: { children: string }) {
+  return <div className="flex h-9 items-center px-2 text-body text-muted">{children}</div>;
 }
 
 interface DraggableProps {
@@ -116,12 +114,7 @@ function DraggableTodoItem({ todo, index, count, isFirst, isLast, onMoveUp, onMo
   const dragHandleProps = bind();
 
   return (
-    <div
-      style={{
-        opacity: isDragging ? 0.4 : 1,
-        transition: "opacity 0.1s",
-      }}
-    >
+    <div className={cn("motion-safe:transition-opacity motion-safe:duration-100", isDragging && "opacity-40")}>
       <TodoItem
         todo={todo}
         dragHandleProps={dragHandleProps}
