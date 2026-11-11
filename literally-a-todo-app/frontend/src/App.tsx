@@ -12,10 +12,13 @@ export function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-surface">
-      <header className="sticky top-0 z-sticky flex h-9 items-center justify-between border-b border-primary bg-surface-lowest px-2">
-        <span className="text-title font-bold tracking-[-0.02em] uppercase">Literally a todo app</span>
+      {/* On a phone the title and the tabs don't fit on one row, so the tabs take a row of their own. */}
+      <header className="sticky top-0 z-sticky flex h-9 items-center justify-between border-b border-primary bg-surface-lowest px-2 max-sm:h-auto max-sm:flex-col max-sm:items-stretch">
+        <span className="flex h-9 items-center text-title font-bold tracking-[-0.02em] uppercase">
+          Literally a todo app
+        </span>
         {/* Centred on the page, whatever the title's width. */}
-        <div className="absolute left-1/2 -translate-x-1/2">
+        <div className="absolute left-1/2 -translate-x-1/2 max-sm:static max-sm:translate-x-0 max-sm:self-center">
           <FilterTabs filter={filter} onFilterChange={setFilter} />
         </div>
       </header>
