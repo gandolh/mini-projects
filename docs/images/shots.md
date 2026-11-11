@@ -16,4 +16,4 @@ What is left out, and why:
 
 - **The tomato detector.** Its sample photos look like stock images and a figure from a paper, not pictures taken for the project, so no image is made from them. The detection steps are described in text.
 - **The TSP solver.** Its output is one line of text, shown in the README as text.
-- **The todo app on a phone.** At phone width the title runs into the All, Active and Completed tabs; see [corpus/todos/](../../corpus/todos/todo-header-overlaps-on-phones.md).
+- **The todo app on a phone.** Until 2026-11-11 the title ran into the All, Active and Completed tabs at phone width ([corpus/todos/](../../corpus/todos/todo-header-overlaps-on-phones.md)). Brief 04 fixed it; a phone image waits for the next README refresh.

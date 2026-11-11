@@ -1,7 +1,7 @@
 ---
 title: The todo app's title runs into its tabs on a phone, and lint has two errors
 created: 2026-11-01
-status: open
+status: done
 tags: [literally-a-todo-app, layout, lint]
 ---
 
@@ -18,3 +18,9 @@ Found on 2026-11-01 while taking the README images. At 390 px wide the header's 
 ## Acceptance
 
 At 390 px the title and the tabs do not overlap, for example with the tabs on their own row, and `npm run lint` passes.
+
+## Outcome (2026-11-11)
+
+Done. The two lint errors went with brief 02. Brief 04 fixed the header: below Tailwind's `sm` breakpoint the tabs take
+a row of their own under the title, and `frontend/e2e/header.spec.ts` checks both widths. Checked at 390 px and on an
+emulated Pixel 7 (Chrome's Android profile); a check on a real Android phone is the owner's.

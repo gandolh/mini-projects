@@ -6,6 +6,8 @@
 - `axios` — HTTP client (single instance, `baseURL: '/api'`)
 - `@tanstack/react-query` — server state; all mutations invalidate `['todos']` on success
 - `@base-ui/react` 1.9.0 (pinned exactly) — headless UI primitives (Button, Checkbox, Separator, RadioGroup, Toast), imported only by the wrappers in `components/ui/`
+- Tailwind CSS 4.3.5 (`@tailwindcss/vite`) — every style is a utility on `className`; `clsx` and `tailwind-merge`
+  behind `cn()` in `lib/cn.ts`
 - `@use-gesture/react` — drag-to-reorder gesture handling
 - `vitest` + jsdom + Testing Library — tests of the wrappers that hold logic; flows are Playwright specs in `frontend/e2e/`
 
@@ -22,7 +24,11 @@ frontend/src/
 │   ├── TodoList.tsx
 │   ├── TodoItem.tsx
 │   └── AddTodoField.tsx
+│   └── ThemeSwitch.tsx   # Light / Dark / System, on ui/RadioGroup
 ├── hooks/useTodos.ts     # All TanStack Query hooks
+├── lib/cn.ts             # cn(): clsx + tailwind-merge, told the app's token names
+├── lib/theme.ts          # The theme choice: localStorage "theme", data-theme on <html>
+├── styles/index.css      # The one stylesheet: Tailwind, @theme tokens, @custom-variant dark, @layer base
 ├── types.ts              # Todo interface + Filter type
 ├── App.tsx
 └── main.tsx
@@ -41,7 +47,15 @@ frontend/src/
 - Drag reorder: no local copy of the list; `useReorderTodos` updates the query cache before the server answers
 - Drag via `@use-gesture/react` `useDrag` — row height 36px used to compute step count from `movement[1]`
 
+## Styling
+
+- Tokens only from `@theme` in `styles/index.css`: no raw colour, no arbitrary colour, no `style=` prop
+- Join classes with `cn()`; state through Base UI's `data-*` variants (`data-checked:`, `data-disabled:`)
+- No `dark:` unless a token can't carry the difference; the colour tokens flip with the theme
+- Motion under `motion-safe:`
+- `better-tailwindcss` (in `npm run check`) rejects unknown classes and enforces the class order
+
 ## Toast Triggers
 
-- Error only: `toast.error('Failed to update todo')` on toggle or delete failure, from `components/ui/Toast.tsx` (Base UI `Toast`, top centre, one at a time, 5 s)
+- Error only: `toast.error('Failed to update todo')` on toggle or delete failure, from `components/ui/Toast.tsx` (Base UI `Toast`, top centre, one at a time); an error stays until its Dismiss button closes it
 - No success toasts

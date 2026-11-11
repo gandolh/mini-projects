@@ -100,6 +100,9 @@ The personality is clinical and precise. It treats information as the primary ci
 
 ## Colors
 
+The app's tokens, with their dark values, are in [design-rules.md](design-rules.md) and in
+`frontend/src/styles/index.css`. The front matter above is the design file's full set; the app uses six of it.
+
 The palette is strictly binary and functional. High-contrast black (#000000) is used for all structural elements, including text, borders, and icons. This ensures maximum legibility and a "drawn-on-paper" feel.
 
 Muted gray (#999999) serves exclusively to denote secondary or inactive states, such as placeholders and disabled inputs. The background is a sterile, plain white (#FFFFFF) to provide a neutral canvas that avoids visual noise. While #000080 is available for critical brand accents, its usage should be sparse, keeping the focus on the black-and-white logic of the interface.

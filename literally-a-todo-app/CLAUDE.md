@@ -64,7 +64,7 @@ Run them in `literally-a-todo-app/`. `npm install` runs in the app folder (the t
 - ESLint, Prettier, knip and dependency-cruiser are installed once, in the app folder, and `frontend/` and `backend/` use them. Their `check` needs the app folder's `npm install` first.
 - `vendor/house-style/` is a generated copy: never edit it. `npm run house-style:sync` refreshes it.
 - The vitest tests sit beside the code (`*.test.tsx`); the Playwright specs are in `frontend/e2e/`.
-- The icon font comes from the network: offline, a glyph shows as its ligature word and covers its neighbour, so a Playwright spec that clicks an icon button hides `.material-symbols-outlined` first (see `e2e/drag.spec.ts`).
+- The icon font comes from the network: offline, a glyph shows as its ligature word, clipped to its one-em box by `components/Icon.tsx`. `e2e/drag.spec.ts` blocks the font to prove a click still lands on its button.
 
 ## Hard rules
 
