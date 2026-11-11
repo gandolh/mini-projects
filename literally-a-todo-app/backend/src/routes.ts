@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import db from "./db.js";
+import { db } from "./db.js";
 
 interface Todo {
   id: number;
@@ -11,7 +11,7 @@ interface Todo {
 export async function todoRoutes(app: FastifyInstance) {
   // GET /api/todos
   app.get("/api/todos", async () => {
-    return db.prepare("SELECT * FROM todos ORDER BY position ASC").all() as Todo[];
+    return db.prepare("SELECT * FROM todos ORDER BY position ASC").all();
   });
 
   // POST /api/todos
@@ -57,7 +57,7 @@ export async function todoRoutes(app: FastifyInstance) {
       if (title === "") return reply.status(400).send({ error: "title cannot be empty" });
 
       db.prepare("UPDATE todos SET title = ?, completed = ? WHERE id = ?").run(title, completed, id);
-      return db.prepare("SELECT * FROM todos WHERE id = ?").get(id) as Todo;
+      return db.prepare("SELECT * FROM todos WHERE id = ?").get(id);
     },
   );
 

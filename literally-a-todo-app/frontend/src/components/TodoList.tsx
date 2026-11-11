@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDrag } from "@use-gesture/react";
 import { useReorderTodos, useTodos } from "../hooks/useTodos";
 import type { Filter, Todo } from "../types";
@@ -11,37 +11,31 @@ interface Props {
 export function TodoList({ filter }: Props) {
   const { data: todos = [], isLoading } = useTodos();
   const reorder = useReorderTodos();
-  const [items, setItems] = useState<Todo[]>([]);
-  const draggingIndex = useRef<number | null>(null);
 
-  useEffect(() => {
-    setItems(todos);
-  }, [todos]);
-
-  const filtered = items.filter((t) => {
+  // The list on screen is the query's: useReorderTodos updates it before the server answers.
+  const filtered = todos.filter((t) => {
     if (filter === "active") return t.completed === 0;
     if (filter === "completed") return t.completed === 1;
     return true;
   });
 
   function moveItem(fromIndex: number, toIndex: number) {
-    const next = [...items];
+    const next = [...todos];
     const [moved] = next.splice(fromIndex, 1);
     if (moved === undefined) return;
     next.splice(toIndex, 0, moved);
-    setItems(next);
     reorder.mutate(next.map((t) => t.id));
   }
 
   function moveUp(todo: Todo) {
-    const idx = items.findIndex((t) => t.id === todo.id);
+    const idx = todos.findIndex((t) => t.id === todo.id);
     if (idx <= 0) return;
     moveItem(idx, idx - 1);
   }
 
   function moveDown(todo: Todo) {
-    const idx = items.findIndex((t) => t.id === todo.id);
-    if (idx === -1 || idx >= items.length - 1) return;
+    const idx = todos.findIndex((t) => t.id === todo.id);
+    if (idx === -1 || idx >= todos.length - 1) return;
     moveItem(idx, idx + 1);
   }
 
@@ -72,13 +66,12 @@ export function TodoList({ filter }: Props) {
           isLast={i === filtered.length - 1}
           onMoveUp={() => moveUp(todo)}
           onMoveDown={() => moveDown(todo)}
-          draggingIndex={draggingIndex}
           onDrop={(fromIdx, toIdx) => {
             const fromTodo = filtered[fromIdx];
             const toTodo = filtered[toIdx];
             if (!fromTodo || !toTodo) return;
-            const fromItemIdx = items.findIndex((t) => t.id === fromTodo.id);
-            const toItemIdx = items.findIndex((t) => t.id === toTodo.id);
+            const fromItemIdx = todos.findIndex((t) => t.id === fromTodo.id);
+            const toItemIdx = todos.findIndex((t) => t.id === toTodo.id);
             moveItem(fromItemIdx, toItemIdx);
           }}
         />
@@ -94,7 +87,6 @@ interface DraggableProps {
   isLast: boolean;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  draggingIndex: React.MutableRefObject<number | null>;
   onDrop: (from: number, to: number) => void;
 }
 
@@ -105,11 +97,11 @@ function DraggableTodoItem({
   isLast,
   onMoveUp,
   onMoveDown,
-  draggingIndex,
   onDrop,
 }: DraggableProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const draggingIndex = useRef<number | null>(null);
 
   const bind = useDrag(({ active, movement: [, my], last }) => {
     if (active) {

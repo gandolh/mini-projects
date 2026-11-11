@@ -1,22 +1,9 @@
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
-import { defineConfig, globalIgnores } from "eslint/config";
+import { houseStyle } from "../vendor/house-style/eslint.config.js";
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      globals: globals.browser,
-    },
-  },
-]);
+// The house config from the vendored house-style copy, given this project's folders. The compiler is
+// the first gate; the house adds only what it cannot see.
+export default houseStyle({
+  root: import.meta.dirname,
+  web: "src",
+  // vite.config.ts and this file are configs: the only default exports allowed.
+});
