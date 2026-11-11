@@ -63,8 +63,12 @@ export const todoRoutes: FastifyPluginAsyncZod<TodoContext> = async (app, { db }
   );
 
   // DELETE /api/todos/:id
-  app.delete<{ Params: { id: string } }>("/api/todos/:id", async (req, reply) => {
-    if (!todos.remove(Number(req.params.id))) return reply.status(404).send({ error: "not found" });
-    return reply.status(204).send();
-  });
+  app.delete(
+    "/api/todos/:id",
+    { schema: { params: idParams, response: { 204: z.null(), 404: errorSchema } } },
+    async (req, reply) => {
+      if (!todos.remove(Number(req.params.id))) return reply.status(404).send({ error: "not found" });
+      return reply.status(204).send(null);
+    },
+  );
 };
