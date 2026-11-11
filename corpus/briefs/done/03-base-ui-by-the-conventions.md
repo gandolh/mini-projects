@@ -155,3 +155,28 @@ One commit per numbered step. After each, `npm run check` in `frontend/` passes,
 - The todo [todo-header-overlaps-on-phones](../../todos/todo-header-overlaps-on-phones.md) is about layout. Brief 04 closes it.
 
 **Update 2026-11-11 (brief 02 landed):** `check-base-ui` runs `--warn-only` with 4 findings today: rule 3 three times (`components/shared/Button.tsx`, `Checkbox.tsx`, `Separator.tsx` import Base UI outside `components/ui`) and rule 5 once (`src/index.css` is not `src/styles/index.css`). The frontend's `.claude/rules/web.md` names the wrappers' current place.
+
+## Outcome (2026-11-11)
+
+Built in 8 commits, 02e7def to d8efc49 (local, not pushed).
+
+- **Moved** the three wrappers to `components/ui/`; added `RadioGroup` and `Toast`; `Icon.tsx` and `dropIndex.ts` stay in `components/`. `sonner` is out of `package.json` and the lockfile.
+- **check-base-ui strict:** rules 1, 2, 3, 9, 10, 11 report 0. Rule 5 reports 1 (`src/index.css` is not `src/styles/index.css`); `--warn-only` stays. Review counts left for brief 04: 34 inline `style` props, 36 raw hex values (code and `index.css`), 2 transitions.
+- **Drag:** before the fix the mouse drag left the order unchanged and the Android-touch drag moved the first task one row. Causes: candidate 1 (the old `Button` dropped `onPointerDown`) and candidate 2 (no `touch-action: none`). Candidate 3 (no end clamp) changed behaviour only as a no-op: a drop past the end did nothing; now it moves the row last. Candidate 4 was dead code, deleted. The kept spec `e2e/drag.spec.ts` passes with mouse and touch; a throwaway pass against the real backend on a scratch copy passed too.
+- **Tests:** vitest 5.1.0, jsdom 31.0.0, `@testing-library/react` 16.3.3, `/dom` 10.4.2, `/user-event` 14.6.9 (14 tests: Button, Checkbox, RadioGroup in both looks, Toast, `dropIndex`, a failed update in `App`). Playwright specs: names, keys, filter, toast, drag. `npm run check` now runs vitest; `test-results/` joined `.prettierignore`.
+
+### Deviations
+
+- The wrapper `RadioGroup` follows the skill's props (`label`, `options`, `look`), not the brief's `items`; there is a required `label`.
+- `Toast` closes after 5 s as the brief says; the skill's wrapper keeps an error until dismissed.
+- A drop past the end now moves the row to the last place (it did nothing), from the clamp.
+- Added `src/test-setup.ts` (Testing Library cleanup; vitest has no globals here) and `e2e/*` specs beyond the brief's list (names, keys, filter, toast).
+- The Playwright drag spec hides the icon glyphs: offline, the icon font fails to load, each glyph shows as its ligature word and covers the neighbouring button.
+- Screenshots (1280 and 390 px, before and after, kept out of git): the layout and colours match. The only visible difference is the toast, a sharp bordered box (the app's design rules) in place of sonner's rounded card with an error icon.
+
+### Handoff for brief 04
+
+- Wrappers, all with inline `style` props to convert: `components/ui/Button.tsx` (`variant`: `icon` or `default`; `style` merged last), `Checkbox.tsx` (`label` required), `Separator.tsx`, `RadioGroup.tsx` (`look="segmented"` is the filter, `look="list"` is for the theme switch; Radio `style` takes a function of `{ checked }`, key Tailwind off `data-checked`), `Toast.tsx` (`toast.error`, `<Toaster />`; Base UI `Toast.Viewport`, `Root`, `Content`, `Title`).
+- The filter keeps its markup: `FilterTabs` over `RadioGroup` (`role="radiogroup"` named "Show", visually hidden label). The add row and a task's title are `Button`s with inline style.
+- Tests select by role and name; `npm test` in `frontend/` and `npm run test:e2e` in `frontend/`.
+- `check-base-ui` is still `--warn-only`; drop it in brief 04 when rule 5 reaches 0.

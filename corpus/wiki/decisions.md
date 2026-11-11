@@ -5,6 +5,16 @@ updated: 2026-11-11
 
 # Decisions
 
+## The todo app's Base UI by the conventions (2026-11-11)
+
+- **Base UI is imported only under `components/ui/`**: `Button`, `Checkbox`, `Separator`, `RadioGroup` and `Toast`, one wrapper per part. `components/shared/` is gone.
+- **The filter is a `RadioGroup`**, not `Tabs`: it switches what one list shows, one item is always chosen, and arrow keys may choose (Q41, Q57). One Tab stop, `role="radiogroup"` with `aria-checked`, `data-checked` for the styling. The wrapper has a `segmented` look (the filter) and a `list` look (brief 04's theme switch).
+- **The toast is Base UI's `Toast`** behind `toast.error(message)`, replacing sonner (rule 13): top centre, one at a time, closed after 5 s as sonner did. The skill's wrapper keeps an error until dismissed; this one keeps the app's 5 s.
+- **Names.** Glyphs go through `Icon` (`aria-hidden`), every icon-only control has an `aria-label`, the checkbox is named by its task. The add row and a task's title are buttons.
+- **Drag.** Two causes: the old `Button` dropped the handle's pointer handlers (no drag with a mouse), and the handle lacked `touch-action: none` (Android touch moved one row, then the browser took over). Both fixed; the drop arithmetic is the pure `dropIndex`, clamped to the list, so a drop past the end now moves the row last instead of doing nothing.
+- **Tests.** vitest 5.1.0, jsdom 31.0.0 and Testing Library, pinned, only for wrappers with logic. Flows are Playwright specs (names, keys, filter, toast, and a mouse and an Android-touch drag against a stateful mock). `check` runs vitest.
+- **`check-base-ui` stays `--warn-only`**: the one finding left is rule 5, the stylesheet that is not `src/styles/index.css`, which brief 04 moves.
+
 ## The todo app in the house style, formatted and checked (2026-11-11)
 
 - **Config source.** The `house-style` copy is vendored in `literally-a-todo-app/vendor/house-style/` (version 1.0.0, header in its README), refreshed by `npm run house-style:sync`. No git, `github:` or tarball dependency. The sync normally copies into the root of the git work tree, and this repo holds five projects, so `scripts/house-style-sync.mjs` runs it with git told not to look above the repo folder; the copy lands in the app folder.
