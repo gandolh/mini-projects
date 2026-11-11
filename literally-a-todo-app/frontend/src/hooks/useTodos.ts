@@ -71,7 +71,10 @@ export function useReorderTodos() {
       qc.setQueryData<Todo[]>(KEY, (old) => {
         if (!old) return [];
         const byId = Object.fromEntries(old.map((t) => [t.id, t]));
-        return ids.map((id, i) => ({ ...byId[id], position: i })).filter(Boolean);
+        return ids.flatMap((id, position) => {
+          const todo = byId[id];
+          return todo ? [{ ...todo, position }] : [];
+        });
       });
       return { prev };
     },

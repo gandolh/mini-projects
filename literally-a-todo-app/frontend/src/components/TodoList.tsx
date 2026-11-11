@@ -27,6 +27,7 @@ export function TodoList({ filter }: Props) {
   function moveItem(fromIndex: number, toIndex: number) {
     const next = [...items];
     const [moved] = next.splice(fromIndex, 1);
+    if (moved === undefined) return;
     next.splice(toIndex, 0, moved);
     setItems(next);
     reorder.mutate(next.map((t) => t.id));
@@ -75,6 +76,7 @@ export function TodoList({ filter }: Props) {
           onDrop={(fromIdx, toIdx) => {
             const fromTodo = filtered[fromIdx];
             const toTodo = filtered[toIdx];
+            if (!fromTodo || !toTodo) return;
             const fromItemIdx = items.findIndex((t) => t.id === fromTodo.id);
             const toItemIdx = items.findIndex((t) => t.id === toTodo.id);
             moveItem(fromItemIdx, toItemIdx);

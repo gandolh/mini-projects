@@ -1,13 +1,11 @@
 {
+  "extends": "../vendor/house-style/tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "outDir": "dist",
+    "types": ["node"],
     "rootDir": "src",
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "noEmit": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true
   },
   "include": ["src"]
 }
