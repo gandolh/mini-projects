@@ -19,4 +19,4 @@ paths:
 - A flow is a Playwright spec in `frontend/e2e/` with `/api/todos` mocked through `page.route`
   (`npm run test:e2e` in `frontend/`). Jsdom tests (`npm test` in `frontend/`, `*.test.tsx`) are only for a wrapper that
   holds logic. Tests select by role and name.
-- `check-base-ui` runs `--warn-only` until the stylesheet moves to Tailwind (the one rule-5 finding left).
+- `check-base-ui` runs strict in `check:conventions`: a finding fails `npm run check`.

@@ -1,14 +1,13 @@
 /* The app's one stylesheet (base-ui rule 5). The layer order comes first: the first @layer statement fixes the
-   order for the whole page, so the old stylesheet in legacy loses to every utility, and third-party CSS in vendor
-   sits above Tailwind's reset. */
-@layer theme, base, vendor, legacy, components, utilities;
+   order for the whole page, so third-party CSS in vendor sits above Tailwind's reset and below every utility. (The
+   old stylesheet sat in a legacy layer after vendor while brief 04 moved it to utilities.) */
+@layer theme, base, vendor, components, utilities;
 
 /* The icon font, loaded from Google Fonts at run time (brief 04, decision 8). Its stylesheet carries an unlayered
    .material-symbols-outlined { font-size: 24px }, so it goes in vendor, where a utility can beat it. */
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap")
 layer(vendor);
 @import "tailwindcss";
-@import "./legacy.css" layer(legacy);
 
 /* dark: follows the theme switch (base-ui rule 14), never the system alone. */
 @custom-variant dark {
@@ -55,4 +54,16 @@ layer(vendor);
   /* The two layers: the sticky header, and the toast above it. */
   --z-index-sticky: 50;
   --z-index-toast: 100;
+}
+
+@layer base {
+  /* The app's 14 px and its 36 px row live on body, so html keeps the reader's own size and rem utilities measure
+     from it (Q44). Every row's text inherits the 36 px line height. */
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-size: var(--text-body);
+    line-height: var(--leading-row);
+    -webkit-font-smoothing: antialiased;
+  }
 }
