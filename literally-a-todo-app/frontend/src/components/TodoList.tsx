@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useDrag } from "@use-gesture/react";
 import { useReorderTodos, useTodos } from "../hooks/useTodos";
 import type { Filter, Todo } from "../types";
+import { dropIndex } from "./dropIndex";
 import { TodoItem } from "./TodoItem";
 
 interface Props {
@@ -62,6 +63,7 @@ export function TodoList({ filter }: Props) {
           key={todo.id}
           todo={todo}
           index={i}
+          count={filtered.length}
           isFirst={i === 0}
           isLast={i === filtered.length - 1}
           onMoveUp={() => moveUp(todo)}
@@ -83,6 +85,7 @@ export function TodoList({ filter }: Props) {
 interface DraggableProps {
   todo: Todo;
   index: number;
+  count: number;
   isFirst: boolean;
   isLast: boolean;
   onMoveUp: () => void;
@@ -90,9 +93,8 @@ interface DraggableProps {
   onDrop: (from: number, to: number) => void;
 }
 
-function DraggableTodoItem({ todo, index, isFirst, isLast, onMoveUp, onMoveDown, onDrop }: DraggableProps) {
+function DraggableTodoItem({ todo, index, count, isFirst, isLast, onMoveUp, onMoveDown, onDrop }: DraggableProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
   const draggingIndex = useRef<number | null>(null);
 
   const bind = useDrag(({ active, movement: [, my], last }) => {
@@ -102,12 +104,10 @@ function DraggableTodoItem({ todo, index, isFirst, isLast, onMoveUp, onMoveDown,
     }
     if (last) {
       setIsDragging(false);
-      const ROW_HEIGHT = 36;
-      const steps = Math.round(my / ROW_HEIGHT);
-      if (steps !== 0 && draggingIndex.current !== null) {
+      if (draggingIndex.current !== null) {
         const from = draggingIndex.current;
-        const to = Math.max(0, from + steps);
-        if (from !== to) onDrop(from, to);
+        const to = dropIndex(from, my, count);
+        if (to !== null) onDrop(from, to);
       }
       draggingIndex.current = null;
     }
@@ -119,11 +119,8 @@ function DraggableTodoItem({ todo, index, isFirst, isLast, onMoveUp, onMoveDown,
     <div
       style={{
         opacity: isDragging ? 0.4 : 1,
-        background: dragOver ? "#f3f3f4" : undefined,
         transition: "opacity 0.1s",
       }}
-      onDragEnter={() => setDragOver(true)}
-      onDragLeave={() => setDragOver(false)}
     >
       <TodoItem
         todo={todo}

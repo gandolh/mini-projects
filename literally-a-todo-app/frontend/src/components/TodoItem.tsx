@@ -126,7 +126,12 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
 
       <div className="todo-actions" style={{ display: "flex", alignItems: "center", gap: 2 }}>
         {dragHandleProps && (
-          <Button variant="icon" aria-label="Drag to reorder" style={{ cursor: "grab" }} {...dragHandleProps}>
+          <Button
+            variant="icon"
+            aria-label="Drag to reorder"
+            style={{ cursor: "grab", touchAction: "none" }}
+            {...dragHandleProps}
+          >
             <Icon name="drag_indicator" />
           </Button>
         )}
