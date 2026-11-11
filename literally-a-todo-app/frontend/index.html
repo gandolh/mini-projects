@@ -4,7 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Literally a todo app</title>
+    <script>
+      // The saved theme before the first paint, so a dark choice never flashes light; light on a first visit.
+      // src/lib/theme.ts keeps the same key.
+      try {
+        var theme = localStorage.getItem("theme");
+        document.documentElement.dataset.theme = theme === "dark" || theme === "system" ? theme : "light";
+      } catch (error) {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FilterTabs } from "./components/FilterTabs";
+import { ThemeSwitch } from "./components/ThemeSwitch";
 import { AddTodoField } from "./components/AddTodoField";
 import { TodoList } from "./components/TodoList";
 import { Separator } from "./components/ui/Separator";
@@ -29,6 +30,7 @@ export function App() {
 
       <footer className="sticky bottom-0 mt-auto flex h-9 items-center justify-between border-t border-primary bg-surface-lowest px-2 text-footer uppercase opacity-50">
         <span>Literally a todo app</span>
+        <ThemeSwitch />
       </footer>
 
       <Toaster />

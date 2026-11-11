@@ -29,13 +29,14 @@ layer(vendor);
   --shadow-*: initial;
 
   /* The colours, by the names docs/wiki/design-rules.md uses (Q17, Q61: this app keeps its names until its
-     redesign). */
-  --color-primary: #000;
-  --color-on-surface: #1a1c1c;
+     redesign). light-dark() holds both themes, and color-scheme on <html> picks one, so no component needs dark:.
+     The dark values come from the design file's inverse tokens (docs/wiki/design.md). */
+  --color-primary: light-dark(#000, #f0f1f1);
+  --color-on-surface: light-dark(#1a1c1c, #f0f1f1);
   --color-muted: #999;
-  --color-surface: #f9f9f9;
-  --color-surface-lowest: #fff;
-  --color-surface-low: #f3f3f4;
+  --color-surface: light-dark(#f9f9f9, #1a1c1c);
+  --color-surface-lowest: light-dark(#fff, #2f3131);
+  --color-surface-low: light-dark(#f3f3f4, #3a3c3c);
 
   /* The type sizes, in rem that equal the old pixels at the browser's 16 px. No paired line height: every text
      node inherits the 36 px row (--leading-row) from body. */
@@ -57,6 +58,18 @@ layer(vendor);
 }
 
 @layer base {
+  /* Light on a first visit; the theme switch sets data-theme on <html> (base-ui rule 14), and System lets the
+     operating system pick, live. */
+  :root {
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  :root[data-theme="system"] {
+    color-scheme: light dark;
+  }
+
   /* The app's 14 px and its 36 px row live on body, so html keeps the reader's own size and rem utilities measure
      from it (Q44). Every row's text inherits the 36 px line height. */
   body {
