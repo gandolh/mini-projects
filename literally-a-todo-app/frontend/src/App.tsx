@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Toaster } from "sonner";
 import { FilterTabs } from "./components/FilterTabs";
 import { AddTodoField } from "./components/AddTodoField";
 import { TodoList } from "./components/TodoList";
 import { Separator } from "./components/ui/Separator";
+import { Toaster } from "./components/ui/Toast";
 import type { Filter } from "./types";
 
 export function App() {
@@ -71,7 +71,7 @@ export function App() {
         <span>Literally a todo app</span>
       </footer>
 
-      <Toaster position="top-center" />
+      <Toaster />
     </div>
   );
 }
