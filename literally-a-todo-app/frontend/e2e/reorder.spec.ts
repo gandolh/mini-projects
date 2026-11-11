@@ -36,14 +36,14 @@ async function mockApi(page: Page) {
   return { reorders, release };
 }
 
+// The tasks in the order on screen: each checkbox is named by its task.
 function titles(page: Page) {
-  return page
-    .locator(".todo-row")
-    .evaluateAll((rows) => rows.map((row) => row.querySelector("[style*='ellipsis']")?.textContent));
+  return page.getByRole("checkbox").evaluateAll((boxes) => boxes.map((box) => box.getAttribute("aria-label")));
 }
 
+// A row has no role of its own: it is the parent of the task's checkbox.
 function row(page: Page, title: string) {
-  return page.locator(".todo-row").filter({ hasText: title });
+  return page.getByRole("checkbox", { name: title, exact: true }).locator("..");
 }
 
 test("Move down puts the row after its neighbour at once and sends the new order", async ({ page }) => {
@@ -51,7 +51,7 @@ test("Move down puts the row after its neighbour at once and sends the new order
   await page.goto("/");
   await expect.poll(() => titles(page)).toEqual(["First", "Second", "Third"]);
 
-  await row(page, "First").getByTitle("Move down").click();
+  await row(page, "First").getByRole("button", { name: "Move down" }).click();
 
   // The list changes before the server has answered.
   await expect.poll(() => titles(page)).toEqual(["Second", "First", "Third"]);
@@ -65,7 +65,7 @@ test("Move up puts the row before its neighbour at once and sends the new order"
   await page.goto("/");
   await expect.poll(() => titles(page)).toEqual(["First", "Second", "Third"]);
 
-  await row(page, "Third").getByTitle("Move up").click();
+  await row(page, "Third").getByRole("button", { name: "Move up" }).click();
 
   await expect.poll(() => titles(page)).toEqual(["First", "Third", "Second"]);
   await expect.poll(() => api.reorders).toEqual([[1, 3, 2]]);

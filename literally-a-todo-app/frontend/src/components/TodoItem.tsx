@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useDeleteTodo, useUpdateTodo } from "../hooks/useTodos";
+import { cn } from "../lib/cn";
 import type { Todo } from "../types";
 import { Button } from "./ui/Button";
 import { Checkbox } from "./ui/Checkbox";
@@ -66,22 +67,14 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
 
   return (
     <div
-      style={{
-        height: 36,
-        padding: "0 8px",
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        borderBottom: "1px solid #999",
-        opacity: completed ? 0.5 : 1,
-        background: "#fff",
-        position: "relative",
-      }}
-      className="todo-row"
+      className={cn(
+        "group/row relative flex h-9 items-center gap-2 border-b border-muted bg-surface-lowest px-2",
+        completed && "opacity-50",
+      )}
     >
       <Checkbox checked={completed} onChange={toggleCompleted} label={todo.title} />
 
-      <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center" }}>
+      <div className="flex min-w-0 flex-1 items-center">
         {editing ? (
           <input
             ref={inputRef}
@@ -89,49 +82,31 @@ export function TodoItem({ todo, dragHandleProps, isFirst, isLast, onMoveUp, onM
             onChange={(e) => setEditTitle(e.target.value)}
             onKeyDown={handleEditKeyDown}
             onBlur={cancelEdit}
-            style={{
-              width: "100%",
-              border: "1px solid #000",
-              outline: "none",
-              background: "transparent",
-              fontFamily: "inherit",
-              fontSize: 14,
-              color: "#000",
-              height: 24,
-              padding: "0 4px",
-            }}
+            className="h-6 w-full border border-primary bg-transparent px-1 text-body text-primary outline-none"
           />
         ) : (
           <Button
             onClick={startEdit}
-            style={{
-              fontSize: 14,
-              cursor: "text",
-              textDecoration: completed ? "line-through" : "none",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              flex: 1,
-              minWidth: 0,
-              padding: 0,
-              textAlign: "left",
-              lineHeight: "inherit",
-              userSelect: "none",
-            }}
+            className={cn(
+              "min-w-0 flex-1 cursor-text truncate p-0 text-left text-body select-none",
+              completed && "line-through",
+            )}
           >
             {todo.title}
           </Button>
         )}
       </div>
 
-      <div className="todo-actions" style={{ display: "flex", alignItems: "center", gap: 2 }}>
+      {/* Shown while the pointer is over the row, while a button in it has focus, and always on a touch screen,
+          which has no hover. */}
+      <div
+        className={cn(
+          "flex items-center gap-0.5 opacity-0 group-focus-within/row:opacity-100 group-hover/row:opacity-100",
+          "motion-safe:transition-opacity motion-safe:duration-75 [@media(hover:none)]:opacity-100",
+        )}
+      >
         {dragHandleProps && (
-          <Button
-            variant="icon"
-            aria-label="Drag to reorder"
-            style={{ cursor: "grab", touchAction: "none" }}
-            {...dragHandleProps}
-          >
+          <Button variant="icon" aria-label="Drag to reorder" className="cursor-grab touch-none" {...dragHandleProps}>
             <Icon name="drag_indicator" />
           </Button>
         )}

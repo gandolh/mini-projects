@@ -15,14 +15,6 @@ body {
   min-height: 100vh;
 }
 
-.todo-row .todo-actions {
-  opacity: 0;
-  transition: opacity 0.075s;
-}
-.todo-row:hover .todo-actions {
-  opacity: 1;
-}
-
 a {
   color: inherit;
 }
