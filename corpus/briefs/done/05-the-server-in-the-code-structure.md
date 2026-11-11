@@ -186,3 +186,27 @@ Follow the skill's `migrating-a-server.md`. One commit per step. After each, `np
 - The skills library should hear two things from this app: the Round 8 trap that a schema stricter than the handler (`completed: boolean`) breaks the client, and that a server with no environment reads still gets a `config.ts`.
 
 **Update 2026-11-11 (brief 02 landed):** dependency-cruiser is already in `check:conventions` (a root `.dependency-cruiser.cjs`, no rule lowered, 0 findings), and `n/no-process-env` is a dated warning block in `backend/eslint.config.js` as the brief says (nothing reads the environment yet; `config.ts` is exempt in the house config). What this brief keeps: that block goes, `check-structure --warn-only` comes off here, and `config.ts` is the exempt reader. Run knip, ESLint and the checkers per project; the tools live in the app folder's `package.json`.
+
+## Outcome (2026-11-11)
+
+Built on `main`, after the house-style 1.2.0 sync (`dd92b54`). The commits run from `65dc42d` (config, `buildApp`, `server.ts`) to the strict `check-structure` commit. `npm run check` in `literally-a-todo-app/` exits 0 (25 s): typecheck, ESLint, Prettier, the frontend's tests, the backend's 21 vitest tests, knip, dependency-cruiser, `check-base-ui` and `check-structure` strict with 0 findings. Acceptance: `process.env` is read only in `config.ts` (the grep prints the one line) and `no-process-env` is an error again; `listen(` appears only in `server.ts`; five routes, five `schema:` with a response; the three `req.body` reads are of validated bodies; `PATCH` with `{ "completed": 1 }` and with `true` both return 200 (a test); a deliberate `lib/` import of fastify and a cross-feature import of `store.ts` each failed dependency-cruiser and were reverted; `tsx src/server.ts` served all five routes with the frontend's payload shapes on a spare port and a scratch database, and a SIGINT ended it with exit 0.
+
+- **Reply capture:** 34 requests, before and after each step (in the log). The splits changed none; the error plugin 7, the schemas 5 (4 of them again); the 8 that differ at the end are the table's five rows plus reorder with no body, Fastify's bad-JSON body and the unknown-method 404. Dropping `position` from `todoSchema` once changed the list reply, so the schema is live.
+- **Tests:** 21 in `config.test.ts`, `features/todos/routes.test.ts` and `replies.test.ts`: the 15 table rows (the changing ones added with their schema), a stripped column, a reply that fails its schema (500, no detail) and a thrown error whose message stays out of the reply.
+
+### Deviations
+
+- **`PATCH /:id` keeps a blank-title check in the handler,** not the schema, so a missing task still answers 404 before a blank title answers 400 (the brief listed `routes.ts:53` for removal). `title: 5` and `completed: "yes"` are new 400s, "title must be a string" and "completed must be a boolean, 0 or 1" (the brief's table had no row for them; both were a 500 or a silent coercion).
+- **Fastify's own 400 (bad JSON) now has the body `{ "error": "<message>" }`,** not Fastify's default (`statusCode`, `code`, `error`, `message`), because the one error handler writes one body (Q43).
+- **Every 500 body is `{ "error": "internal error" }`.** The frontend reads no message, so no client text changes.
+- **No `ApiError` class and no `lib/`:** the handlers send their own 400 and 404, so there is nothing to throw. The skill's skeleton has `ApiError` for handlers that throw.
+- **No rate-limited 404, no `trustProxy`, no timeouts:** the server is undeployed, on loopback, with no `@fastify/rate-limit` (decision 9).
+- **Files outside the brief's list:** the root `package.json` (`check` runs the backend's tests; `--warn-only` went), `backend/package.json`'s `test` script and `vitest` 5.1.0 (the frontend's version), and `corpus/index.md` (regenerated).
+- **The frontend was not run against the new server** (no dev servers, to keep the machine light): the capture and the real-server run used the frontend's exact payloads (`api/todos.ts`), and its e2e specs mock the API.
+- **`exactOptionalPropertyTypes` stays off** (from the sync): the frontend has one finding, `components/ui/RadioGroup.test.tsx:17`; the backend has none.
+
+### Handoff for dependents
+
+- **Run it:** `npm run dev` or `npm start` in `backend/` (still `tsx`, no build); `npm test` there runs vitest. Settings: `PORT`, `HOST`, `DATABASE_PATH` (a bad `PORT` throws a `ConfigError` before the app exists).
+- **Versions, pinned:** zod 4.6.7, `@fastify/type-provider-zod` 1.0.3, `fastify-plugin` 6.0.1, `close-with-grace` 2.5.0, `@fastify/swagger` 9.9.3 and `openapi-types` 12.1.3 (the provider's peers), vitest 5.1.0. Fastify stays 5.8.5.
+- **The contract:** every status and body for a valid request is as before; the changed replies are in the log and decisions.

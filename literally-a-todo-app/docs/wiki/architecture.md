@@ -10,9 +10,11 @@ Monorepo with two top-level directories: `backend/` and `frontend/`. A single SQ
 - **Framework:** Fastify 5
 - **Database:** better-sqlite3 (synchronous SQLite driver)
 - **Language:** TypeScript, compiled on-the-fly with `tsx`
-- **Entry point:** `backend/src/server.ts` — creates Fastify instance, registers routes, listens on `127.0.0.1:3000`
-- **Routes:** `backend/src/routes.ts` — all todo CRUD + reorder endpoints
-- **DB layer:** `backend/src/db.ts` — exports a single `better-sqlite3` Database instance; runs `CREATE TABLE IF NOT EXISTS` on import
+- **Entry point:** `backend/src/server.ts` — loads the config, builds the app with `buildApp`, listens on `127.0.0.1:3000`
+- **App:** `backend/src/app.ts` — `buildApp(config)`: zod compilers, the errors plugin, the todo feature; never listens
+- **Routes and SQL:** `backend/src/features/todos/` — `routes.ts`, `schemas.ts`, `store.ts`
+- **DB layer:** `backend/src/db/open.ts` — `openDb(path)` returns a `better-sqlite3` handle and runs `CREATE TABLE IF NOT EXISTS`
+- **Tests:** vitest with `app.inject()` through `testing/buildTestApp.ts` (`npm test` in `backend/`)
 
 ## Frontend
 

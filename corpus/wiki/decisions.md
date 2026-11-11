@@ -5,6 +5,20 @@ updated: 2026-11-11
 
 # Decisions
 
+## The todo server in the house code structure (2026-11-11)
+
+The server (`backend/src`) went from three files and 100 lines to the shape the estate's other Fastify servers get, scaled to one feature. Brief 05.
+
+- **The layout:** `server.ts` listens and wires `close-with-grace`; `app.ts` exports `buildApp(config)` and never listens; `config.ts` is the one reader of the environment (`PORT`, `HOST`, `DATABASE_PATH`, parsed with zod, defaults equal to the old literals); `db/open.ts` opens the file with no import-time effect; `features/todos/` holds `routes.ts`, `schemas.ts`, `store.ts` and `index.ts`; `plugins/errors.ts` is the one error handler; `testing/buildTestApp.ts` builds the app on `:memory:`.
+- **Every route has a response schema,** through `@fastify/type-provider-zod` 1.0.3 and zod 4.6.7. The schemas live in the backend (Q55: there is no `shared/`, and the frontend keeps its hand-written `types.ts`).
+- **`completed` is a boolean, 0 or 1,** because the frontend sends 0 | 1 and the old handler took either by truthiness. A `z.boolean()` would have answered every tick with a 400.
+- **`:id` stays a string,** and a blank title is still checked in the handler after the 404, so a missing task still wins over a blank title as before.
+- **The error body stays `{ "error": "<message>" }`** (Q43). A schema failure is a 400 with the first issue's message (the schemas set the old five messages), a Fastify 4xx keeps its status and message, an unknown URL is 404 `{ "error": "not found" }`, and everything else is 500 `{ "error": "internal error" }` with the detail logged. A declared 4xx schema is the generic `{ error: string }`, because a declared status encodes every reply on it.
+- **Behaviour that changed, accepted:** a non-string title and no body on `POST` (500 to 400), `PATCH` with no body (500 to 200, row unchanged), `ids: ["x"]` (200 that updated nothing, to 400), reorder with no body (500 to 400), the unknown-URL body, Fastify's own 400 body (now `{ error }`) and every 500 body. The frontend reads none of these.
+- **Timeouts and `trustProxy` are not set.** The server listens on loopback only, behind no proxy, and no route runs long; Fastify's defaults stay. No logger option beyond `logger: true` in `server.ts`, as before.
+- **Rejected:** a flat `routes.ts` and `store.ts` (the library's tree asks for `features/`, and the next route group gets a place), `@fastify/autoload` (explicit registration, Q24), TypeBox (the estate moved to zod), a `shared/` workspace (this repo has no workspaces; a new brief if the owner wants one source), and a rate-limited 404 (`@fastify/rate-limit` is not a dependency).
+- **The gate:** `check-structure` runs strict with 0 findings (it had 6 before: rule 2 once, rule 6 five times), and `npm run check` runs the backend's vitest.
+
 ## Utilitarian monospace, styled with Tailwind v4 (2026-11-11)
 
 The todo app's frontend moved from inline `style` props and one plain stylesheet to Tailwind 4.3.5, the estate's

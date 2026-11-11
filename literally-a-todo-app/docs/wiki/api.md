@@ -44,23 +44,23 @@ Creates a new todo. Position is set to `MAX(position) + 1`.
 ```
 
 **Response 201** — the created todo object  
-**Response 400** `{ "error": "title is required" }` — if title is missing or blank
+**Response 400** `{ "error": "title is required" }` — if the body, the title or a string title is missing or blank
 
 ---
 
 ## PATCH /api/todos/reorder
 
-Reorders todos by reassigning positions. Must be called before `PATCH /api/todos/:id` in route registration (already handled in `routes.ts`).
+Reorders todos by reassigning positions. Must be called before `PATCH /api/todos/:id` in route registration (already handled in `features/todos/routes.ts`).
 
 **Request body**
 ```json
 { "ids": [3, 1, 2] }
 ```
 
-`ids` is the full ordered array of todo IDs. Position of each id is set to its index + 1.
+`ids` is the full ordered array of todo IDs, all integers. Position of each id is set to its index + 1.
 
 **Response 200** `{ "ok": true }`  
-**Response 400** `{ "error": "ids must be a non-empty array" }` — if ids is missing or empty
+**Response 400** `{ "error": "ids must be a non-empty array" }` — if ids is missing or empty; `{ "error": "ids must be a non-empty array of integers" }` — if an id is not an integer
 
 ---
 
@@ -73,8 +73,10 @@ Updates title and/or completed status of a todo. Fields not provided are left un
 { "title": "New title", "completed": true }
 ```
 
+`completed` is a boolean, `0` or `1`. No body at all changes nothing and returns the todo.
+
 **Response 200** — the updated todo object  
-**Response 400** `{ "error": "title cannot be empty" }` — if title is explicitly set to blank  
+**Response 400** `{ "error": "title cannot be empty" }` — if title is explicitly set to blank; `{ "error": "title must be a string" }` or `{ "error": "completed must be a boolean, 0 or 1" }` — a wrong type  
 **Response 404** `{ "error": "not found" }` — if id does not exist
 
 ---
@@ -85,3 +87,11 @@ Deletes a todo by id.
 
 **Response 204** — no body  
 **Response 404** `{ "error": "not found" }` — if id does not exist
+
+---
+
+## Other replies
+
+- An unknown URL: **404** `{ "error": "not found" }`.
+- A body that is not valid JSON: **400** `{ "error": "<Fastify's message>" }`.
+- An unexpected failure: **500** `{ "error": "internal error" }`; the detail is in the server log only.
