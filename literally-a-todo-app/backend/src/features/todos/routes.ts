@@ -1,4 +1,6 @@
-import type { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsyncZod } from "@fastify/type-provider-zod";
+import { z } from "zod";
+import { todoSchema } from "./schemas.js";
 import { createTodoStore, type TodoStore } from "./store.js";
 import type { Db } from "../../db/open.js";
 
@@ -7,11 +9,11 @@ export interface TodoContext {
   db: Db;
 }
 
-export const todoRoutes: FastifyPluginAsync<TodoContext> = async (app, { db }) => {
+export const todoRoutes: FastifyPluginAsyncZod<TodoContext> = async (app, { db }) => {
   const todos: TodoStore = createTodoStore(db);
 
   // GET /api/todos
-  app.get("/api/todos", async () => {
+  app.get("/api/todos", { schema: { response: { 200: z.array(todoSchema) } } }, async () => {
     return todos.list();
   });
 

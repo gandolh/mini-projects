@@ -1,12 +1,5 @@
 import type { Db } from "../../db/open.js";
-
-/** A stored task, as the API sends it. */
-interface Todo {
-  id: number;
-  title: string;
-  completed: number;
-  position: number;
-}
+import type { Todo } from "./schemas.js";
 
 /** The todos table. Every query on it lives here; a route never writes SQL. */
 export interface TodoStore {
