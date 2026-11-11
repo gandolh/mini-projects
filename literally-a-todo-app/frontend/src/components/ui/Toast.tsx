@@ -12,12 +12,15 @@ export const toast = {
   error: (message: string): string => manager.add({ title: message, type: "error", timeout: 0, priority: "high" }),
 };
 
-/** Renders the toasts, once, near the root: `<Toaster />`. Top centre, above the sticky header. */
+/**
+ * Renders the toasts, once, near the root: `<Toaster />`. Top centre, just below the sticky header (one row on a
+ * desktop, two on a phone): an error stays until dismissed, so it must not cover the filter tabs.
+ */
 export function Toaster() {
   return (
     <Toast.Provider toastManager={manager} limit={1}>
       <Toast.Portal>
-        <Toast.Viewport className="fixed top-2 left-1/2 z-toast w-[min(22.5rem,calc(100vw-2rem))] -translate-x-1/2">
+        <Toast.Viewport className="fixed top-11 left-1/2 z-toast w-[min(22.5rem,calc(100vw-2rem))] -translate-x-1/2 max-sm:top-20">
           <ToastList />
         </Toast.Viewport>
       </Toast.Portal>

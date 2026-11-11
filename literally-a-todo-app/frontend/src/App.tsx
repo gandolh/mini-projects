@@ -31,8 +31,9 @@ export function App() {
         </div>
       </main>
 
-      <footer className="sticky bottom-0 mt-auto flex h-9 items-center justify-between border-t border-primary bg-surface-lowest px-2 text-footer uppercase opacity-50">
-        <span>Literally a todo app</span>
+      {/* The footer's text is faded; the theme switch is a control, so it keeps full contrast like the header's tabs. */}
+      <footer className="sticky bottom-0 mt-auto flex h-9 items-center justify-between border-t border-primary/50 bg-surface-lowest px-2 text-footer uppercase">
+        <span className="opacity-50">Literally a todo app</span>
         <ThemeSwitch />
       </footer>
 

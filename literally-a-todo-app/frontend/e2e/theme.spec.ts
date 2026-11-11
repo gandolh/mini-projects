@@ -28,10 +28,11 @@ test("Dark is applied at once and kept across a reload, before the app's script 
   await expect(page.locator("body")).toHaveCSS("background-color", DARK_PAGE);
 
   // Without the app's module, only index.html's boot script can set the theme: the page is dark from the start.
+  // The attribute is the boot script's whole job. Under the dev server the stylesheet arrives through main.tsx, so
+  // with that module blocked there is no CSS to read a colour scheme from; the build links it from index.html.
   await page.route("**/src/main.tsx", (route) => route.abort());
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
 });
 
 test("System follows the operating system's setting, live", async ({ page }) => {
