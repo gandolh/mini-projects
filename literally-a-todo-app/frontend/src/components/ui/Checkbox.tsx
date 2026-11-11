@@ -14,18 +14,7 @@ export function Checkbox({ checked, onChange, label }: Props) {
       checked={checked}
       onCheckedChange={onChange}
       aria-label={label}
-      style={{
-        width: 16,
-        height: 16,
-        border: "1px solid #000",
-        borderRadius: 0,
-        background: checked ? "#000" : "#fff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        flexShrink: 0,
-      }}
+      className="flex size-4 shrink-0 cursor-pointer items-center justify-center border border-primary bg-surface-lowest data-checked:bg-primary"
     >
       <BaseCheckbox.Indicator>
         <Icon name="check" className="text-tick text-surface-lowest [font-variation-settings:'FILL'_1]" />
