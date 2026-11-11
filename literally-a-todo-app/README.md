@@ -17,6 +17,14 @@ cd frontend && npm install && npm run dev     # http://localhost:5173
 
 Run them in two terminals. The list is stored in `todos.db` in this folder. The API, the stack and the design rules are in the project's wiki, [docs/wiki/](docs/wiki/index.md).
 
+## Check it
+
+```bash
+npm install                                    # once, in this folder: the lint and format tools
+(cd frontend && npm install) && (cd backend && npm install)
+npm run check                                  # typecheck, lint, format and conventions for both projects
+```
+
 ## License
 
 MIT, see [LICENSE](LICENSE).

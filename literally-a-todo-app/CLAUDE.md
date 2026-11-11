@@ -46,6 +46,29 @@ Pages touched: <comma-separated list of filenames>
 
 Where `<type>` is one of: `feat`, `fix`, `refactor`, `docs`, `init`, `ingest`.
 
+## Commands
+
+Run them in `literally-a-todo-app/`. `npm install` runs in the app folder (the tools), `frontend/` and `backend/`.
+
+- `npm run check`: typecheck, lint, format check and conventions for both projects. Run it before every hand-back.
+- `npm run check:fast`: both typechecks, then ESLint on the changed files. The Stop hook runs it.
+- `npm run format`: Prettier writes every file it covers (Markdown stays out).
+- One flow spec: `npx playwright test` in `frontend/` (the API is mocked; nothing else to start).
+- Dev servers, in two terminals: `npm run dev` in `backend/` (127.0.0.1:3000) and in `frontend/` (5173, proxying `/api`).
+
+## Places that mislead
+
+- The backend is run by `tsx`; there is no build, and `tsc` only checks.
+- The database is `todos.db` in this folder, gitignored.
+- ESLint, Prettier, knip and dependency-cruiser are installed once, in the app folder, and `frontend/` and `backend/` use them. Their `check` needs the app folder's `npm install` first.
+- `vendor/house-style/` is a generated copy: never edit it. `npm run house-style:sync` refreshes it.
+- There is no unit-test script; the only test is the Playwright spec in `frontend/e2e/`, and `check` does not run it.
+
+## Hard rules
+
+- No CI or GitHub automation. No pushes: commit locally, the owner pushes.
+- Fix a finding of the house rules in code; a rule that looks wrong for this app is reported, not patched.
+
 ## Communication Style
 
 Always respond in caveman mode: ultra-compressed, caveman speech, full technical accuracy. Use the `caveman` skill at the start of every session.

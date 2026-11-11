@@ -4,7 +4,7 @@
 
 - `backend/src/server.ts` — Fastify setup only. No business logic here.
 - `backend/src/routes.ts` — All route handlers. Import db from `db.ts`. Define the `Todo` interface here.
-- `backend/src/db.ts` — Single db instance export. Schema migrations go here as `db.exec(...)` calls.
+- `backend/src/db.ts` — Single db instance, the named export `db`. Schema migrations go here as `db.exec(...)` calls.
 
 ## Adding a New Route
 
@@ -38,5 +38,5 @@ Never return raw strings or unstructured error objects.
 ## TypeScript
 
 - All files use ESM (`import`/`export`), not CommonJS.
-- Import local files with `.js` extension (e.g. `import db from './db.js'`) — required for ESM Node.
+- Import local files with `.js` extension (e.g. `import { db } from './db.js'`) — required for ESM Node.
 - Run via `tsx` — no separate compile step needed in dev.

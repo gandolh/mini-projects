@@ -2,7 +2,7 @@
 
 ## Stack
 
-- React 19 + Vite 8 + TypeScript (`~6.0.2`)
+- React 19 + Vite 8 + TypeScript (`6.0.3`)
 - `axios` — HTTP client (single instance, `baseURL: '/api'`)
 - `@tanstack/react-query` — server state; all mutations invalidate `['todos']` on success
 - `@base-ui/react` — headless UI primitives (Checkbox, Button, Separator)
@@ -32,7 +32,7 @@ frontend/src/
 - TanStack Query: all mutations use **optimistic updates** (cancel → snapshot → mutate → rollback on error → invalidate on settled)
 - Use `@base-ui/react` primitives wherever a component exists; fall back to plain HTML only when no equivalent exists
 - Inline edit state is local to `TodoItem` — controlled `<input>` replacing a `<span>`
-- Drag reorder: local `items` state mirrors server data for smooth UX; resets on query refetch
+- Drag reorder: no local copy of the list; `useReorderTodos` updates the query cache before the server answers
 - Drag via `@use-gesture/react` `useDrag` — row height 36px used to compute step count from `movement[1]`
 
 ## Toast Triggers
