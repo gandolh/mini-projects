@@ -1,6 +1,7 @@
 import { Radio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
-import { useId, type CSSProperties, type ReactNode } from "react";
+import { useId, type ReactNode } from "react";
+import { cn } from "../../lib/cn";
 
 interface RadioOption<Value extends string> {
   value: Value;
@@ -16,16 +17,6 @@ export interface RadioGroupProps<Value extends string> {
   look?: "list" | "segmented";
 }
 
-// The label of a segmented group is for a screen reader only.
-const visuallyHidden: CSSProperties = {
-  position: "absolute",
-  width: 1,
-  height: 1,
-  overflow: "hidden",
-  clip: "rect(0 0 0 0)",
-  whiteSpace: "nowrap",
-};
-
 /**
  * One choice from a few. Tab enters the group, and arrow keys move and choose (base-ui rule 16): for a
  * filter, and for a setting kept on the device.
@@ -40,53 +31,33 @@ export function RadioGroup<Value extends string>({
   const labelId = useId();
   const segmented = look === "segmented";
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, height: segmented ? "100%" : undefined }}>
-      <div id={labelId} style={segmented ? visuallyHidden : { fontSize: 12, color: "#999" }}>
+    <div className={cn("flex flex-col gap-1.5", segmented && "h-full")}>
+      {/* The label of a segmented group is for a screen reader only. */}
+      <div id={labelId} className={segmented ? "sr-only" : "text-label text-muted"}>
         {label}
       </div>
       <BaseRadioGroup<Value>
         aria-labelledby={labelId}
         value={value}
         onValueChange={onValueChange}
-        style={segmented ? { display: "flex", height: "100%" } : { display: "flex", flexDirection: "column", gap: 8 }}
+        className={segmented ? "flex h-full" : "flex flex-col gap-2"}
       >
         {options.map((option) =>
           segmented ? (
             <Radio.Root
               key={option.value}
               value={option.value}
-              style={(state) => ({
-                display: "flex",
-                alignItems: "center",
-                height: 36,
-                padding: "0 8px",
-                cursor: "pointer",
-                userSelect: "none",
-                borderBottom: state.checked ? "2px solid #000" : "2px solid transparent",
-                fontWeight: state.checked ? 700 : 400,
-                color: state.checked ? "#000" : "#999",
-              })}
+              className="flex h-9 cursor-pointer items-center border-b-2 border-transparent px-2 text-muted select-none data-checked:border-primary data-checked:font-bold data-checked:text-primary"
             >
               {option.label}
             </Radio.Root>
           ) : (
-            <label key={option.value} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <label key={option.value} className="flex items-center gap-2">
               <Radio.Root
                 value={option.value}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 16,
-                  height: 16,
-                  border: "1px solid #000",
-                  borderRadius: "50%",
-                  background: "#fff",
-                  cursor: "pointer",
-                  flexShrink: 0,
-                }}
+                className="flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full border border-primary bg-surface-lowest"
               >
-                <Radio.Indicator style={{ width: 8, height: 8, borderRadius: "50%", background: "#000" }} />
+                <Radio.Indicator className="size-2 rounded-full bg-primary" />
               </Radio.Root>
               {option.label}
             </label>

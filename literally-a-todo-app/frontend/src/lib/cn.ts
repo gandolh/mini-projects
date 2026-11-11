@@ -11,7 +11,7 @@ import { extendTailwindMerge } from "tailwind-merge";
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      text: ["body", "title", "footer", "icon", "tick"],
+      text: ["body", "title", "footer", "label", "icon", "tick"],
       leading: ["row"],
       font: ["mono", "icon"],
     },
