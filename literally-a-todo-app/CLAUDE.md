@@ -53,7 +53,8 @@ Run them in `literally-a-todo-app/`. `npm install` runs in the app folder (the t
 - `npm run check`: typecheck, lint, format check and conventions for both projects. Run it before every hand-back.
 - `npm run check:fast`: both typechecks, then ESLint on the changed files. The Stop hook runs it.
 - `npm run format`: Prettier writes every file it covers (Markdown stays out).
-- One flow spec: `npx playwright test` in `frontend/` (the API is mocked; nothing else to start).
+- `npm test` in `frontend/`: vitest with jsdom, for the wrappers that hold logic (`check` runs it).
+- The flow specs: `npm run test:e2e` in `frontend/` (the API is mocked; nothing else to start). `check` does not run them.
 - Dev servers, in two terminals: `npm run dev` in `backend/` (127.0.0.1:3000) and in `frontend/` (5173, proxying `/api`).
 
 ## Places that mislead
@@ -62,7 +63,8 @@ Run them in `literally-a-todo-app/`. `npm install` runs in the app folder (the t
 - The database is `todos.db` in this folder, gitignored.
 - ESLint, Prettier, knip and dependency-cruiser are installed once, in the app folder, and `frontend/` and `backend/` use them. Their `check` needs the app folder's `npm install` first.
 - `vendor/house-style/` is a generated copy: never edit it. `npm run house-style:sync` refreshes it.
-- There is no unit-test script; the only test is the Playwright spec in `frontend/e2e/`, and `check` does not run it.
+- The vitest tests sit beside the code (`*.test.tsx`); the Playwright specs are in `frontend/e2e/`.
+- The icon font comes from the network: offline, a glyph shows as its ligature word and covers its neighbour, so a Playwright spec that clicks an icon button hides `.material-symbols-outlined` first (see `e2e/drag.spec.ts`).
 
 ## Hard rules
 

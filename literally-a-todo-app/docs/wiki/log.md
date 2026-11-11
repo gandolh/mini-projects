@@ -27,3 +27,11 @@ Pages touched: frontend-rules.md, design-rules.md
 Summary: All frontend components built and wired to API. Optimistic updates on all mutations, drag-to-reorder via @use-gesture/react, inline editing in TodoItem, filter tabs (all/active/completed). Corrected wiki: mutations use optimistic updates (not just invalidate); toasts are error-only.
 
 Pages touched: frontend-rules.md
+
+---
+
+## [2026-11-11] refactor | Base UI by the conventions
+
+Summary: Wrappers moved to `components/ui/`, the filter is a `RadioGroup`, the toast is Base UI's (sonner removed), icon-only buttons have names, the add row and the title are buttons, the drag handle works (handlers and touch-action), and vitest was added for the wrappers.
+
+Pages touched: frontend-rules.md

@@ -39,7 +39,7 @@ function ToastList() {
       style={{ border: "1px solid #000", background: "#fff", padding: "0 8px", fontSize: 14 }}
     >
       <Toast.Content>
-        <Toast.Title />
+        <Toast.Title style={{ fontSize: 14, fontWeight: 400 }} />
       </Toast.Content>
     </Toast.Root>
   ));
