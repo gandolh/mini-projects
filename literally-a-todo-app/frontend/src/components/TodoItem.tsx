@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { useDeleteTodo, useUpdateTodo } from "../hooks/useTodos";
 import type { Todo } from "../types";
-import { Button } from "./shared/Button";
-import { Checkbox } from "./shared/Checkbox";
+import { Button } from "./ui/Button";
+import { Checkbox } from "./ui/Checkbox";
 
 interface Props {
   todo: Todo;

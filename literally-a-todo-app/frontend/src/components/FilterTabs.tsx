@@ -1,5 +1,5 @@
 import type { Filter } from "../types";
-import { Button } from "./shared/Button";
+import { Button } from "./ui/Button";
 
 interface Props {
   filter: Filter;

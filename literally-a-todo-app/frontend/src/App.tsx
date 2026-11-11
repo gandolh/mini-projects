@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 import { FilterTabs } from "./components/FilterTabs";
 import { AddTodoField } from "./components/AddTodoField";
 import { TodoList } from "./components/TodoList";
-import { Separator } from "./components/shared/Separator";
+import { Separator } from "./components/ui/Separator";
 import type { Filter } from "./types";
 
 export function App() {
