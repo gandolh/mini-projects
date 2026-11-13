@@ -42,8 +42,9 @@ function handleOf(page: Page, title: string) {
     .getByRole("button", { name: "Drag to reorder" });
 }
 
-// Two rows down: the handle moves 72 px, which is two 36 px rows.
+// Two rows down: 72 px is two 36 px rows of a mouse at 1280 px, 96 px two 48 px rows on touch.
 const DRAG_PX = 72;
+const TOUCH_DRAG_PX = 96;
 
 test("a mouse drag of the first task by two rows puts it third", async ({ page }) => {
   const serverOrder = await mockApi(page);
@@ -82,7 +83,7 @@ test("a touch drag of the first task by two rows puts it third", async ({ browse
   for (let step = 1; step <= 12; step++) {
     await cdp.send("Input.dispatchTouchEvent", {
       type: "touchMove",
-      touchPoints: [{ x, y: y + (DRAG_PX * step) / 12 }],
+      touchPoints: [{ x, y: y + (TOUCH_DRAG_PX * step) / 12 }],
     });
   }
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });

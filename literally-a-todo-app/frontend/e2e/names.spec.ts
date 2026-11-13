@@ -16,7 +16,7 @@ test("every icon-only control and each task's checkbox is found by its name", as
   }
 
   // A task's edit and the add field each show a Save button.
-  await page.getByRole("button", { name: "First", exact: true }).click();
+  await page.getByRole("button", { name: "Edit First", exact: true }).click();
   await expect(page.getByRole("button", { name: "Save" })).toHaveCount(1);
   await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Add a new task..." }).click();

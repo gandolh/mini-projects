@@ -77,7 +77,7 @@ export function TodoList({ filter }: Props) {
 
 /** The one line in place of the list: loading, or no tasks. */
 function Message({ children }: { children: string }) {
-  return <div className="flex h-9 items-center px-2 text-body text-muted">{children}</div>;
+  return <div className="flex min-h-12 items-center px-4 text-body text-muted touch:text-body-phone">{children}</div>;
 }
 
 interface DraggableProps {
@@ -94,6 +94,7 @@ interface DraggableProps {
 function DraggableTodoItem({ todo, index, count, isFirst, isLast, onMoveUp, onMoveDown, onDrop }: DraggableProps) {
   const [isDragging, setIsDragging] = useState(false);
   const draggingIndex = useRef<number | null>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
 
   const bind = useDrag(({ active, movement: [, my], last }) => {
     if (active) {
@@ -104,7 +105,7 @@ function DraggableTodoItem({ todo, index, count, isFirst, isLast, onMoveUp, onMo
       setIsDragging(false);
       if (draggingIndex.current !== null) {
         const from = draggingIndex.current;
-        const to = dropIndex(from, my, count);
+        const to = dropIndex(from, my, count, wrapper.current?.offsetHeight);
         if (to !== null) onDrop(from, to);
       }
       draggingIndex.current = null;
@@ -114,7 +115,14 @@ function DraggableTodoItem({ todo, index, count, isFirst, isLast, onMoveUp, onMo
   const dragHandleProps = bind();
 
   return (
-    <div className={cn("motion-safe:transition-opacity motion-safe:duration-100", isDragging && "opacity-40")}>
+    // The greenbar: odd rows take the sheet's surface, even rows the band, by their place in the list on screen.
+    <div
+      ref={wrapper}
+      className={cn(
+        "bg-surface-lowest even:bg-surface-low motion-safe:transition-opacity motion-safe:duration-100",
+        isDragging && "opacity-40",
+      )}
+    >
       <TodoItem
         todo={todo}
         dragHandleProps={dragHandleProps}

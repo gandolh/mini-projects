@@ -3,8 +3,8 @@ import type { ComponentProps } from "react";
 import { cn } from "../../lib/cn";
 
 const VARIANTS = {
-  /** A 20 px glyph button: black, grey while disabled. */
-  icon: "flex size-5 shrink-0 cursor-pointer items-center justify-center text-primary data-disabled:cursor-default data-disabled:text-muted",
+  /** A glyph button: 40 px square (36 for a mouse at 1024 px and up, 44 by 48 on touch), ink, muted while disabled. */
+  icon: "grid size-10 shrink-0 cursor-pointer place-items-center text-primary not-data-disabled:hover:bg-line not-data-disabled:active:bg-primary not-data-disabled:active:text-on-primary data-disabled:cursor-default data-disabled:text-muted dense:size-9 touch:h-12 touch:w-11",
   /** A text button with the row's 8 px padding. */
   default: "cursor-pointer px-2",
 } as const;

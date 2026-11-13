@@ -20,7 +20,7 @@ for (const key of ["Enter", "Space"]) {
     await mockApi(page);
     await page.goto("/");
 
-    await page.getByRole("button", { name: "First", exact: true }).focus();
+    await page.getByRole("button", { name: "Edit First", exact: true }).focus();
     await page.keyboard.press(key);
 
     await expect(page.getByRole("textbox")).toHaveValue("First");
