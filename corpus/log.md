@@ -97,3 +97,7 @@ Findings for the skills library (the method in `migrating-from-plain-css.md`):
 ## [2026-11-11] build | Brief 05: the todo server in the house code structure
 
 `backend/src` has `server.ts`, `app.ts`, `config.ts`, `db/open.ts`, `features/todos/` (routes, schemas, store, index), `plugins/errors.ts` and `testing/buildTestApp.ts`; every route declares a response schema, and `check-structure` runs strict. Before: `check-structure` counted 6 findings (rule 2 once, rule 6 five times). After: 0 errors, 0 warnings. The reply capture (34 requests: every route, the rows of the brief's table and the error cases, on a seeded database) matched byte for byte after the split and the store; the error plugin changed 7 replies and the schemas 5 (4 of them already changed by the plugin), all error replies: 26 of 34 stayed identical to the start. The 8 that differ: a non-string title and no body on `POST` (500 to 400), `PATCH` with no body (500 to 200), `ids: ["x"]` (200 to 400), reorder with no body (500 to 400), Fastify's bad-JSON body (now `{ error }`), and the unknown URL and unknown method (404 `{ error: "not found" }`). Decisions: [wiki/decisions.md](wiki/decisions.md). The house-style 1.2.0 sync went in first.
+
+## [2026-11-13] decision | Brief 06: the redesign direction is approved
+
+The owner approved the redesign direction "Greenbar sheet" for `literally-a-todo-app` on the estate redesign board, with every question on the board standing as proposed. The build follows in token, screen and docs commits.
