@@ -43,3 +43,11 @@ Decided 2026-11-13 (controller): self-host from an `@fontsource` package at an e
 - [ ] No request leaves the machine for a font: the built CSS and `index.html` hold no off-site font URL.
 - [ ] The glyphs look the same as before (a screenshot of the list rows, compared by eye).
 - [ ] `npm run check` passes in `literally-a-todo-app/`, the frontend's Playwright specs pass with `--workers=2`, and `bash corpus/lint.sh` ends clean.
+
+## Outcome (2026-11-13)
+
+Built in commit `7a95c9d`. `frontend/src/styles/index.css` imports `@fontsource/material-symbols-outlined/400.css` (pinned 5.3.9, exact) in `layer(vendor)` where the Google `@import url()` was; `e2e/drag.spec.ts` now aborts the local font file; `design-rules.md` no longer says Google Fonts. In the build the layers come out in the written order (theme, base, vendor, components, utilities), and `dist/` and the source name no off-site font URL. In a browser against the dev server the font loaded from the app's own origin and the icons drew.
+
+- **Size:** the package has no glyph subset, so the font is the full latin 400 file: 323 kB woff2 (a 380 kB woff fallback is bundled but browsers with woff2 never fetch it). The previous size is not recorded: the Google file was remote and not fetched. A real subset would mean committing a font file that is not the package's, so it was left out.
+- **One difference:** the static font has no variable axes, so the optical size is fixed at 24 where Google's served 20 to 48 by font size, and `FILL` is gone. `Checkbox.tsx` still sets `font-variation-settings: 'FILL' 1` on the `check` glyph, which has no enclosed area and looks the same either way, so it was left alone as outside the brief's files. The variable package would keep the axes at 1.1 MB.
+- **Checks:** `npm run check` in `literally-a-todo-app` exits 0, and the frontend's Playwright run passes 30 specs (32 shot specs skipped by design) with 2 workers on a private port.

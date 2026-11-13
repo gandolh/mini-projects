@@ -105,3 +105,7 @@ The owner approved the redesign direction "Greenbar sheet" for `literally-a-todo
 ## [2026-11-13] build | Brief 06: the Greenbar sheet redesign of the todo app
 
 The tokens (green-tinted surfaces, ink as the only action colour, Azeret Mono self-hosted) landed first, then the page shell, the rows and edit row, the add row and the toast, each as its own commit. The brief's two Acceptance changes: the e2e specs of briefs 02 and 03 pin the reopened layout and were updated to it (title button `Edit <title>`, actions behind the ⋮ menu on touch, the head band), and the contrast, focus-ring, reduced-motion and overflow specs are in `e2e/floor.spec.ts`. Reopened decisions, deviations and the comp comparison: [wiki/decisions.md](wiki/decisions.md) and the brief's outcome note.
+
+## [2026-11-13] build | Brief 07: the todo app serves its icon font itself
+
+Material Symbols now comes from `@fontsource/material-symbols-outlined` 5.3.9 (exact pin, 400 weight, 323 kB woff2) in the `vendor` layer instead of a Google Fonts `@import`. No font request leaves the site, and the build keeps the layer order the stylesheet states. The package has no glyph subset, and the optical-size axis is fixed at 24. The drag spec blocks the local font file. Details in the brief's outcome note.
