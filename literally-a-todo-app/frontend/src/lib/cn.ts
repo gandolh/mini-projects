@@ -15,7 +15,7 @@ const twMerge = extendTailwindMerge({
       font: ["mono", "icon"],
     },
     classGroups: {
-      z: [{ z: ["sticky", "toast"] }],
+      z: [{ z: ["sticky", "popup", "toast"] }],
     },
   },
   override: {

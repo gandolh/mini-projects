@@ -13,8 +13,12 @@ export interface RadioGroupProps<Value extends string> {
   options: readonly RadioOption<Value>[];
   value: Value;
   onValueChange: (value: Value) => void;
-  /** `list` stacks radios with dots; `segmented` draws one row of tab-like buttons, for a filter. */
+  /** `list` stacks radios with dots; `segmented` draws a label and one row of buttons, for a filter or a setting. */
   look?: "list" | "segmented";
+  /** How a segmented group marks its choice: `fill` is a solid ink block (the filter), `frame` a 2 px ink frame. */
+  chosen?: "fill" | "frame";
+  /** Under 640 px, the buttons share the row's width (the filter in the sheet's head band). */
+  stretch?: boolean;
 }
 
 /**
@@ -27,27 +31,41 @@ export function RadioGroup<Value extends string>({
   value,
   onValueChange,
   look = "list",
+  chosen = "fill",
+  stretch = false,
 }: RadioGroupProps<Value>) {
   const labelId = useId();
   const segmented = look === "segmented";
   return (
-    <div className={cn("flex flex-col gap-1.5", segmented && "h-full")}>
-      {/* The label of a segmented group is for a screen reader only. */}
-      <div id={labelId} className={segmented ? "sr-only" : "text-label text-muted"}>
+    <div
+      className={cn(
+        segmented ? "flex items-center gap-3" : "flex flex-col gap-1.5",
+        segmented && stretch && "max-sm:flex-1",
+      )}
+    >
+      <div id={labelId} className="text-label text-muted">
         {label}
       </div>
       <BaseRadioGroup<Value>
         aria-labelledby={labelId}
         value={value}
         onValueChange={onValueChange}
-        className={segmented ? "flex h-full" : "flex flex-col gap-2"}
+        className={
+          segmented ? cn("flex min-w-0 border border-outline", stretch && "max-sm:flex-1") : "flex flex-col gap-2"
+        }
       >
         {options.map((option) =>
           segmented ? (
             <Radio.Root
               key={option.value}
               value={option.value}
-              className="flex h-9 cursor-pointer items-center border-b-2 border-transparent px-2 text-muted select-none data-checked:border-primary data-checked:font-bold data-checked:text-primary"
+              className={cn(
+                "relative flex h-8 min-w-18 cursor-pointer items-center justify-center border-l border-outline px-3 text-label select-none first:border-l-0 focus-visible:z-10 active:bg-line data-checked:font-bold max-sm:h-12 max-sm:min-w-0 max-sm:px-3 max-sm:text-[0.875rem]/5",
+                stretch && "max-sm:flex-1 max-sm:px-1",
+                chosen === "fill"
+                  ? "data-checked:bg-primary data-checked:text-on-primary"
+                  : "data-checked:bg-surface-lowest data-checked:ring-2 data-checked:ring-primary data-checked:ring-inset",
+              )}
             >
               {option.label}
             </Radio.Root>

@@ -9,5 +9,14 @@ const THEMES = [
 
 /** Light, Dark or System, kept on this device. A RadioGroup: nothing goes to the server (base-ui rule 16). */
 export function ThemeSwitch() {
-  return <RadioGroup label="Theme" look="segmented" options={THEMES} value={useTheme()} onValueChange={setTheme} />;
+  return (
+    <RadioGroup
+      label="Theme"
+      look="segmented"
+      chosen="frame"
+      options={THEMES}
+      value={useTheme()}
+      onValueChange={setTheme}
+    />
+  );
 }

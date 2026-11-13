@@ -48,3 +48,13 @@ test("System follows the operating system's setting, live", async ({ page }) => 
   await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("body")).toHaveCSS("background-color", LIGHT_PAGE);
 });
+
+test("on a phone the switch sits in its own card under the sheet, and works there", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mockApi(page);
+  await page.goto("/");
+
+  await expect(page.getByRole("radiogroup", { name: "Theme" })).toHaveCount(1);
+  await page.getByRole("radio", { name: "Dark" }).click();
+  await expect(page.locator("body")).toHaveCSS("background-color", DARK_PAGE);
+});

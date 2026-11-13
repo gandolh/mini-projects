@@ -29,6 +29,21 @@ layer(vendor);
   }
 }
 
+/* The two input classes the layout hangs on. `touch`: a touch screen at any width, and any screen under 640 px, where
+   rows are 48 px and the row actions sit behind a menu. `dense`: a mouse at 1024 px and wider, where rows are 36 px.
+   Between them a row is 40 px. `touch` and `dense` never match together. */
+@custom-variant touch {
+  @media (hover: none) {
+    @slot;
+  }
+  @media (width < 40rem) {
+    @slot;
+  }
+}
+@custom-variant dense (@media (hover: hover) and (width >= 64rem));
+/* Under 375 px the gutters shrink to 4 px and the grip to 40 px. Declared last, so it wins over `touch`. */
+@custom-variant narrow (@media (width < 375px));
+
 @theme {
   /* Tailwind's own scales are cleared, so a stray bg-red-500 or text-sm produces nothing. */
   --color-*: initial;
@@ -71,12 +86,20 @@ layer(vendor);
   --font-icon: "Material Symbols Outlined";
   --default-font-family: var(--font-mono);
 
-  /* The two layers: the sticky header, and the toast above it. */
+  /* The layers: the sticky header, an open menu above it, and the toast above both. */
   --z-index-sticky: 50;
+  --z-index-popup: 60;
   --z-index-toast: 100;
 }
 
 @layer base {
+  /* One focus ring for every control: 2 px ink, 2 px off the edge. A control that sits flush against another sets its
+     own offset. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
   /* Light on a first visit; the theme switch sets data-theme on <html> (base-ui rule 14), and System lets the
      operating system pick, live. */
   :root {

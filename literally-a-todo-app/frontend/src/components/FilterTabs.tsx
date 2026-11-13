@@ -14,5 +14,7 @@ const TABS = [
 
 /** Which tasks the list shows. Nothing is saved, so the arrow keys may choose (base-ui rule 16). */
 export function FilterTabs({ filter, onFilterChange }: Props) {
-  return <RadioGroup label="Show" look="segmented" options={TABS} value={filter} onValueChange={onFilterChange} />;
+  return (
+    <RadioGroup label="Show" look="segmented" stretch options={TABS} value={filter} onValueChange={onFilterChange} />
+  );
 }
