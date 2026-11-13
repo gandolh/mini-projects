@@ -35,3 +35,11 @@ Decided 2026-11-13 (controller): find the real cause and fix it. A heavier searc
 - [ ] `python main.py` with `graph.txt` prints a tour of weight 334 that is a valid cycle with that weight.
 - [ ] The tests pass and fail on the old solver (the pin on `graph.txt`).
 - [ ] `bash corpus/lint.sh` ends clean.
+
+## Outcome (2026-11-13)
+
+Fixed in commit `d3105d1`. **The bug:** `TSPSolver.solve` stopped at the first queue entry popped with every city visited, and added the edge back to the start only after that. The entry's `f` is `g` plus a heuristic of 0, so it left out the closing edge. A* is optimal only if the goal test sees the full cost, so a complete path with a cheap closing edge could still sit behind it. On `graph.txt` the 338 tour (closing edge 9-1, weight 15) reaches the end with g 323, below the 334 tour's 324 (closing edge 6-1, weight 10), so it was popped first. The heuristic was fine (the MST of the remaining cities, the current one and the start never overestimates).
+
+**The fix:** a complete path now goes back into the queue with its closing edge added, marked closed, and only a closed entry is returned. No wider search was added.
+
+`test_tsp.py` (stdlib `unittest`) pins 334 on `graph.txt` and 16 on `test_graph.txt`, checks each tour is a valid cycle of the reported weight, and cross-checks 60 seeded random graphs of 3 to 8 cities against a brute force. On the old solver the `graph.txt` pin and the random cross-check fail (two failures); on the fixed one all three pass. The duplicate edges in `graph.txt` stay; the README says the last weight counts.

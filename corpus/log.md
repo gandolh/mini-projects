@@ -109,3 +109,7 @@ The tokens (green-tinted surfaces, ink as the only action colour, Azeret Mono se
 ## [2026-11-13] build | Brief 07: the todo app serves its icon font itself
 
 Material Symbols now comes from `@fontsource/material-symbols-outlined` 5.3.9 (exact pin, 400 weight, 323 kB woff2) in the `vendor` layer instead of a Google Fonts `@import`. No font request leaves the site, and the build keeps the layer order the stylesheet states. The package has no glyph subset, and the optical-size axis is fixed at 24. The drag spec blocks the local font file. Details in the brief's outcome note.
+
+## [2026-11-13] fix | Brief 08: the TSP solver returns the optimal tour
+
+`python main.py` on `graph.txt` now prints a tour of 334, not 338. The solver returned the first complete path it popped, before the edge back to the start was part of its cost; the closing edge is now its own queue step. `test_tsp.py` pins 334 and 16 and cross-checks small random graphs against a brute force. Details in the brief's outcome note.
