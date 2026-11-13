@@ -5,7 +5,7 @@
 - React 19 + Vite 8 + TypeScript (`6.0.3`)
 - `axios` — HTTP client (single instance, `baseURL: '/api'`)
 - `@tanstack/react-query` — server state; all mutations invalidate `['todos']` on success
-- `@base-ui/react` 1.9.0 (pinned exactly) — headless UI primitives (Button, Checkbox, Separator, RadioGroup, Toast), imported only by the wrappers in `components/ui/`
+- `@base-ui/react` 1.9.0 (pinned exactly) — headless UI primitives (Button, Checkbox, Menu, RadioGroup, Toast), imported only by the wrappers in `components/ui/`
 - Tailwind CSS 4.3.5 (`@tailwindcss/vite`) — every style is a utility on `className`; `clsx` and `tailwind-merge`
   behind `cn()` in `lib/cn.ts`
 - `@use-gesture/react` — drag-to-reorder gesture handling
@@ -17,7 +17,7 @@
 frontend/src/
 ├── api/todos.ts          # axios instance + 5 endpoint functions
 ├── components/
-│   ├── ui/               # The only place that imports Base UI: Button, Checkbox, Separator, RadioGroup, Toast
+│   ├── ui/               # The only place that imports Base UI: Button, Checkbox, Menu, RadioGroup, Toast
 │   ├── Icon.tsx          # A Material Symbols glyph, aria-hidden
 │   ├── dropIndex.ts      # Pure drop arithmetic for the drag handle
 │   ├── FilterTabs.tsx    # The filter, on ui/RadioGroup
@@ -43,9 +43,10 @@ frontend/src/
 - Every icon-only button has an `aria-label`, and glyphs go through `Icon` (the ligature word is never a name)
 - The add row and a task's title are buttons, so a keyboard can reach them
 - The drag handle forwards use-gesture's handlers and has `touch-action: none`
-- Inline edit state is local to `TodoItem` — controlled `<input>` replacing a `<span>`
+- Inline edit state is local to `TodoItem`: a controlled `<input>` floats over the title, which stays in place unseen so the row keeps its height
+- Row actions: a mouse sees the grip, Move up, Move down and Delete; touch (a `(hover: none)` screen at any width, or any screen under 640 px) sees the grip and a ⋮ `Menu` holding Move up, Move down and Delete
 - Drag reorder: no local copy of the list; `useReorderTodos` updates the query cache before the server answers
-- Drag via `@use-gesture/react` `useDrag` — row height 36px used to compute step count from `movement[1]`
+- Drag via `@use-gesture/react` `useDrag`: the dragged row's own height (36, 40 or 48 px) turns `movement[1]` into a step count
 
 ## Styling
 
@@ -53,9 +54,10 @@ frontend/src/
 - Join classes with `cn()`; state through Base UI's `data-*` variants (`data-checked:`, `data-disabled:`)
 - No `dark:` unless a token can't carry the difference; the colour tokens flip with the theme
 - Motion under `motion-safe:`
+- Three input variants in `styles/index.css`: `touch`, `dense` (a mouse at 1024 px and up) and `narrow` (under 375 px)
 - `better-tailwindcss` (in `npm run check`) rejects unknown classes and enforces the class order
 
 ## Toast Triggers
 
-- Error only: `toast.error('Failed to update todo')` on toggle or delete failure, from `components/ui/Toast.tsx` (Base UI `Toast`, top centre, one at a time); an error stays until its Dismiss button closes it
+- Error only: `toast.error('Failed to update todo')` on toggle or delete failure, from `components/ui/Toast.tsx` (Base UI `Toast`, top centre on a wide screen, a bottom bar with a 16 px inset under 640 px, one at a time); an error stays until its Dismiss button closes it
 - No success toasts

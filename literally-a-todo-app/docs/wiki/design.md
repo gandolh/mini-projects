@@ -1,164 +1,106 @@
 ---
-name: Utilitarian Monospace
+name: Greenbar Sheet
 colors:
-  surface: "#f9f9f9"
-  surface-dim: "#dadada"
-  surface-bright: "#f9f9f9"
-  surface-container-lowest: "#ffffff"
-  surface-container-low: "#f3f3f4"
-  surface-container: "#eeeeee"
-  surface-container-high: "#e8e8e8"
-  surface-container-highest: "#e2e2e2"
-  on-surface: "#1a1c1c"
-  on-surface-variant: "#4c4546"
-  inverse-surface: "#2f3131"
-  inverse-on-surface: "#f0f1f1"
-  outline: "#7e7576"
-  outline-variant: "#cfc4c5"
-  surface-tint: "#5e5e5e"
-  primary: "#000000"
-  on-primary: "#ffffff"
-  primary-container: "#1b1b1b"
-  on-primary-container: "#848484"
-  inverse-primary: "#c6c6c6"
-  secondary: "#4b53bc"
-  on-secondary: "#ffffff"
-  secondary-container: "#8991fe"
-  on-secondary-container: "#1b218f"
-  tertiary: "#000000"
-  on-tertiary: "#ffffff"
-  tertiary-container: "#1a1c1c"
-  on-tertiary-container: "#838484"
-  error: "#ba1a1a"
-  on-error: "#ffffff"
-  error-container: "#ffdad6"
-  on-error-container: "#93000a"
-  primary-fixed: "#e2e2e2"
-  primary-fixed-dim: "#c6c6c6"
-  on-primary-fixed: "#1b1b1b"
-  on-primary-fixed-variant: "#474747"
-  secondary-fixed: "#e0e0ff"
-  secondary-fixed-dim: "#bfc2ff"
-  on-secondary-fixed: "#00006e"
-  on-secondary-fixed-variant: "#3239a3"
-  tertiary-fixed: "#e3e2e2"
-  tertiary-fixed-dim: "#c7c6c6"
-  on-tertiary-fixed: "#1a1c1c"
-  on-tertiary-fixed-variant: "#464747"
-  background: "#f9f9f9"
-  on-background: "#1a1c1c"
-  surface-variant: "#e2e2e2"
+  primary: "#131a15"
+  on-primary: "#fcfefb"
+  on-surface: "#131a15"
+  muted: "#56615a"
+  surface: "#edf0ec"
+  surface-lowest: "#fcfefb"
+  surface-low: "#f0f6ee"
+  surface-high: "#e4ece1"
+  line: "#c2cbc4"
+  outline: "#6f7a72"
+  danger: "#a32a20"
+  dark-primary: "#e8ede9"
+  dark-on-primary: "#131712"
+  dark-surface: "#131712"
+  dark-surface-lowest: "#1f251e"
+  dark-surface-low: "#262d25"
+  dark-surface-high: "#2b332a"
+  dark-muted: "#9fa9a2"
+  dark-line: "#3b443e"
+  dark-outline: "#75807a"
+  dark-danger: "#f08a7e"
 typography:
-  headline-lg:
-    fontFamily:
-      ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas,
-      monospace
-    fontSize: 24px
-    fontWeight: "700"
-    lineHeight: 36px
-  headline-md:
-    fontFamily:
-      ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas,
-      monospace
+  headline:
+    fontFamily: "Azeret Mono, ui-monospace, monospace"
     fontSize: 18px
     fontWeight: "700"
-    lineHeight: 36px
+    lineHeight: 24px
   body-md:
-    fontFamily:
-      ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas,
-      monospace
+    fontFamily: "Azeret Mono, ui-monospace, monospace"
     fontSize: 14px
     fontWeight: "400"
-    lineHeight: 36px
+    lineHeight: 22px
+  body-phone:
+    fontFamily: "Azeret Mono, ui-monospace, monospace"
+    fontSize: 16px
+    fontWeight: "400"
+    lineHeight: 24px
   label-md:
-    fontFamily:
-      ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas,
-      monospace
+    fontFamily: "Azeret Mono, ui-monospace, monospace"
     fontSize: 12px
-    fontWeight: "400"
-    lineHeight: 20px
-  code:
-    fontFamily:
-      ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas,
-      monospace
-    fontSize: 14px
-    fontWeight: "400"
-    lineHeight: 36px
+    fontWeight: "500"
+    lineHeight: 16px
 spacing:
   row-height: 36px
-  padding-base: 8px
-  gap-sm: 4px
-  container-margin: 16px
-  separator-thickness: 1px
+  row-height-mid: 40px
+  row-height-touch: 48px
+  header: 48px
+  head-band: 40px
+  sheet-width: 720px
 ---
 
 ## Brand & Style
 
-This design system is a high-density, utilitarian framework designed for maximum efficiency and clarity. It strips away the decorative excesses of modern web design—eliminating gradients, shadows, and rounded corners—in favor of a strict, grid-based aesthetic inspired by classic workstation interfaces.
-
-The personality is clinical and precise. It treats information as the primary citizen, using clear borders and monospaced typography to create a sense of structural integrity. It is intended for power users and developers who prioritize speed, scannability, and functional density over visual flair.
+A high-density, utilitarian monospace list, drawn as a green-bar printout: one sheet on a pale ground, alternate rows banded like continuous-feed paper. It keeps the app's original character (sharp corners, no shadows, no gradients, monospace) and adds Azeret Mono, a tinted surface family and a head band that carries the filter. The personality is clinical and calm, for someone who wants the list and nothing else.
 
 ## Colors
 
 The app's tokens, with their dark values, are in [design-rules.md](design-rules.md) and in
-`frontend/src/styles/index.css`. The front matter above is the design file's full set; the app uses six of it.
+`frontend/src/styles/index.css`. The front matter above is the whole set.
 
-The palette is strictly binary and functional. High-contrast black (#000000) is used for all structural elements, including text, borders, and icons. This ensures maximum legibility and a "drawn-on-paper" feel.
-
-Muted gray (#999999) serves exclusively to denote secondary or inactive states, such as placeholders and disabled inputs. The background is a sterile, plain white (#FFFFFF) to provide a neutral canvas that avoids visual noise. While #000080 is available for critical brand accents, its usage should be sparse, keeping the focus on the black-and-white logic of the interface.
+Ink (`#131a15`) is the only action colour: text, icons, the chosen filter block, the checked box, the hover bar and the focus ring are all ink. A pale green (hue about 138) tints the surfaces only: the ground, the sheet, the head band and the band rows. Banding is strict greenbar, odd rows surface and even rows band, with no dividers. Muted green-grey carries secondary text, and one red, `danger`, appears only beside a label.
 
 ## Typography
 
-This design system employs a global monospaced font stack to reinforce its technical, utilitarian roots. Monospaced characters ensure that data columns align perfectly, facilitating faster scanning of lists and tables.
-
-All text is rendered in black (#000) with a standard row height of 36px to maintain a rigid vertical rhythm. Headlines use the same font family but are distinguished by weight rather than excessive size variations. For items marked as "completed," the typography is transformed with a 0.5 opacity and a strikethrough (line-through) decoration.
+Azeret Mono throughout (self-hosted), with four sizes: a 18 px bold title, 14 px rows, 12 px labels, and 16 px rows and fields on touch. Hierarchy comes from weight, not size.
 
 ## Layout & Spacing
 
-The layout philosophy is centered on a "tight" vertical grid. A fixed row height of 36px is applied to all interactive elements, including list items, input fields, and buttons, ensuring a predictable and compact interface.
-
-Internal padding is standardized at 8px, providing just enough breathing room to prevent visual crowding while maintaining high information density. The layout does not use fluid, organic spacing; instead, it relies on a hard-edged grid where elements are separated by clear borders or defined gutters.
+The page is one 720 px sheet. A mouse at 1024 px and up gets 36 px rows, 40 px between, and touch or under 640 px gets 48 px rows with 44 px targets. The header is 48 px, the head band and the add row 40 px. Under 640 px the title header scrolls away and the head band and add row stay pinned.
 
 ## Elevation & Depth
 
-Depth is conveyed through structural containment rather than shadows or light play. The design system is intentionally flat.
-
-Hierarchy is established through:
-
-- **Borders:** 1px solid black (#000) borders define the boundaries of interactive components.
-- **Tonal Logic:** Active states for tabs are marked by a 2px solid black bottom border, while background fills remain white.
-- **Layering:** When elements must overlap (like menus), they use a white background with a black border to "cut" through the content behind them without the use of drop shadows.
+The design is flat. Depth comes from tone and a 1 px `line` edge: the sheet against the ground, the head band against the rows. A menu and the toast use a 1 px or 2 px ink frame to cut through the content behind them. No shadow is used.
 
 ## Shapes
 
-The shape language is strictly rectangular. All corners are sharp (0px radius). This geometric rigidity reflects the "pixel-perfect" nature of early GUI design and emphasizes the utilitarian reset of the system. There are no exceptions for buttons, inputs, or containers.
+All corners are sharp, 0 px radius, with no exceptions for buttons, inputs, menus or the toast.
 
 ## Components
 
 ### Rows & Lists
 
-All rows must be exactly 36px tall with 8px horizontal padding. Content within rows should be vertically centered.
+Strict alternation of `surface-lowest` and `surface-low`. Hover and focus draw a 2 px ink bar at the row's left edge and reveal the row's actions. A done task's title is muted and struck through.
 
 ### Checkboxes
 
-Styled according to @base-ui/react standards but restricted to a sharp, square aesthetic. Checked states use a solid black fill or a heavy black checkmark, while the container remains a 1px black square.
+An 18 px square with a 1 px `outline` edge in a larger hit target; checked, it fills with ink and shows a tick.
 
 ### Icon Buttons
 
-Icon buttons are stripped of all chrome. They have no background fill and no border. Icons should be 20px in size and rendered in solid black. On hover, the cursor changes to a pointer, but the visual state remains unchanged to maintain the system's "quiet" profile.
+20 px glyphs in ink, no border. Hover fills the button with `line`; pressed inverts it to ink. On touch a ⋮ button opens a menu of Move up, Move down and Delete; the grip stays inline.
 
-### Tabs
+### Segmented groups
 
-Tabs are purely typographic with no background shading. The active tab is indicated by a `border-bottom: 2px solid #000`. Inactive tabs have no bottom border, though the entire tab bar sits atop a 1px separator.
+Show (the filter) marks its choice with one solid ink block; Theme marks its choice with a 2 px ink frame on the surface.
 
 ### Inputs & Inline Editing
 
-"Phantom" inputs are used for inline editing. They appear as plain text until focused, at which point a 1px black border appears. Placeholders must use the muted gray (#999) color.
-
-### Separators
-
-Separators follow the @base-ui/react model: a simple 1px solid line. Horizontal separators should span the full width of their container, while vertical separators are used sparingly to divide content within a 36px row.
+The add field and the edit field take a 2 px ink frame, hold one line and scroll their text. The edit field floats over the title so the row never changes height.
 
 ### Status & Completion
 
-Completed tasks or items are reduced to 0.5 opacity with a line-through decoration applied to all text within that row. This provides immediate visual feedback of state change without needing complex iconography.
+A done task keeps its row tone; only its title turns muted and struck through. Failures raise a toast with the error icon and a Dismiss button; it stays until dismissed.

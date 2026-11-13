@@ -35,3 +35,11 @@ Pages touched: frontend-rules.md
 Summary: Wrappers moved to `components/ui/`, the filter is a `RadioGroup`, the toast is Base UI's (sonner removed), icon-only buttons have names, the add row and the title are buttons, the drag handle works (handlers and touch-action), and vitest was added for the wrappers.
 
 Pages touched: frontend-rules.md
+
+---
+
+## [2026-11-13] feat | The Greenbar sheet redesign
+
+Summary: New tokens (green-tinted surfaces, ink as the only action colour, Azeret Mono), a 720 px sheet with a sticky head band, strict greenbar rows, a ⋮ menu on touch, a bottom-bar toast on phones; the footer and the Separator wrapper are gone.
+
+Pages touched: design-rules.md, design.md, frontend-rules.md

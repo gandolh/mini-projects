@@ -1,9 +1,22 @@
 ---
 summary: The decisions behind the repo's projects, newest first: what was chosen, what was rejected and why
-updated: 2026-11-11
+updated: 2026-11-13
 ---
 
 # Decisions
+
+## The Greenbar sheet redesign (2026-11-13)
+
+The todo app's frontend took the redesign direction "Greenbar sheet" (brief 06, owner-approved on the estate redesign board, every question standing as proposed). The look stays utilitarian monospace with 0 px radius and no shadows. What changed is recorded here, with each old line kept as history.
+
+- **Reopened, the app shell** (`design-rules.md`, App Shell). Was: "Theme switch: Light, Dark, System on the footer's right", "Content container: `max-width: 672px` ... `border: 1px solid #000`" and "Footer: sticky bottom, 36px". Now: Show moves into the sheet's sticky head band and the add row sits first under it, also pinned; the footer is gone; the theme switch is in the header at 640 px and up, and in a card under the sheet on a phone; the sheet is 720 px with a 1 px `line` edge. This also changes "Light / Dark / System in the footer" in the Tailwind entry below: the switch is no longer in the footer.
+- **Reopened, the palette** (`design.md`). Was: "The palette is strictly binary and functional. High-contrast black is used for all structural elements." Now: ink (`#131a15`) is the only action colour, a pale green (hue about 138) tints the surfaces only, and the banding is strict greenbar: odd rows surface, even rows band, no dividers.
+- **Reopened, the toast** (brief 03: "top centre, one at a time"). Now: top centre at 640 px and up, a bottom bar with a 16 px inset on a phone. The board said "5 s"; the code keeps what brief 04 set, an error stays until dismissed, and only the position moved.
+- **Ask 1, yes: touch row actions.** Was: "actions ... always on touch". Now: on touch (a `(hover: none)` screen at any width, and any screen under 640 px) Move up, Move down and Delete sit in a ⋮ menu on every row, named `More actions for <title>`; the grip stays inline. The menu is a new `Menu` wrapper in `components/ui/`, from the base-ui skill. The title is now a button named `Edit <title>`, laid over plain wrapping text.
+- **Ask 3, yes: Azeret Mono** from `@fontsource/azeret-mono` 5.3.0 (400, 500, 700), then the system mono stack. Kept: monospace, 0 px radius with no exceptions, no shadows.
+- **Rows:** 36 px for a mouse at 1024 px and up, 40 px between, 48 px on touch or under 640 px. Hover and focus are a 2 px ink bar and the row's actions, no tint. A done row keeps its tone: the title is muted and struck through, no longer the whole row at half opacity.
+- **Code decisions.** The variants `touch`, `dense` and `narrow` live in `styles/index.css`. `dropIndex` takes the dragged row's height, because the rows are no longer all 36 px. New tokens from the board's map, plus one the map lacks: `--z-index-popup` (60), so an open menu sits above the sticky header. Dropped: `--leading-row` (the line height now comes in pairs with each size) and the `Separator` wrapper (the head band's border does its job).
+- **Rejected:** a `visibility: hidden` row action (the board twin's way: it takes the actions out of the Tab order, so a keyboard could not reach them); the board's `box-shadow` hover bar (a pseudo-element is a flat bar and honours "no shadows").
 
 ## The todo server in the house code structure (2026-11-11)
 
@@ -35,7 +48,7 @@ first migration (Q20 makes it the dry run), by the base-ui skill's `migrating-fr
   0.25rem spacing needs no override in an app whose every size was in px.
 - **Each component moved whole, in one commit,** because an inline `style` beats every utility: 34 inline styles
   and 36 raw hex values went to zero, and before / after screenshots showed 0 px of change.
-- **Dark mode is a switch** (Q18, owner): Light / Dark / System in the footer, light on a first visit, kept in
+- **Dark mode is a switch** (Q18, owner): Light / Dark / System (in the footer then; in the header since 2026-11-13), light on a first visit, kept in
   `localStorage`, set on `<html>` before the first paint. It follows the skill's `theme.md` (System is
   `data-theme="system"` and `color-scheme: light dark`), not the brief's JavaScript resolution of System: the skill
   wins on a convention.
