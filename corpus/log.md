@@ -101,3 +101,7 @@ Findings for the skills library (the method in `migrating-from-plain-css.md`):
 ## [2026-11-13] decision | Brief 06: the redesign direction is approved
 
 The owner approved the redesign direction "Greenbar sheet" for `literally-a-todo-app` on the estate redesign board, with every question on the board standing as proposed. The build follows in token, screen and docs commits.
+
+## [2026-11-13] build | Brief 06: the Greenbar sheet redesign of the todo app
+
+The tokens (green-tinted surfaces, ink as the only action colour, Azeret Mono self-hosted) landed first, then the page shell, the rows and edit row, the add row and the toast, each as its own commit. The brief's two Acceptance changes: the e2e specs of briefs 02 and 03 pin the reopened layout and were updated to it (title button `Edit <title>`, actions behind the ⋮ menu on touch, the head band), and the contrast, focus-ring, reduced-motion and overflow specs are in `e2e/floor.spec.ts`. Reopened decisions, deviations and the comp comparison: [wiki/decisions.md](wiki/decisions.md) and the brief's outcome note.

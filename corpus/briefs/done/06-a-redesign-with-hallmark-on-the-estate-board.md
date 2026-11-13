@@ -76,3 +76,30 @@ Decided 2026-11-10 (owner, Q39): Hallmark, with taste-skill 2.5's useful parts; 
 - Brief 03's `RadioGroup` is the filter and the switch; a redesign restyles it and keeps its roles and keyboard behaviour.
 - Brief 02's formatter and lint run on every redesign commit.
 - The todo [todo-header-overlaps-on-phones](../../todos/todo-header-overlaps-on-phones.md) is closed by brief 04. A redesign must not bring the overlap back at 390 px.
+
+## Outcome (2026-11-13)
+
+Built on `main` as direction "Greenbar sheet" (owner-approved on the board, every question standing as proposed): the token commit, one commit each for the page shell, the rows, the add row and the toast, a test commit, and the docs commit. The decisions it reopened (app shell, palette, toast position, touch row actions, Azeret Mono) are in [wiki/decisions.md](../../wiki/decisions.md), and `design.md` and `design-rules.md` were rewritten from what shipped. `npm run check` in `literally-a-todo-app/` exits 0 (typecheck, ESLint, Prettier, 27 vitest tests, knip, dependency-cruiser, `check-base-ui` and `check-structure` with 0 findings), and the frontend's Playwright run passes 30 specs with the API mocked.
+
+- **Contrast** (`e2e/floor.spec.ts`, 19 pairs per theme, read from the built tokens): text pairs 5.34 light (muted on the head band) and 5.37 dark (danger on the head band) at the lowest, 17.46 and 15.29 at the highest; edges, icons and the focus ring 3.70 light and 3.18 dark at the lowest (the outline colour on the head band).
+- **Floor specs:** a 2 px solid ring on every Tab stop at 1280 and on an Android phone (the ⋮ button and its menu items included); no running animation and no transition with `reducedMotion: "reduce"` through hover, edit and a toast; no sideways scroll at 390 and 360 in both themes with an edit and a toast open; 18, 13 and 12 whole rows on the first screen at 1280x800, 390x844 and 360x800.
+- **Compared with the comps** (pixels differing by more than a small threshold, build against the plain-HTML twin): list 0.03% at 1280 and 0.15% at 390; edit row 0.05% and 0.40%; empty filter 0.00% and 0.15%, light and dark alike. What is left is the glyphs (the app uses the Material Symbols font, the twin SVGs) and, in the 390 edit row, the field's text sitting a pixel or two off.
+- **Undrawn screens restyled from the direction sheet:** the open add field, the open menu, the toast (both positions), the loading row and the 768 px touch case. The board's shots are outside git.
+- **Specs updated to the approved design** (intent kept): `names` and `keys` find the title button as `Edit <title>`; `row-actions` finds `Edit Second`, and its Android test now expects the grip inline and Move up, Move down and Delete in the ⋮ menu; `header` now asserts the head band and the theme card (wide: the title and theme switch share the header; phone: the filter sits below the title and the switch under the list; the title header scrolls away while the head band and add row stay pinned); `theme` has the new page colours and a phone test for the card; `drag` uses 96 px for the touch drag (two 48 px rows).
+
+### Deviations
+
+- **`dropIndex` takes the row height** (a default of 36 keeps its test): the rows are 36, 40 or 48 px now, so a fixed 36 broke touch drags. This touches behaviour the brief fences off; it is a one-argument change.
+- **One token the map lacks:** `--z-index-popup` (60), for the menu above the sticky header.
+- **Dropped:** `--leading-row`, and the `Separator` wrapper (nothing used it). `--text-footer` stays, unused, because the app folder's checks do not flag a token.
+- **The `touch` variant is two `@media` blocks:** a comma list in `@custom-variant` lost its second query in Tailwind 4.3.5's output, so it is written as two nested blocks.
+- **The toast shows "Dismiss" as text** (the specimen's look); the name already existed as the close button's label, so no new string.
+- **Hover on a narrow mouse window** (under 640 px) still shows the ink hover bar; the twin hides it there. Touch screens do not hover, so this only touches a small desktop window.
+- **First screen at 360x800 fits 12 rows, the board counted 11,** with the same 222 px title column as the twin; the spec pins 12.
+- **The README image still shows the old look** (`docs/images/shots.md`); retakes are out of this brief's scope.
+
+### Handoff for dependents
+
+- **Tokens:** `frontend/src/styles/index.css` (`@theme`, `light-dark()` pairs); variants `touch`, `dense`, `narrow`; fonts from `@fontsource/azeret-mono` 5.3.0.
+- **Menu:** `components/ui/Menu.tsx` (`Menu`, `MenuItem`), by the base-ui skill's menu reference.
+- **Specs and fixtures:** `e2e/fixtures.ts` (`fixtureRows`, `mockRows`); `SHOTS_DIR=<dir> npx playwright test shots` writes the board shots; `e2e/floor.spec.ts` holds the floor checks.
