@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const LIGHT_PAGE = "rgb(249, 249, 249)";
-const DARK_PAGE = "rgb(26, 28, 28)";
+const LIGHT_PAGE = "rgb(237, 240, 236)";
+const DARK_PAGE = "rgb(19, 23, 18)";
 
 async function mockApi(page: Page) {
   await page.route("**/api/todos", (route) =>

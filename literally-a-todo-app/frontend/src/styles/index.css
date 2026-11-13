@@ -11,6 +11,10 @@
    sheet whose rules matter would need the order fixed another way. */
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap")
 layer(vendor);
+/* Azeret Mono, self-hosted from @fontsource at an exact pin (400, 500, 700). */
+@import "@fontsource/azeret-mono/400.css" layer(vendor);
+@import "@fontsource/azeret-mono/500.css" layer(vendor);
+@import "@fontsource/azeret-mono/700.css" layer(vendor);
 @import "tailwindcss";
 
 /* dark: follows the theme switch (base-ui rule 14), never the system alone. */
@@ -32,27 +36,38 @@ layer(vendor);
   --radius-*: initial;
   --shadow-*: initial;
 
-  /* The colours, by the names docs/wiki/design-rules.md uses (Q17, Q61: this app keeps its names until its
-     redesign). light-dark() holds both themes, and color-scheme on <html> picks one, so no component needs dark:.
-     The dark values come from the design file's inverse tokens (docs/wiki/design.md). */
-  --color-primary: light-dark(#000, #f0f1f1);
-  --color-on-surface: light-dark(#1a1c1c, #f0f1f1);
-  --color-muted: #999;
-  --color-surface: light-dark(#f9f9f9, #1a1c1c);
-  --color-surface-lowest: light-dark(#fff, #2f3131);
-  --color-surface-low: light-dark(#f3f3f4, #3a3c3c);
+  /* The colours, by the names docs/wiki/design-rules.md uses (Q17, Q61: this app keeps its names). light-dark()
+     holds both themes, and color-scheme on <html> picks one, so no component needs dark:. Direction "Greenbar sheet"
+     (brief 06): pale green tints the surfaces, ink is the only action colour. */
+  --color-primary: light-dark(#131a15, #e8ede9);
+  --color-on-primary: light-dark(#fcfefb, #131712);
+  --color-on-surface: light-dark(#131a15, #e8ede9);
+  --color-muted: light-dark(#56615a, #9fa9a2);
+  --color-surface: light-dark(#edf0ec, #131712);
+  --color-surface-lowest: light-dark(#fcfefb, #1f251e);
+  --color-surface-low: light-dark(#f0f6ee, #262d25);
+  --color-surface-high: light-dark(#e4ece1, #2b332a);
+  --color-line: light-dark(#c2cbc4, #3b443e);
+  --color-outline: light-dark(#6f7a72, #75807a);
+  --color-danger: light-dark(#a32a20, #f08a7e);
 
-  /* The type sizes, in rem that equal the old pixels at the browser's 16 px. No paired line height: every text
-     node inherits the 36 px row (--leading-row) from body. */
+  /* The type sizes, in rem that equal the board's pixels at the browser's 16 px. The four text sizes carry their
+     line height and weight; the glyph sizes (icon, tick) carry none. */
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.5rem;
+  --text-title--font-weight: 700;
   --text-body: 0.875rem;
-  --text-title: 0.8125rem;
+  --text-body--line-height: 1.375rem;
+  --text-body-phone: 1rem;
+  --text-body-phone--line-height: 1.5rem;
   --text-footer: 0.625rem;
   --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 500;
   --text-icon: 1.25rem;
-  --text-tick: 0.875rem;
-  --leading-row: 2.25rem;
+  --text-tick: 1rem;
 
-  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Monaco, Consolas, monospace;
+  --font-mono: "Azeret Mono", ui-monospace, monospace;
   --font-icon: "Material Symbols Outlined";
   --default-font-family: var(--font-mono);
 
@@ -74,13 +89,13 @@ layer(vendor);
     color-scheme: light dark;
   }
 
-  /* The app's 14 px and its 36 px row live on body, so html keeps the reader's own size and rem utilities measure
-     from it (Q44). Every row's text inherits the 36 px line height. */
+  /* The app's 14 px and its 22 px line live on body, so html keeps the reader's own size and rem utilities measure
+     from it (Q44). Row heights are set per row, not by the line height. */
   body {
     background-color: var(--color-surface);
     color: var(--color-on-surface);
     font-size: var(--text-body);
-    line-height: var(--leading-row);
+    line-height: var(--text-body--line-height);
     -webkit-font-smoothing: antialiased;
   }
 }
