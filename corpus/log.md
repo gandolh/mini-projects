@@ -113,3 +113,7 @@ Material Symbols now comes from `@fontsource/material-symbols-outlined` 5.3.9 (e
 ## [2026-11-13] fix | Brief 08: the TSP solver returns the optimal tour
 
 `python main.py` on `graph.txt` now prints a tour of 334, not 338. The solver returned the first complete path it popped, before the edge back to the start was part of its cost; the closing edge is now its own queue step. `test_tsp.py` pins 334 and 16 and cross-checks small random graphs against a brute force. Details in the brief's outcome note.
+
+## [2026-11-13] decision | The todo app's rules move to the repo root; files follow the plain-English style
+
+The owner's answers to brief 02's three board questions: it shouldn't matter which folder a session opens in, and caveman mode is a chat mode only. `literally-a-todo-app/.claude/rules/` moved to the repo root's `.claude/rules/`, whose `paths:` were already written from the root. The app's `CLAUDE.md` points a session opened in its folder to them, and says that anything written to a file follows the `unslop` skill's plain-English style. The plugin's Stop hook already finds `check:fast` from the saved files' folders, so it runs from either folder with no change.

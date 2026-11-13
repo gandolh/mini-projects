@@ -75,6 +75,12 @@ Run them in `literally-a-todo-app/`. `npm install` runs in the app folder (the t
 
 Always respond in caveman mode: ultra-compressed, caveman speech, full technical accuracy. Use the `caveman` skill at the start of every session.
 
+Caveman mode is for chat replies only (the owner, 2026-11-13). Anything written to a file (the wiki, docs, the corpus, code comments, commit messages) follows the house plain-English style of the `unslop` skill.
+
+## Folder rules
+
+The rules for `frontend/src` and `backend/src` live at the repo root, in `.claude/rules/web.md` and `.claude/rules/server.md`. A session opened at the repo root gets them by their `paths:`. In a session opened in this folder, read `../.claude/rules/web.md` or `../.claude/rules/server.md` before you edit `frontend/src` or `backend/src`.
+
 ## What the wiki is NOT
 
 - Not a replacement for git history or commit messages

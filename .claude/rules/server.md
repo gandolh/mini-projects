@@ -5,7 +5,7 @@ paths:
 
 # The API (`backend/src`)
 
-- Read [docs/wiki/backend-rules.md](../../docs/wiki/backend-rules.md) before you add or change a route.
+- Read [docs/wiki/backend-rules.md](../../literally-a-todo-app/docs/wiki/backend-rules.md) before you add or change a route.
 - Errors are `{ "error": "<message>" }` with 400, 404 or 204; never a raw string.
 - A route that conflicts with `/:id` (such as `/reorder`) is registered before it.
 - Structure: `server.ts` listens and nothing else does; `app.ts` exports `buildApp(config)`; `config.ts` is the only
