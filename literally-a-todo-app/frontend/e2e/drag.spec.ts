@@ -31,7 +31,7 @@ async function mockApi(page: Page) {
 // The icon font is blocked, as it is offline, so each glyph falls back to its ligature word. The glyph's box clips the
 // word (components/Icon.tsx), so a click at a handle's centre still hits that handle.
 async function blockIconFont(page: Page) {
-  await page.route("https://fonts.googleapis.com/**", (route) => route.abort());
+  await page.route("**/material-symbols-outlined-*", (route) => route.abort());
 }
 
 // A row has no role of its own: it is the parent of the task's checkbox.

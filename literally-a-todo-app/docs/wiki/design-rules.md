@@ -57,7 +57,7 @@ edges, icons and the focus ring clear 3:1 (lowest 3.70 light, 3.18 dark).
 
 ## Icons
 
-- Material Symbols Outlined (Google Fonts), 20 px, ink. A hovered icon button takes the `line` fill; a pressed one
+- Material Symbols Outlined (self-hosted from `@fontsource`), 20 px, ink. A hovered icon button takes the `line` fill; a pressed one
   inverts to ink.
 
 ## Components
