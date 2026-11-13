@@ -17,4 +17,4 @@ Snapshot of 2026-11-01. None of the five is deployed or in active development.
 
 ## Open findings
 
-- [tsp-solver-misses-the-optimum-on-graph-txt](../todos/tsp-solver-misses-the-optimum-on-graph-txt.md): on `graph.txt` the solver prints a tour of 338, while the optimum is 334.
+- [Brief 08](../briefs/todo/08-the-tsp-solver-returns-the-optimal-tour.md): on `graph.txt` the solver prints a tour of 338, while the optimum is 334.
