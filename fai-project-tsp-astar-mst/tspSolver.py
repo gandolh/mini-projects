@@ -26,14 +26,18 @@ class TSPSolver:
 
 
         initial_h = self.heuristic.evaluate(visited_start, start)
-        # Priority queue elements: (f, g, current, visited_array, path)
+        # Priority queue elements: (f, g, current, visited_array, path, closed)
         # f: total estimated cost f = g + h.
         # g: cost so far (actual path cost).
         # current: current city.
         # visited: current visited array.
         # path: sequence of visited vertices in order.
-        open_list: List[Tuple[int, int, int, List[int], List[int]]] = []
-        heapq.heappush(open_list, (initial_h, 0, start, visited_start, [start]))
+        # closed: True once the edge back to the start is paid for, so g is the whole tour. Only such an
+        #         entry is a solution. The first entry popped with all nodes visited is not one: its f
+        #         does not contain the closing edge, so a tour whose last edge is cheap can still sit
+        #         behind it in the queue.
+        open_list: List[Tuple[int, int, int, List[int], List[int], bool]] = []
+        heapq.heappush(open_list, (initial_h, 0, start, visited_start, [start], False))
 
         # Keeps the best known g value for each (current, visited) combination:
         best_g: Dict[Tuple[int, Tuple[int, ...]], int] = {
@@ -43,18 +47,24 @@ class TSPSolver:
         # Main A*, while we have choices to make
         while open_list:
             # Get the best choice for now
-            f, g, current, visited, path = heapq.heappop(open_list)
+            f, g, current, visited, path, closed = heapq.heappop(open_list)
 
-            # If we have visited all nodes
+            # The tour is complete and closed. Every other entry has f >= this g, and f never
+            # overestimates, so this is the cheapest tour.
+            if closed:
+                return path, g
+
+            # If we have visited all nodes, we still have to go back to the start. Push that as one more
+            # step with its real cost, instead of returning now, so it competes with the other entries.
             if all(x == 1 for x in visited):
                 # If there is no edge from the last node to the start node
                 # We skip this path
                 if (current, start) not in self.graph.weight:
                     continue
-                
-                # Otherwise we found our solution
+
                 total_cost = g + self.graph.weight[(current, start)]
-                return path, total_cost
+                heapq.heappush(open_list, (total_cost, total_cost, current, visited, path, True))
+                continue
 
             # Start searching for the next node
             for v in range(1, n + 1):
@@ -87,6 +97,6 @@ class TSPSolver:
                 # heuristic evaluation
                 h = self.heuristic.evaluate(new_visited, v)
                 f_new = g_new + h
-                heapq.heappush(open_list, (f_new, g_new, v, new_visited, path + [v]))
+                heapq.heappush(open_list, (f_new, g_new, v, new_visited, path + [v], False))
 
         raise ValueError("No Hamiltonian cycle found")
