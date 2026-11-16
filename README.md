@@ -6,7 +6,7 @@ Five small projects from December 2025 to May 2026, kept in one repo with their 
   <img src="docs/images/git-helper-ui.webp" width="100%" alt="git-helper-ui comparing main with feature/crop-rotation in a demo repo: a file list on the left with three changed files and their added and removed line counts, and a side-by-side diff of src/garden.ts on the right with the added lines in green">
 </p>
 
-**Status:** Finished small projects, kept for reference. None is deployed and none is in active development. Each one runs on your own machine. The original repositories are no longer public; this repo keeps their history.
+**Status:** Finished small projects, kept for reference. None is deployed, and each one runs on your own machine. In November 2026 the todo app got a new look and the TSP solver a fix that makes its tours optimal. The other three have not changed since 2026-11-01. The original repositories are no longer public; this repo keeps their history.
 
 ## What is in it
 
@@ -14,7 +14,7 @@ Five small projects from December 2025 to May 2026, kept in one repo with their 
 |---|---|---|---|
 | [git-helper-ui/](git-helper-ui/) | A GitLab-style diff viewer for any git repo on your disk. Pick two branches and read the diff file by file. | React, Vite, Express, simple-git | May 2026 |
 | [pw-manager/](pw-manager/) | A desktop password manager. One master password unlocks a local vault that locks itself after 10 idle minutes. | Electron, SQLite, AES-256-GCM | May 2026 |
-| [literally-a-todo-app/](literally-a-todo-app/) | A todo list with filters, drag to reorder and a stark monospace look. | React, Fastify, SQLite | April 2026 |
+| [literally-a-todo-app/](literally-a-todo-app/) | A todo list with filters, drag to reorder, and a Light, Dark and System theme, all in one monospace face. | React, Tailwind, Fastify, SQLite | April 2026, redesigned November 2026 |
 | [fai-project-tsp-astar-mst/](fai-project-tsp-astar-mst/) | A travelling salesman solver: A* search, with the cost of a minimum spanning tree as the heuristic. | Python | January 2026 |
 | [tomato-detection-computer-vision/](tomato-detection-computer-vision/) | Finds ripe tomatoes in a photo with an HSV colour mask, cleanup and contour filters, from the command line or a Tkinter window. | Python, OpenCV | December 2025 |
 
@@ -22,8 +22,11 @@ Five small projects from December 2025 to May 2026, kept in one repo with their 
 
 <table>
 <tr>
-<td width="50%" valign="top"><img src="docs/images/pw-manager.webp" alt="The password manager's vault: four made-up entries such as Garden club forum and Library card, each with See, Copy, Edit and Delete buttons, under an Add credential button"></td>
-<td width="50%" valign="top"><img src="docs/images/literally-a-todo-app.webp" alt="The todo app's All tab: six household tasks in a bordered list, two of them ticked and struck through, with drag, up, down and delete icons on the hovered row"></td>
+<td colspan="2"><img src="docs/images/literally-a-todo-app.webp" alt="The todo app on a wide screen: a header with the title and a Light, Dark and System theme switch, then a sheet with the Show filter, an add row and six household tasks on alternating pale green bands, two of them ticked and struck through, with drag, up, down and delete icons on the row under the pointer"><br>The todo app on a wide screen, the pointer on the third row.</td>
+</tr>
+<tr>
+<td width="40%" valign="top"><img src="docs/images/literally-a-todo-app-phone.webp" alt="The todo app on a phone: the same six tasks, each row with a drag grip on the left and a three-dot menu button on the right, and the theme switch in a card under the list"><br>The same list on a phone. Move up, Move down and Delete sit in each row's menu.</td>
+<td width="60%" valign="top"><img src="docs/images/pw-manager.webp" alt="The password manager's vault: four made-up entries such as Garden club forum and Library card, each with See, Copy, Edit and Delete buttons, under an Add credential button"><br>The password manager's unlocked vault.</td>
 </tr>
 </table>
 
@@ -38,7 +41,7 @@ That is the cycle 1 → 5 → 4 → 2 → 3 → 1 and its total weight, 16.
 
 ## Run one
 
-Each folder stands on its own; there is no install at the root. The two web apps need Node 20 or newer, the password manager needs a desktop session, and the Python projects need Python 3. From the repo root, one at a time:
+Each folder stands on its own; there is no install at the root. The two web apps need Node 22.12 or newer, the password manager needs a desktop session, and the Python projects need Python 3. From the repo root, one at a time:
 
 ```bash
 cd git-helper-ui && npm install && npm run dev        # http://localhost:5173
@@ -46,7 +49,7 @@ cd pw-manager && npm install && npm run rebuild && npm start
 cd fai-project-tsp-astar-mst && python main.py
 ```
 
-The todo app and the tomato detector take two steps each. All five, with ports and inputs: [docs/getting-started.md](docs/getting-started.md).
+The todo app and the tomato detector take two steps each. All five, with ports, inputs and checks: [docs/getting-started.md](docs/getting-started.md).
 
 ## How the repo was made
 
