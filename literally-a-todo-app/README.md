@@ -3,7 +3,7 @@
 A todo list, and nothing more: add tasks, tick them off, filter by All, Active and Completed, and reorder them by dragging or with the arrow buttons.
 
 <p align="center">
-  <img src="../docs/images/literally-a-todo-app.webp" width="100%" alt="The All tab with six household tasks in a bordered list, two of them ticked and struck through, with drag, up, down and delete icons on the hovered row">
+  <img src="../docs/images/literally-a-todo-app.webp" width="100%" alt="The All tab on a wide screen: a header with the title and a Light, Dark and System theme switch, then a sheet with the Show filter, an add row and six household tasks on alternating pale green bands, two of them ticked and struck through, with drag, up, down and delete icons on the row under the pointer">
 </p>
 
 A React page talks to a small Fastify API that keeps the list in SQLite.
@@ -22,7 +22,7 @@ Run them in two terminals. The list is stored in `todos.db` in this folder. The 
 ```bash
 npm install                                    # once, in this folder: the lint and format tools
 (cd frontend && npm install) && (cd backend && npm install)
-npm run check                                  # typecheck, lint, format and conventions for both projects
+npm run check                                  # typecheck, lint, format, tests and conventions for both projects
 ```
 
 ## License
