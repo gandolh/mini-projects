@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Todo app list, proposed dark (twin)</title>
+<meta name="description" content="A plain-HTML twin of the board comp, for the local Floor checks.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;700&amp;display=swap">
+<style>
+/* Hallmark · shape: app screen · genre: task list utility · theme: brand · redesign: full
+ * paper: #edf0ec green-grey · accent: #131a15 ink · display: Azeret Mono · body: Azeret Mono
+ * nav: kept (title, Show filter, Theme switch; the filter moves into the sheet's head) · signature: greenbar banding, strict alternation, hover as a 2px ink bar · states: loading, empty filter, add open, edit row, error toasts
+ * axes: green-tinted neutrals/monospace only/ink as the one action colour · posture: restrained · modes: light+dark · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: V, one face and one ink keep the sheet quiet, so the bands and the chosen-filter block carry it */
+/* Hallmark · answered F1 F2 · straight quote in Plan the week's meals and the three dots in Add a new task... · the fixture's copy, word for word from the app */
+/* Hallmark · answered F4 · one solid ink block in the header band: the chosen filter; the chosen theme is an outline */
+[data-theme="light"]{color-scheme:light;--color-ground:#edf0ec;--color-surface:#fcfefb;--color-band:#f0f6ee;--color-head:#e4ece1;--color-ink:#131a15;--color-ink-muted:#56615a;--color-line:#c2cbc4;--color-outline:#6f7a72;--color-accent:#131a15;--color-on-accent:#fcfefb;--color-danger:#a32a20;--color-focus:#131a15;--color-callout:#a8361a;--color-on-callout:#fcfefb;--color-accent-ink:var(--color-on-accent);--font-mono:'Azeret Mono',ui-monospace,monospace;}
+[data-theme="dark"]{color-scheme:dark;--color-ground:#131712;--color-surface:#1f251e;--color-band:#262d25;--color-head:#2b332a;--color-ink:#e8ede9;--color-ink-muted:#9fa9a2;--color-line:#3b443e;--color-outline:#75807a;--color-accent:#e8ede9;--color-on-accent:#131712;--color-danger:#f08a7e;--color-focus:#e8ede9;--color-callout:#f19a7e;--color-on-callout:#2a0e06;--color-accent-ink:var(--color-on-accent);--font-mono:'Azeret Mono',ui-monospace,monospace;}
+
+html,body{margin:0;overflow-x:clip;scrollbar-color:var(--color-outline) var(--color-ground)}
+::selection{background:var(--color-ink);color:var(--color-accent-ink)}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+.td{container:page/inline-size;background:var(--color-ground);color:var(--color-ink);font:400 14px/22px var(--font-mono);font-synthesis:none;font-variant-ligatures:none;caret-color:var(--color-ink);-webkit-font-smoothing:antialiased;min-height:100dvh}
+.td *,.td *::before,.td *::after{box-sizing:border-box}
+:where(.td h1,.td p,.td ul){margin:0;padding:0}
+.td ul{list-style:none}
+:where(.td button){font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;border-radius:0;cursor:pointer;text-align:left}
+:where(.td button):disabled{color:var(--color-ink-muted);cursor:default}
+.ic{width:20px;height:20px;flex:none;display:block}
+.hd{position:sticky;inset-block-start:0;z-index:5;height:48px;background:var(--color-surface);border-bottom:1px solid var(--color-line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px}
+.hd h1{text-wrap:balance;font-weight:700;font-size:18px;line-height:24px;white-space:nowrap}
+.themebox{position:relative;display:flex;align-items:center;gap:12px}
+.lbl{font-size:12px;line-height:16px;font-weight:500;color:var(--color-ink-muted)}
+.seg{display:flex;border:1px solid var(--color-outline)}
+.seg button{position:relative;display:flex;align-items:center;justify-content:center;height:32px;min-width:72px;padding:0 12px;font-size:12px;line-height:16px;font-weight:500;text-align:center}
+.seg button+button{border-left:1px solid var(--color-outline)}
+.filter button[aria-checked="true"]{background:var(--color-accent);color:var(--color-accent-ink);font-weight:700}
+.theme button[aria-checked="true"]{background:var(--color-surface);box-shadow:inset 0 0 0 2px var(--color-ink);font-weight:700;z-index:1}
+.pgm{width:100%;max-width:768px;margin:16px auto 0;padding:0 24px 48px}
+.wrap{position:relative}
+.sheet{background:var(--color-surface);border:1px solid var(--color-line)}
+.sh{position:sticky;top:48px;z-index:4;display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;background:var(--color-head);border-bottom:1px solid var(--color-line)}
+.add{position:sticky;top:88px;z-index:3;display:flex;align-items:center;gap:8px;width:100%;height:40px;padding:0 16px;background:var(--color-surface);border-bottom:1px solid var(--color-line);color:var(--color-ink-muted)}
+.add:hover{color:var(--color-ink);background:var(--color-band)}
+.add.open{padding:0 8px 0 12px;gap:8px;color:var(--color-ink)}
+.fld{flex:1;min-width:0;display:flex;justify-content:flex-end;align-items:center;height:32px;padding:0 12px;overflow:hidden;white-space:nowrap;background:var(--color-surface);box-shadow:inset 0 0 0 2px var(--color-ink);color:var(--color-ink)}
+.fld>span:first-child{flex:none;margin-right:auto}
+.fld.ph{color:var(--color-ink-muted)}
+.fld.err{box-shadow:inset 0 0 0 2px var(--color-danger)}
+.caret{flex:none;display:inline-block;width:1px;height:16px;background:var(--color-ink);margin-left:1px}
+.ib{display:grid;place-items:center;width:40px;height:40px;flex:none}
+.ib:hover:not(:disabled){background:var(--color-line)}
+.ib:active:not(:disabled){background:var(--color-ink);color:var(--color-accent-ink)}
+.seg button:active{background:var(--color-line)}
+.add:active{background:var(--color-head)}
+.toast button:active{background:var(--color-ink);color:var(--color-accent-ink)}
+.menu button:active:not(:disabled){background:var(--color-line)}
+.ib.save{box-shadow:inset 0 0 0 1px var(--color-ink)}
+.row{display:flex;align-items:flex-start;min-height:40px;padding:0 4px;background:var(--color-surface)}
+.row:nth-child(even){background:var(--color-band)}
+.row:hover,.row:focus-within,.row.hov,.row.ed{box-shadow:inset 2px 0 0 var(--color-ink)}
+.grip{display:none}
+.cb{position:relative;flex:none;width:40px;height:40px;display:grid;place-items:center;cursor:pointer}
+.cb input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.box{width:18px;height:18px;border:1px solid var(--color-outline);background:var(--color-surface);display:grid;place-items:center;color:var(--color-ink)}
+.box .ic{width:16px;height:16px;visibility:hidden}
+.cb input:checked+.box{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
+.cb input:checked+.box .ic{visibility:visible}
+.cb input:focus-visible+.box{outline:2px solid var(--color-focus);outline-offset:2px}
+.title{position:relative;flex:1;min-width:0;display:flex;align-items:center;min-height:40px;padding:8px 8px 8px 4px;overflow-wrap:break-word}
+.tt{border-bottom:1px dotted transparent;padding-bottom:1px;margin-bottom:-2px}
+.edit{position:absolute;inset:0;width:100%;height:100%;cursor:text}
+.edit:focus-visible{outline-offset:-2px}
+.done .tt{color:var(--color-ink-muted);text-decoration:line-through}
+.acts{display:flex;flex:none;visibility:hidden}
+.row:hover .acts,.row:focus-within .acts,.row.hov .acts{visibility:visible}
+.row.ed{align-items:center}
+.row.ed .fld{margin:0 4px}
+.row.ed .acts{visibility:visible}
+.row.ed .ib.save{width:32px;height:32px;margin:0 4px 0 0}
+.more{display:none}
+.none{display:flex;align-items:center;min-height:48px;padding:0 16px;color:var(--color-ink-muted)}
+.under{display:none}
+.cl{position:absolute;left:-44px;width:24px;height:24px;border-radius:50%;background:var(--color-callout);color:var(--color-on-callout);display:grid;place-items:center;font:700 12px/16px var(--font-mono);pointer-events:none}
+.cl.hdr{left:-36px;top:0}
+.menu{background:var(--color-surface);box-shadow:inset 0 0 0 1px var(--color-ink);padding:4px;width:240px}
+.menu button{display:flex;align-items:center;gap:12px;width:100%;height:48px;padding:0 12px}
+.menu button:hover:not(:disabled){background:var(--color-head)}
+.menu .del{color:var(--color-danger)}
+.toast{display:flex;align-items:center;gap:12px;background:var(--color-surface);box-shadow:inset 0 0 0 2px var(--color-ink);padding:0 4px 0 16px;min-height:48px}
+.toast span.m{flex:1;min-width:0}
+.toast .ic.al{color:var(--color-danger)}
+.toast button{height:40px;padding:0 12px;font-weight:700;box-shadow:inset 0 0 0 1px var(--color-ink)}
+@media (hover:hover){
+.title:hover .tt,.title:focus-within .tt{border-bottom-color:var(--color-outline)}
+@container page (min-width:1024px){
+.row{min-height:36px}
+.cb{width:36px;height:36px}
+.title{min-height:36px;padding:4px 8px 4px 4px}
+.ib{width:36px;height:36px}
+.row.ed .ib.save{width:32px;height:32px}
+}
+}
+@container page (max-width:900px){.cl{display:none}}
+@media (hover:none){
+.row{min-height:48px;padding:0;font-size:16px;line-height:24px}
+.row:hover,.row.hov{box-shadow:none}
+.row:focus-within,.row.ed{box-shadow:inset 2px 0 0 var(--color-ink)}
+.grip{display:grid;flex:none;width:44px;height:48px;place-items:center;color:var(--color-ink-muted)}
+.cb{width:44px;height:48px}
+.title{min-height:48px;padding:12px 0}
+.acts{visibility:visible}
+.desk{display:none}
+.more{display:grid}
+.ib{width:44px;height:48px}
+.row.ed{align-items:center}
+.row.ed .grip{visibility:hidden}
+.row.ed .fld{height:40px;padding:0 8px;margin:0 4px 0 0}
+.row.ed .ib.save{width:44px;height:44px;margin:0}
+.none{padding:0 16px}
+}
+@container page (max-width:640px){
+.row{min-height:48px;padding:0;font-size:16px;line-height:24px}
+.row:hover,.row.hov{box-shadow:none}
+.row:focus-within,.row.ed{box-shadow:inset 2px 0 0 var(--color-ink)}
+.grip{display:grid;flex:none;width:44px;height:48px;place-items:center;color:var(--color-ink-muted)}
+.cb{width:44px;height:48px}
+.title{min-height:48px;padding:12px 0}
+.acts{visibility:visible}
+.desk{display:none}
+.more{display:grid}
+.ib{width:44px;height:48px}
+.row.ed{align-items:center}
+.row.ed .grip{visibility:hidden}
+.row.ed .fld{height:40px;padding:0 8px;margin:0 4px 0 0}
+.row.ed .ib.save{width:44px;height:44px;margin:0}
+.none{padding:0 16px}
+}
+.touch{--t:1}
+.touch .row{min-height:48px;padding:0;font-size:16px;line-height:24px}
+.touch .row:hover,.touch .row.hov{box-shadow:none}
+.touch .row:focus-within,.touch .row.ed{box-shadow:inset 2px 0 0 var(--color-ink)}
+.touch .grip{display:grid;flex:none;width:44px;height:48px;place-items:center;color:var(--color-ink-muted)}
+.touch .cb{width:44px;height:48px}
+.touch .title{min-height:48px;padding:12px 0}
+.touch .acts{visibility:visible}
+.touch .desk{display:none}
+.touch .more{display:grid}
+.touch .ib{width:44px;height:48px}
+.touch .row.ed{align-items:center}
+.touch .row.ed .grip{visibility:hidden}
+.touch .row.ed .fld{height:40px;padding:0 8px;margin:0 4px 0 0}
+.touch .row.ed .ib.save{width:44px;height:44px;margin:0}
+.touch .none{padding:0 16px}
+@container page (max-width:640px){
+.td{font-size:16px;line-height:24px}
+.hd{position:static;padding:0 16px}
+.hd .themebox{display:none}
+.pgm{margin:12px auto 0;padding:0 12px 24px}
+.sh{top:0;z-index:4;height:60px;padding:0 8px 0 12px}
+.sh .seg{flex:1;min-width:0}
+.sh .seg button{flex:1;min-width:0;height:48px;padding:0 4px;font-size:14px;line-height:20px}
+.add{top:60px;height:49px;padding:0 16px;font-size:16px}
+.add.open{padding:0 4px 0 12px}
+.fld{height:44px;font-size:16px}
+.under{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 0;padding:8px 12px;min-height:72px;background:var(--color-surface);border:1px solid var(--color-line)}
+.under .seg button{height:48px;min-width:0;padding:0 12px;font-size:14px}
+}
+@container page (max-width:374px){
+.pgm{padding:0 4px 24px}
+.sh{gap:8px;padding:0 4px 0 8px}
+.sh .seg button{padding:0 2px}
+.under .seg button{padding:0 8px}
+.grip{width:40px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div data-theme="dark" style="min-height: 100dvh; background: var(--color-ground); color: var(--color-ink); font-family: 'Azeret Mono', ui-monospace, monospace">
+<div class="td">
+<header class="hd"><h1>Literally a todo app</h1><div class="themebox"><span class="cl hdr" style="">1</span><span class="lbl">Theme</span><div class="seg theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" aria-checked="false">Light</button><button type="button" role="radio" aria-checked="true">Dark</button><button type="button" role="radio" aria-checked="false">System</button></div></div></header>
+<main class="pgm"><div class="wrap"><span class="cl " style="top:9px">2</span><span class="cl " style="top:49px">3</span><span class="cl " style="top:159px">4</span><span class="cl " style="top:123px">5</span>
+<div class="sheet"><div class="sh"><span class="lbl">Show</span><div class="seg filter" role="radiogroup" aria-label="Show"><button type="button" role="radio" aria-checked="true">All</button><button type="button" role="radio" aria-checked="false">Active</button><button type="button" role="radio" aria-checked="false">Completed</button></div></div>
+<button class="add" type="button"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5v14M5 12h14"></path></svg><span>Add a new task...</span></button>
+<ul><li class="row"><span class="grip"><button class="ib" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button></span><label class="cb"><input type="checkbox" aria-label="Plan the week&#39;s meals"><span class="box"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></label><span class="title"><span class="tt">Plan the week&#39;s meals</span><button class="edit" type="button" aria-label="Edit Plan the week&#39;s meals"></button></span><span class="acts"><button class="ib desk" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button><button class="ib desk" type="button" aria-label="Move up" disabled="disabled"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ib desk" type="button" aria-label="Move down"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"></path></svg></button><button class="ib desk" type="button" aria-label="Delete"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"></path></svg></button><button class="ib more" type="button" aria-label="More actions for Plan the week&#39;s meals" aria-haspopup="menu"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.9"></circle><circle cx="12" cy="12" r="1.9"></circle><circle cx="12" cy="18.5" r="1.9"></circle></svg></button></span></li><li class="row done"><span class="grip"><button class="ib" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button></span><label class="cb"><input type="checkbox" checked="checked" aria-label="Water the plants"><span class="box"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></label><span class="title"><span class="tt">Water the plants</span><button class="edit" type="button" aria-label="Edit Water the plants"></button></span><span class="acts"><button class="ib desk" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button><button class="ib desk" type="button" aria-label="Move up"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ib desk" type="button" aria-label="Move down"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"></path></svg></button><button class="ib desk" type="button" aria-label="Delete"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"></path></svg></button><button class="ib more" type="button" aria-label="More actions for Water the plants" aria-haspopup="menu"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.9"></circle><circle cx="12" cy="12" r="1.9"></circle><circle cx="12" cy="18.5" r="1.9"></circle></svg></button></span></li><li class="row hov"><span class="grip"><button class="ib" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button></span><label class="cb"><input type="checkbox" aria-label="Reply to the landlord"><span class="box"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></label><span class="title"><span class="tt">Reply to the landlord</span><button class="edit" type="button" aria-label="Edit Reply to the landlord"></button></span><span class="acts"><button class="ib desk" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button><button class="ib desk" type="button" aria-label="Move up"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ib desk" type="button" aria-label="Move down"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"></path></svg></button><button class="ib desk" type="button" aria-label="Delete"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"></path></svg></button><button class="ib more" type="button" aria-label="More actions for Reply to the landlord" aria-haspopup="menu"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.9"></circle><circle cx="12" cy="12" r="1.9"></circle><circle cx="12" cy="18.5" r="1.9"></circle></svg></button></span></li><li class="row"><span class="grip"><button class="ib" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button></span><label class="cb"><input type="checkbox" aria-label="Book a dentist appointment"><span class="box"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></label><span class="title"><span class="tt">Book a dentist appointment</span><button class="edit" type="button" aria-label="Edit Book a dentist appointment"></button></span><span class="acts"><button class="ib desk" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button><button class="ib desk" type="button" aria-label="Move up"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ib desk" type="button" aria-label="Move down"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"></path></svg></button><button class="ib desk" type="button" aria-label="Delete"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"></path></svg></button><button class="ib more" type="button" aria-label="More actions for Book a dentist appointment" aria-haspopup="menu"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.9"></circle><circle cx="12" cy="12" r="1.9"></circle><circle cx="12" cy="18.5" r="1.9"></circle></svg></button></span></li><li class="row done"><span class="grip"><button class="ib" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button></span><label class="cb"><input type="checkbox" checked="checked" aria-label="Fix the bike light"><span class="box"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></label><span class="title"><span class="tt">Fix the bike light</span><button class="edit" type="button" aria-label="Edit Fix the bike light"></button></span><span class="acts"><button class="ib desk" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button><button class="ib desk" type="button" aria-label="Move up"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ib desk" type="button" aria-label="Move down"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"></path></svg></button><button class="ib desk" type="button" aria-label="Delete"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"></path></svg></button><button class="ib more" type="button" aria-label="More actions for Fix the bike light" aria-haspopup="menu"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.9"></circle><circle cx="12" cy="12" r="1.9"></circle><circle cx="12" cy="18.5" r="1.9"></circle></svg></button></span></li><li class="row"><span class="grip"><button class="ib" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button></span><label class="cb"><input type="checkbox" aria-label="Renew the library card"><span class="box"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></label><span class="title"><span class="tt">Renew the library card</span><button class="edit" type="button" aria-label="Edit Renew the library card"></button></span><span class="acts"><button class="ib desk" type="button" aria-label="Drag to reorder"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"></circle><circle cx="15" cy="6" r="1.7"></circle><circle cx="9" cy="12" r="1.7"></circle><circle cx="15" cy="12" r="1.7"></circle><circle cx="9" cy="18" r="1.7"></circle><circle cx="15" cy="18" r="1.7"></circle></svg></button><button class="ib desk" type="button" aria-label="Move up"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ib desk" type="button" aria-label="Move down" disabled="disabled"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"></path></svg></button><button class="ib desk" type="button" aria-label="Delete"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"></path></svg></button><button class="ib more" type="button" aria-label="More actions for Renew the library card" aria-haspopup="menu"><svg class="ic " aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.9"></circle><circle cx="12" cy="12" r="1.9"></circle><circle cx="12" cy="18.5" r="1.9"></circle></svg></button></span></li></ul>
+</div></div>
+<div class="under"><div class="themebox"><span class="lbl">Theme</span><div class="seg theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" aria-checked="false">Light</button><button type="button" role="radio" aria-checked="true">Dark</button><button type="button" role="radio" aria-checked="false">System</button></div></div></div>
+</main>
+</div>
+</div>
+</body>
+</html>

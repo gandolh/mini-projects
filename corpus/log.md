@@ -117,3 +117,7 @@ Material Symbols now comes from `@fontsource/material-symbols-outlined` 5.3.9 (e
 ## [2026-11-13] decision | The todo app's rules move to the repo root; files follow the plain-English style
 
 The owner's answers to brief 02's three board questions: it shouldn't matter which folder a session opens in, and caveman mode is a chat mode only. `literally-a-todo-app/.claude/rules/` moved to the repo root's `.claude/rules/`, whose `paths:` were already written from the root. The app's `CLAUDE.md` points a session opened in its folder to them, and says that anything written to a file follows the `unslop` skill's plain-English style. The plugin's Stop hook already finds `check:fast` from the saved files' folders, so it runs from either folder with no change.
+
+## [2026-11-20] maintenance | The redesign's board page copied into the repo
+
+The estate redesign board is a private canvas, so `design/estate-redesign/` now holds a copy of this app's page on it and the build behind it: the directions, the judges' and the controller's rulings, the critique, the token hand-off, the board's notes, the owner's decisions, the proposed screens (as HTML with renders, or as the board's own artboard sources), and today's shots from before the redesign. It is the design record of brief 06, which built it; its README says what each file is. Prettier and the Docker build skip the folder.

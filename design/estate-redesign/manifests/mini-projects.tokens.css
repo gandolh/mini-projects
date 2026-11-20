@@ -1,0 +1,42 @@
+/*
+ * Todo app (literally-a-todo-app), direction B "Greenbar sheet": the token set in the app's own names.
+ * Replaces the colour, type and font groups of the `@theme` block in frontend/src/styles/index.css; the cleared
+ * scales (`--color-*: initial` and the rest), the dark custom variant, the z-index layers and the base layer stay.
+ * The file's own mechanism is kept: each colour is light-dark(light, dark), picked by color-scheme on :root, so
+ * there is no second colour block and no [data-theme="dark"] block here. Radius and shadow stay cleared: the
+ * design has 0 px radius and no shadow, and depth comes from tone and a 1 px edge.
+ * Also needed outside this block: one Google Fonts <link> (or @import in the vendor layer) for
+ * "Azeret Mono" 400;500;700, loaded like the icon font already is.
+ */
+@theme {
+  /* Colour: green-tinted surfaces, near-neutral text, ink the only action colour */
+  --color-primary: light-dark(#131a15, #e8ede9); /* ink: the chosen filter fill, the checked box, the hover bar, the focus ring */
+  --color-on-primary: light-dark(#fcfefb, #131712); /* text and the tick on primary */
+  --color-on-surface: light-dark(#131a15, #e8ede9); /* text */
+  --color-muted: light-dark(#56615a, #9fa9a2); /* done titles, the add row, placeholders, Show and Theme labels */
+  --color-surface: light-dark(#edf0ec, #131712); /* the page behind the sheet */
+  --color-surface-lowest: light-dark(#fcfefb, #1f251e); /* the sheet, the header band, odd rows, menus, the toast, the theme card */
+  --color-surface-low: light-dark(#f0f6ee, #262d25); /* NEW use: even rows, the greenbar */
+  --color-surface-high: light-dark(#e4ece1, #2b332a); /* NEW: the sheet's head band */
+  --color-line: light-dark(#c2cbc4, #3b443e); /* NEW: the sheet's and cards' 1 px edge, the header's bottom rule */
+  --color-outline: light-dark(#6f7a72, #75807a); /* NEW: checkbox, field and segment edges (never text) */
+  --color-danger: light-dark(#a32a20, #f08a7e); /* NEW: Delete and the error icon, always beside a label */
+
+  /* Type: Azeret Mono. Four sizes, each with its line height and weight. */
+  --text-title: 1.125rem; /* 18 / 24, 700: the page title */
+  --text-title--line-height: 1.5rem;
+  --text-title--font-weight: 700;
+  --text-body: 0.875rem; /* 14 / 22: rows at 1280, the add row */
+  --text-body--line-height: 1.375rem;
+  --text-body-phone: 1rem; /* NEW: 16 / 24, rows and fields at 390 */
+  --text-body-phone--line-height: 1.5rem;
+  --text-label: 0.75rem; /* 12 / 16, 500: Show, Theme, the segments at 1280 */
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 500;
+  --text-icon: 1.25rem; /* kept: the glyph size */
+  --text-tick: 1rem; /* 16: the tick in the 18 px box (was 0.875rem) */
+
+  --font-mono: "Azeret Mono", ui-monospace, monospace;
+  --font-icon: "Material Symbols Outlined"; /* kept */
+  --default-font-family: var(--font-mono); /* kept */
+}
