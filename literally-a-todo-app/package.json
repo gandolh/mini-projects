@@ -11,10 +11,12 @@
     "typecheck": "npm run typecheck --prefix frontend && npm run typecheck --prefix backend",
     "lint": "eslint . && npm run lint --prefix frontend && npm run lint --prefix backend",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test --prefix frontend && npm run test --prefix backend && npm run check:conventions",
+    "format:check": "prettier --check . --cache --cache-location node_modules/.cache/prettier-check/.prettier-cache",
+    "check": "node scripts/check.mjs typecheck lint format:check test:frontend test:backend check:conventions",
+    "test:frontend": "npm run test --prefix frontend",
+    "test:backend": "npm run test --prefix backend",
     "check:fast": "npm run check:fast --prefix frontend && npm run check:fast --prefix backend && node scripts/check-fast.mjs",
-    "check:conventions": "npm run knip --prefix frontend && npm run knip --prefix backend && depcruise frontend/src backend/src && node vendor/house-style/bin/check-base-ui.mjs && node vendor/house-style/bin/check-structure.mjs",
+    "check:conventions": "npm run knip --prefix frontend && npm run knip --prefix backend && depcruise frontend/src backend/src --cache node_modules/.cache/dependency-cruiser && node vendor/house-style/bin/check-base-ui.mjs && node vendor/house-style/bin/check-structure.mjs",
     "house-style:sync": "node vendor/house-style/bin/sync.mjs"
   },
   "devDependencies": {

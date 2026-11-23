@@ -51,6 +51,9 @@ Where `<type>` is one of: `feat`, `fix`, `refactor`, `docs`, `init`, `ingest`.
 Run them in `literally-a-todo-app/`. `npm install` runs in the app folder (the tools), `frontend/` and `backend/`.
 
 - `npm run check`: typecheck, lint, format check and conventions for both projects. Run it before every hand-back.
+- `npm run check` keeps going after a failing step and prints one line per step, then the end of each failure. The whole
+  output stays in `node_modules/.cache/check/last.log`, so read that log rather than running the gate again. While you
+  work, `npm run check:fast` and any test file you touched are enough; run the full gate once, after your last change.
 - `npm run check:fast`: both typechecks, then ESLint on the changed files. The Stop hook runs it.
 - `npm run format`: Prettier writes every file it covers (Markdown stays out).
 - `npm test` in `frontend/`: vitest with jsdom, for the wrappers that hold logic (`check` runs it).
