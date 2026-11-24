@@ -7,6 +7,9 @@ paths:
 
 - Read the `base-ui` skill and [docs/wiki/frontend-rules.md](../../literally-a-todo-app/docs/wiki/frontend-rules.md) before you add or
   change a component.
+- Browsers: Chrome on Android decides what to build; Safari on iPhone,
+  Firefox and desktop Safari must keep working. Before you use a platform
+  feature newer than Baseline Widely available, read the `web-platform` skill.
 - `@base-ui/react` is imported only by the wrappers in `components/ui/`, from its subpaths. The wrappers
   are `Button`, `Checkbox`, `Separator`, `RadioGroup` (the filter and the theme switch) and `Toast`
   (`toast.error(message)` and `<Toaster />`; an error stays until Dismiss). A new Base UI part gets a wrapper there,
